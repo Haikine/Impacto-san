@@ -17,14 +17,14 @@
         "message": {
           "type": "message",
           "settings": {
-            "text": "Announce something here",
-            "url": ""
+            "text": "Préparation de vos commandes tout les matins en live",
+            "url": "https://www.tiktok.com/@pokeseller14"
           }
         },
         "message_6FeqTp": {
           "type": "message",
           "settings": {
-            "text": "Announce something here",
+            "text": "Livraison en 24h",
             "url": ""
           }
         }
