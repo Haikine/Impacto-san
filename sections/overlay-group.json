@@ -37,8 +37,10 @@
         "show_shipping_text": true,
         "show_view_cart_button": true,
         "show_checkout_button": true,
-        "recommendations_title": "Trending this month",
-        "products": [],
+        "recommendations_title": "N'oubliez surtout pas",
+        "products": [
+          "pack-100-toploader-sleeves"
+        ],
         "product_card_background": "#f2f2f2",
         "product_card_text_color": ""
       }
