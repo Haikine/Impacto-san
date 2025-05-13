@@ -17,14 +17,14 @@
         "message": {
           "type": "message",
           "settings": {
-            "text": "Livraison offerte dès 190€ !",
+            "text": "Booster offert dès 80€",
             "url": "https://www.tiktok.com/@pokeseller14"
           }
         },
         "message_6FeqTp": {
           "type": "message",
           "settings": {
-            "text": "Livraison en 48h🚀",
+            "text": "Livraison en 48h",
             "url": ""
           }
         }
@@ -35,7 +35,7 @@
       ],
       "settings": {
         "enable_sticky": false,
-        "text_size": "text-xs",
+        "text_size": "text-base",
         "navigation_mode": "scrolling",
         "scrolling_speed": 10,
         "background": "#1a1a1a",
