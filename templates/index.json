@@ -116,7 +116,7 @@
       "settings": {
         "full_width": true,
         "text": "Nouveautés",
-        "text_size": "medium",
+        "text_size": "small",
         "text_style": "fill",
         "scrolling_mode": "auto",
         "scrolling_speed": 15,
