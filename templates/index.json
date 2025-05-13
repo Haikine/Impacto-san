@@ -115,7 +115,7 @@
       "type": "scrolling-text",
       "settings": {
         "full_width": true,
-        "text": "Nos Best sellers",
+        "text": "Nouveautés",
         "text_size": "medium",
         "text_style": "fill",
         "scrolling_mode": "auto",
