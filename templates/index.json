@@ -78,15 +78,15 @@
             "content_max_width": 780,
             "mobile_text_position": "place-self-center text-center",
             "desktop_text_position": "sm:place-self-center sm:text-center",
-            "subheading": "Tell your story",
-            "title": "Slide title",
+            "subheading": "L'intégralité de nos produits",
+            "title": "Chinois",
             "heading_tag": "h0",
-            "button_text": "",
+            "button_text": "Voir nos produits",
             "button_link": "",
             "text_color": "#ffffff",
-            "button_background": "#ffffff",
-            "button_text_color": "#000000",
-            "overlay_color": "#000000",
+            "button_background": "#214d90",
+            "button_text_color": "#ffffff",
+            "overlay_color": "#f0f7f9",
             "overlay_opacity": 30,
             "background": "",
             "background_gradient": ""
@@ -109,6 +109,77 @@
         "cycle_speed": 6,
         "background": "#f2f2f2",
         "background_gradient": "linear-gradient(60deg, rgba(60, 65, 68, 1), rgba(23, 29, 33, 1) 98%)"
+      }
+    },
+    "featured-collection": {
+      "type": "featured-collection",
+      "settings": {
+        "collection": "",
+        "products": [
+          "display-sv10-glory-of-team-rocket-jap",
+          "display-sv7a-paradise-dragona-jap",
+          "display-sv9-battle-partners-jap",
+          "display-wild-force-sv5k-jap",
+          "display-terastal-festival-sv8a-jap"
+        ],
+        "full_width": true,
+        "stack_products": false,
+        "show_progress_bar": false,
+        "products_count": 6,
+        "products_per_row_mobile": "2",
+        "products_per_row_desktop": 4,
+        "subheading": "",
+        "title": "Nos produits",
+        "content": "",
+        "link_url": "",
+        "link_text": "Produits",
+        "background": "",
+        "background_gradient": "",
+        "text_color": "",
+        "heading_color": "",
+        "heading_gradient": "",
+        "product_card_background": "",
+        "product_card_text_color": ""
+      }
+    },
+    "press": {
+      "type": "press",
+      "blocks": {
+        "16644243327ba53d2a-0": {
+          "type": "quote",
+          "settings": {
+            "logo_width": 100,
+            "author": "Muller.",
+            "content": "Au top, meilleur prix du marché",
+            "show_rating": true,
+            "rating": 5
+          }
+        },
+        "16644243327ba53d2a-1": {
+          "type": "quote",
+          "settings": {
+            "logo_width": 100,
+            "author": "Florian Philoreau.",
+            "content": "Qualité au top, envoi au top 👌🏻",
+            "show_rating": true,
+            "rating": 5
+          }
+        }
+      },
+      "block_order": [
+        "16644243327ba53d2a-0",
+        "16644243327ba53d2a-1"
+      ],
+      "settings": {
+        "full_width": true,
+        "content_size": "medium",
+        "background": "",
+        "background_gradient": "",
+        "text_color": "",
+        "heading_color": "",
+        "heading_gradient": "",
+        "logo_item_background": "",
+        "logo_item_border": ""
       }
     },
     "scrolling-text": {
@@ -212,125 +283,6 @@
         "heading_gradient": ""
       }
     },
-    "impact-text": {
-      "type": "impact-text",
-      "blocks": {
-        "item_WUxHaT": {
-          "type": "item",
-          "settings": {
-            "title": "100%",
-            "subheading": "Certifié Pokemon Company",
-            "content": "",
-            "button_text": "",
-            "button_url": "",
-            "animate_impact_text": true,
-            "animate_impact_text_duration": 2
-          }
-        },
-        "1664424181b38582d5-0": {
-          "type": "item",
-          "settings": {
-            "title": "99%",
-            "subheading": "De nos clients sont satisfaits",
-            "content": "",
-            "button_text": "",
-            "button_url": "",
-            "animate_impact_text": true,
-            "animate_impact_text_duration": 2
-          }
-        }
-      },
-      "block_order": [
-        "item_WUxHaT",
-        "1664424181b38582d5-0"
-      ],
-      "settings": {
-        "full_width": true,
-        "stack_mobile": false,
-        "text_alignment": "center",
-        "impact_text_style": "fill",
-        "text_divider": "none",
-        "impact_text_size_ratio": 1,
-        "background": "",
-        "background_gradient": "",
-        "heading_text_color": "",
-        "heading_gradient": "linear-gradient(180deg, rgba(26, 26, 26, 0.2), rgba(26, 26, 26, 0) 100%)",
-        "text_color": "",
-        "button_background": "",
-        "button_text_color": ""
-      }
-    },
-    "featured-collection": {
-      "type": "featured-collection",
-      "settings": {
-        "collection": "",
-        "products": [
-          "display-sv10-glory-of-team-rocket-jap",
-          "display-sv7a-paradise-dragona-jap",
-          "display-sv9-battle-partners-jap",
-          "display-wild-force-sv5k-jap",
-          "display-terastal-festival-sv8a-jap"
-        ],
-        "full_width": true,
-        "stack_products": false,
-        "show_progress_bar": false,
-        "products_count": 6,
-        "products_per_row_mobile": "2",
-        "products_per_row_desktop": 4,
-        "subheading": "",
-        "title": "Nos produits",
-        "content": "",
-        "link_url": "",
-        "link_text": "Produits",
-        "background": "",
-        "background_gradient": "",
-        "text_color": "",
-        "heading_color": "",
-        "heading_gradient": "",
-        "product_card_background": "",
-        "product_card_text_color": ""
-      }
-    },
-    "press": {
-      "type": "press",
-      "blocks": {
-        "16644243327ba53d2a-0": {
-          "type": "quote",
-          "settings": {
-            "logo_width": 100,
-            "author": "Muller.",
-            "content": "Au top, meilleur prix du marché",
-            "show_rating": true,
-            "rating": 5
-          }
-        },
-        "16644243327ba53d2a-1": {
-          "type": "quote",
-          "settings": {
-            "logo_width": 100,
-            "author": "Florian Philoreau.",
-            "content": "Qualité au top, envoi au top 👌🏻",
-            "show_rating": true,
-            "rating": 5
-          }
-        }
-      },
-      "block_order": [
-        "16644243327ba53d2a-0",
-        "16644243327ba53d2a-1"
-      ],
-      "settings": {
-        "full_width": true,
-        "content_size": "medium",
-        "background": "",
-        "background_gradient": "",
-        "text_color": "",
-        "heading_color": "",
-        "heading_gradient": "",
-        "logo_item_background": "",
-        "logo_item_border": ""
-      }
-    },
     "scrolling_text_kgTrei": {
       "type": "scrolling-text",
       "name": "Scrolling text",
@@ -380,12 +332,6 @@
           "type": "separator",
           "settings": {}
         },
-        "description": {
-          "type": "description",
-          "settings": {
-            "collapse_content": false
-          }
-        },
         "variant-picker": {
           "type": "variant_picker",
           "settings": {
@@ -419,7 +365,6 @@
         "price",
         "rating",
         "separator",
-        "description",
         "variant-picker",
         "quantity-selector",
         "buy-buttons"
@@ -440,6 +385,54 @@
         "text_color": "",
         "input_background": "rgba(0,0,0,0)",
         "input_text_color": ""
+      }
+    },
+    "impact-text": {
+      "type": "impact-text",
+      "blocks": {
+        "item_WUxHaT": {
+          "type": "item",
+          "settings": {
+            "title": "100%",
+            "subheading": "Certifié Pokemon Company",
+            "content": "",
+            "button_text": "",
+            "button_url": "",
+            "animate_impact_text": true,
+            "animate_impact_text_duration": 2
+          }
+        },
+        "1664424181b38582d5-0": {
+          "type": "item",
+          "settings": {
+            "title": "99%",
+            "subheading": "De nos clients sont satisfaits",
+            "content": "",
+            "button_text": "",
+            "button_url": "",
+            "animate_impact_text": true,
+            "animate_impact_text_duration": 2
+          }
+        }
+      },
+      "block_order": [
+        "item_WUxHaT",
+        "1664424181b38582d5-0"
+      ],
+      "settings": {
+        "full_width": true,
+        "stack_mobile": false,
+        "text_alignment": "center",
+        "impact_text_style": "fill",
+        "text_divider": "none",
+        "impact_text_size_ratio": 1,
+        "background": "",
+        "background_gradient": "",
+        "heading_text_color": "",
+        "heading_gradient": "linear-gradient(180deg, rgba(26, 26, 26, 0.2), rgba(26, 26, 26, 0) 100%)",
+        "text_color": "",
+        "button_background": "",
+        "button_text_color": ""
       }
     },
     "faq": {
@@ -513,13 +506,13 @@
   },
   "order": [
     "slideshow",
-    "scrolling-text",
-    "image-link-blocks",
-    "impact-text",
     "featured-collection",
     "press",
+    "scrolling-text",
+    "image-link-blocks",
     "scrolling_text_kgTrei",
     "featured-product",
+    "impact-text",
     "faq"
   ]
 }
