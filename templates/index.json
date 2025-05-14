@@ -298,8 +298,8 @@
           "type": "quote",
           "settings": {
             "logo_width": 100,
-            "author": "Pokeseller14",
-            "content": "Très bonne boutique Pokémon",
+            "author": "Muller.",
+            "content": "Au top, meilleur prix du marché",
             "show_rating": true,
             "rating": 5
           }
@@ -308,10 +308,10 @@
           "type": "quote",
           "settings": {
             "logo_width": 100,
-            "author": "",
-            "content": "Or share content about your promotion, offers...",
-            "show_rating": false,
-            "rating": 4
+            "author": "Hypno",
+            "content": "Nouvelle commande passée et reçu ce jour.Toujours au top, avec du choix et des prix très attractifs !Et à la clé, quelques hits !Comme par exemple le magnifique Carchacrok de Cynthia ou le Typhlosion de Luth ! 🤩🤩🤩",
+            "show_rating": true,
+            "rating": 5
           }
         }
       },
