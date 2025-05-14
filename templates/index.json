@@ -331,6 +331,22 @@
         "logo_item_border": ""
       }
     },
+    "scrolling_text_kgTrei": {
+      "type": "scrolling-text",
+      "name": "Scrolling text",
+      "settings": {
+        "full_width": true,
+        "text": "NOTRE BEST-SELLER",
+        "text_size": "small",
+        "text_style": "fill",
+        "scrolling_mode": "auto",
+        "scrolling_speed": 20,
+        "background": "",
+        "background_gradient": "",
+        "text_color": "",
+        "text_gradient": ""
+      }
+    },
     "featured-product": {
       "type": "featured-product",
       "blocks": {
@@ -502,6 +518,7 @@
     "featured-collection",
     "impact-text",
     "press",
+    "scrolling_text_kgTrei",
     "featured-product",
     "faq"
   ]
