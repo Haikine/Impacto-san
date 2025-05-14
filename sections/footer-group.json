@@ -91,9 +91,9 @@
         "newsletter": {
           "type": "newsletter",
           "settings": {
-            "image_width": 150,
+            "image_width": 130,
             "heading_size": "h3",
-            "title": "Sign up for new stories and personal offers",
+            "title": "Inscris toi à la Newsletter pour ne pas manquer les prochaines exclusivités !",
             "content": ""
           }
         },
