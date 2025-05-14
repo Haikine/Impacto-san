@@ -223,7 +223,7 @@
             "content": "",
             "button_text": "",
             "button_url": "",
-            "animate_impact_text": false,
+            "animate_impact_text": true,
             "animate_impact_text_duration": 2
           }
         },
@@ -246,7 +246,7 @@
       ],
       "settings": {
         "full_width": true,
-        "stack_mobile": true,
+        "stack_mobile": false,
         "text_alignment": "center",
         "impact_text_style": "fill",
         "text_divider": "none",
