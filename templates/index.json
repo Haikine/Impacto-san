@@ -35,7 +35,7 @@
         "image_hCh9j3": {
           "type": "image",
           "settings": {
-            "content_max_width": 780,
+            "content_max_width": 460,
             "mobile_text_position": "place-self-center text-center",
             "desktop_text_position": "sm:place-self-center sm:text-center",
             "subheading": "Retour de Noir & Blanc",
