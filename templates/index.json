@@ -216,7 +216,13 @@
       "type": "featured-collection",
       "settings": {
         "collection": "",
-        "products": [],
+        "products": [
+          "display-sv10-glory-of-team-rocket-jap",
+          "display-sv7a-paradise-dragona-jap",
+          "display-sv9-battle-partners-jap",
+          "display-wild-force-sv5k-jap",
+          "display-terastal-festival-sv8a-jap"
+        ],
         "full_width": true,
         "stack_products": false,
         "show_progress_bar": false,
@@ -227,7 +233,7 @@
         "title": "Nos produits",
         "content": "",
         "link_url": "",
-        "link_text": "View all",
+        "link_text": "Produits",
         "background": "",
         "background_gradient": "",
         "text_color": "",
@@ -293,7 +299,7 @@
           "settings": {
             "logo_width": 100,
             "author": "",
-            "content": "Share info about what your customers say about your products.",
+            "content": "",
             "show_rating": false,
             "rating": 4
           }
