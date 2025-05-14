@@ -459,13 +459,6 @@
             "content": "<p>You can contact us through our contact page! We will be happy to assist you.</p>"
           }
         },
-        "item_aLPb6P": {
-          "type": "item",
-          "settings": {
-            "title": "J'ai renseigné la mauvaise adresse de livraison. Comment recevoir mon produit à la bonne adresse ?",
-            "content": "<p>Write content to answer to common questions your customers may have about your products, shipping policies..</p>"
-          }
-        },
         "item_D6cFU9": {
           "type": "item",
           "settings": {
@@ -478,7 +471,6 @@
         "166442457738b23caf-0",
         "166442457738b23caf-1",
         "166442457738b23caf-2",
-        "item_aLPb6P",
         "item_D6cFU9"
       ],
       "settings": {
