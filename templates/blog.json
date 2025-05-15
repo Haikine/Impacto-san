@@ -1,1 +1,91 @@
-{"sections":{"main":{"type":"main-blog","settings":{}}},"order":["main"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-blog",
+      "blocks": {
+        "newsletter_6tx38V": {
+          "type": "newsletter",
+          "settings": {
+            "title": "Newsletter",
+            "content": "<p>Write something about what your customers will receive by subscribing to your newsletter.</p>",
+            "button_text": "Subscribe",
+            "subtext": "",
+            "position": 5,
+            "background": "",
+            "text_color": ""
+          }
+        }
+      },
+      "block_order": [
+        "newsletter_6tx38V"
+      ],
+      "settings": {
+        "allow_transparent_header": false,
+        "content": "<p>Get access to our latest news by signing up for our newsletter.</p>",
+        "show_newsletter_form": true,
+        "show_tags": true,
+        "banner_background": "",
+        "banner_text_color": "",
+        "button_background": "",
+        "button_text_color": "",
+        "articles_per_page": 6,
+        "feature_first_article": true,
+        "feature_article_background": "",
+        "feature_article_text_color": "",
+        "show_excerpt": true,
+        "show_date": true,
+        "show_author": false,
+        "show_comments_count": false,
+        "show_category": true
+      }
+    },
+    "blog_posts_UpH9X6": {
+      "type": "blog-posts",
+      "blocks": {
+        "blog_RkQztL": {
+          "type": "blog",
+          "settings": {
+            "blog": "",
+            "posts_count": 3,
+            "stack_items": false
+          }
+        }
+      },
+      "block_order": [
+        "blog_RkQztL"
+      ],
+      "name": "Blog posts",
+      "settings": {
+        "full_width": true,
+        "show_excerpt": true,
+        "show_date": true,
+        "show_author": false,
+        "show_comments_count": false,
+        "show_category": true,
+        "subheading": "",
+        "title": "Blog posts",
+        "content": "",
+        "link_url": "",
+        "link_text": "View all",
+        "background": "",
+        "background_gradient": "",
+        "text_color": "",
+        "heading_color": "",
+        "heading_gradient": ""
+      }
+    }
+  },
+  "order": [
+    "main",
+    "blog_posts_UpH9X6"
+  ]
+}
