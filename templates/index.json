@@ -18,7 +18,7 @@
             "image": "shopify://shop_images/Design_sans_titre_6.png",
             "content_max_width": 800,
             "mobile_text_position": "place-self-center text-center",
-            "desktop_text_position": "sm:place-self-start-center sm:text-center",
+            "desktop_text_position": "sm:place-self-center sm:text-center",
             "subheading": "Retour de Noir & Blanc",
             "title": "SV11 Black & White",
             "heading_tag": "h0",
