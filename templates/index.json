@@ -186,10 +186,10 @@
       "type": "scrolling-text",
       "settings": {
         "full_width": true,
-        "text": "Nouveautés",
-        "text_size": "small",
+        "text": "Nos catégories",
+        "text_size": "medium",
         "text_style": "fill",
-        "scrolling_mode": "auto",
+        "scrolling_mode": "scroll",
         "scrolling_speed": 15,
         "background": "",
         "background_gradient": "",
