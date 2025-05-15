@@ -156,6 +156,16 @@
             "rating": 5
           }
         },
+        "quote_zgwNxH": {
+          "type": "quote",
+          "settings": {
+            "logo_width": 100,
+            "author": "Julien Dumont",
+            "content": "Je n’ai jamais été déçu de mes commandes chez Pokeseller14. Les prix sont toujours compétitifs par rapport à la concurrence.",
+            "show_rating": true,
+            "rating": 5
+          }
+        },
         "16644243327ba53d2a-1": {
           "type": "quote",
           "settings": {
@@ -169,6 +179,7 @@
       },
       "block_order": [
         "16644243327ba53d2a-0",
+        "quote_zgwNxH",
         "16644243327ba53d2a-1"
       ],
       "settings": {
