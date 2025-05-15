@@ -12,6 +12,27 @@
     "slideshow": {
       "type": "slideshow",
       "blocks": {
+        "image_hCh9j3": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/Design_sans_titre_6.png",
+            "content_max_width": 800,
+            "mobile_text_position": "place-self-center text-center",
+            "desktop_text_position": "sm:place-self-start-center sm:text-center",
+            "subheading": "Retour de Noir & Blanc",
+            "title": "SV11 Black & White",
+            "heading_tag": "h0",
+            "button_text": "Commande ta display SV11 !",
+            "button_link": "",
+            "text_color": "#f0f7f9",
+            "button_background": "#f0f7f9",
+            "button_text_color": "#000000",
+            "overlay_color": "#000000",
+            "overlay_opacity": 30,
+            "background": "",
+            "background_gradient": ""
+          }
+        },
         "image_KiHkNi": {
           "type": "image",
           "settings": {
@@ -25,27 +46,6 @@
             "button_link": "",
             "text_color": "#ffffff",
             "button_background": "#ffffff",
-            "button_text_color": "#000000",
-            "overlay_color": "#000000",
-            "overlay_opacity": 30,
-            "background": "",
-            "background_gradient": ""
-          }
-        },
-        "image_hCh9j3": {
-          "type": "image",
-          "settings": {
-            "image": "shopify://shop_images/Design_sans_titre_3.png",
-            "content_max_width": 800,
-            "mobile_text_position": "place-self-center text-center",
-            "desktop_text_position": "sm:place-self-start-center sm:text-center",
-            "subheading": "Retour de Noir & Blanc",
-            "title": "SV11 Black & White",
-            "heading_tag": "h0",
-            "button_text": "Commande ta display SV11 !",
-            "button_link": "",
-            "text_color": "#f0f7f9",
-            "button_background": "#f0f7f9",
             "button_text_color": "#000000",
             "overlay_color": "#000000",
             "overlay_opacity": 30,
@@ -95,8 +95,8 @@
         }
       },
       "block_order": [
-        "image_KiHkNi",
         "image_hCh9j3",
+        "image_KiHkNi",
         "image_efEayh",
         "slide-2"
       ],
