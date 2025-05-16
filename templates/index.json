@@ -124,7 +124,7 @@
           "display-terastal-festival-sv8a-jap"
         ],
         "full_width": true,
-        "stack_products": true,
+        "stack_products": false,
         "show_progress_bar": true,
         "products_count": 6,
         "products_per_row_mobile": "2",
