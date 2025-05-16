@@ -88,6 +88,15 @@
     "footer": {
       "type": "footer",
       "blocks": {
+        "newsletter": {
+          "type": "newsletter",
+          "settings": {
+            "image_width": 130,
+            "heading_size": "h3",
+            "title": "Inscrivez-vous ici pour ne plus rien manquer.",
+            "content": ""
+          }
+        },
         "text": {
           "type": "text",
           "settings": {
@@ -103,20 +112,19 @@
             "show_menu_title": true
           }
         },
-        "newsletter": {
-          "type": "newsletter",
+        "links_LFWfyd": {
+          "type": "links",
           "settings": {
-            "image_width": 130,
-            "heading_size": "h3",
-            "title": "Inscrivez-vous ici pour ne plus rien manquer.",
-            "content": ""
+            "menu": "footer",
+            "show_menu_title": true
           }
         }
       },
       "block_order": [
+        "newsletter",
         "text",
         "links_Pq9mGb",
-        "newsletter"
+        "links_LFWfyd"
       ],
       "settings": {
         "show_social_media": true,
