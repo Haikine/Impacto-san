@@ -108,7 +108,7 @@
           "type": "text",
           "settings": {
             "title": "À propos",
-            "content": "",
+            "content": "<p>Pokeseller14 est une boutique dédié aux collectionneurs du TCG Pokémon,</p><p>Nous por</p>",
             "enable_follow_on_shop": true
           }
         }
