@@ -199,7 +199,7 @@
       "settings": {
         "full_width": true,
         "text": "Nos catégories",
-        "text_size": "medium",
+        "text_size": "small",
         "text_style": "fill",
         "scrolling_mode": "scroll",
         "scrolling_speed": 15,
@@ -401,7 +401,7 @@
           "type": "item",
           "settings": {
             "title": "100%",
-            "subheading": "Certifié Pokemon Company",
+            "subheading": "Article Pokémon Authentique.",
             "content": "",
             "button_text": "",
             "button_url": "",
@@ -413,7 +413,7 @@
           "type": "item",
           "settings": {
             "title": "99%",
-            "subheading": "De nos clients sont satisfaits",
+            "subheading": "De nos clients sont satisfaits.",
             "content": "",
             "button_text": "",
             "button_url": "",
@@ -449,28 +449,28 @@
           "type": "item",
           "settings": {
             "title": "Livrez vous à l'international ?",
-            "content": "<p>Yes, we ship all over the world. Shipping costs will apply, and will be added at checkout. We run discounts and promotions all year, so stay tuned for exclusive deals.</p>"
+            "content": "<p>Nous proposons une <strong>livraison en Europe</strong> ( France, Belgique, Allemagne, Italie, Espagne...) et dans les <strong>DOM-TOM</strong> ( Réunion...)</p>"
           }
         },
         "166442457738b23caf-1": {
           "type": "item",
           "settings": {
             "title": "Quels sont les modes d'expédition proposés ?",
-            "content": "<p>It depends on where you are. Orders processed here will take 5-7 business days to arrive. Overseas deliveries can take anywhere from 7-16 days. Delivery details will be provided in your confirmation email.</p>"
+            "content": "<p>Nous proposons des livraisons en <strong>point relais Chronopost </strong>ainsi qu'à<strong> domicile avec Colissimo.</strong></p>"
           }
         },
         "166442457738b23caf-2": {
           "type": "item",
           "settings": {
             "title": "Quel est le délai de livraison de ma commande ?",
-            "content": "<p>You can contact us through our contact page! We will be happy to assist you.</p>"
+            "content": "<p>Recevez votre commande en <strong>48h avec Chronopost</strong> !*</p>"
           }
         },
         "item_D6cFU9": {
           "type": "item",
           "settings": {
             "title": "Comment puis-je suivre l'évolution de l'expédition de ma commande ?",
-            "content": "<p>Write content to answer to common questions your customers may have about your products, shipping policies..</p>"
+            "content": "<p>Un lien de suivi est envoyé automatiquement par mail pour suivre votre commande !</p><p>Pour toutes questions n'hésitez pas à nous joindre.</p>"
           }
         }
       },
