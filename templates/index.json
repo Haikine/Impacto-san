@@ -120,16 +120,16 @@
           "display-sv10-glory-of-team-rocket-jap",
           "display-sv7a-paradise-dragona-jap",
           "display-sv9-battle-partners-jap",
-          "display-wild-force-sv5k-jap",
           "display-terastal-festival-sv8a-jap",
           "display-151-pokemon-sv2a-jap",
           "display-sv7-stellar-miracle-jap",
-          "display-sv8-super-electric-breaker-jap"
+          "display-sv8-super-electric-breaker-jap",
+          "display-wild-force-sv5k-jap"
         ],
         "full_width": true,
         "stack_products": true,
         "show_progress_bar": true,
-        "products_count": 6,
+        "products_count": 4,
         "products_per_row_mobile": "2",
         "products_per_row_desktop": 4,
         "subheading": "",
@@ -149,22 +149,22 @@
     "press": {
       "type": "press",
       "blocks": {
+        "quote_zgwNxH": {
+          "type": "quote",
+          "settings": {
+            "logo_width": 100,
+            "author": "Julien Dumont",
+            "content": "Je n’ai jamais été déçu de mes commandes chez Pokeseller14.",
+            "show_rating": true,
+            "rating": 5
+          }
+        },
         "16644243327ba53d2a-0": {
           "type": "quote",
           "settings": {
             "logo_width": 100,
             "author": "Muller.",
             "content": "Au top, meilleur prix du marché",
-            "show_rating": true,
-            "rating": 5
-          }
-        },
-        "quote_zgwNxH": {
-          "type": "quote",
-          "settings": {
-            "logo_width": 100,
-            "author": "Julien Dumont",
-            "content": "Je n’ai jamais été déçu de mes commandes chez Pokeseller14. Les prix sont toujours compétitifs par rapport à la concurrence.",
             "show_rating": true,
             "rating": 5
           }
@@ -181,8 +181,8 @@
         }
       },
       "block_order": [
-        "16644243327ba53d2a-0",
         "quote_zgwNxH",
+        "16644243327ba53d2a-0",
         "16644243327ba53d2a-1"
       ],
       "settings": {
@@ -197,19 +197,37 @@
         "logo_item_border": ""
       }
     },
-    "scrolling-text": {
-      "type": "scrolling-text",
+    "rich_text_9GJYgh": {
+      "type": "rich-text",
+      "blocks": {
+        "subheading_jwEFTm": {
+          "type": "subheading",
+          "settings": {
+            "text": ""
+          }
+        },
+        "heading_Kemthi": {
+          "type": "heading",
+          "settings": {
+            "text": "Nos catégories :",
+            "heading_tag": "h1",
+            "text_color": "",
+            "gradient": ""
+          }
+        }
+      },
+      "block_order": [
+        "subheading_jwEFTm",
+        "heading_Kemthi"
+      ],
+      "name": "Rich text",
       "settings": {
         "full_width": true,
-        "text": "Nos catégories",
-        "text_size": "small",
-        "text_style": "fill",
-        "scrolling_mode": "scroll",
-        "scrolling_speed": 15,
+        "content_width": "small",
+        "text_position": "center",
         "background": "",
         "background_gradient": "",
-        "text_color": "",
-        "text_gradient": ""
+        "text_color": ""
       }
     },
     "image-link-blocks": {
@@ -218,11 +236,11 @@
         "1664424046b00c932c-0": {
           "type": "item",
           "settings": {
-            "stretch_image": true,
-            "link_text": "",
-            "link_url": "",
+            "stretch_image": false,
+            "link_text": "POKEMON JAPONAIS",
+            "link_url": "shopify://collections/japonais",
             "background": "",
-            "text_color": "#ffffff",
+            "text_color": "#000000",
             "overlay_color": "#000000",
             "overlay_opacity": 0
           }
@@ -230,11 +248,11 @@
         "1664424046b00c932c-1": {
           "type": "item",
           "settings": {
-            "stretch_image": true,
-            "link_text": "",
-            "link_url": "",
+            "stretch_image": false,
+            "link_text": "POKEMON FRANCAIS",
+            "link_url": "shopify://collections/pokemon-francais",
             "background": "",
-            "text_color": "#ffffff",
+            "text_color": "#000000",
             "overlay_color": "#000000",
             "overlay_opacity": 0
           }
@@ -242,11 +260,11 @@
         "1664424046b00c932c-2": {
           "type": "item",
           "settings": {
-            "stretch_image": true,
-            "link_text": "",
-            "link_url": "",
+            "stretch_image": false,
+            "link_text": "POKEMON CHINOIS",
+            "link_url": "shopify://collections/pokemon-chinois",
             "background": "",
-            "text_color": "#ffffff",
+            "text_color": "#000000",
             "overlay_color": "#000000",
             "overlay_opacity": 0
           }
@@ -255,7 +273,7 @@
           "type": "item",
           "settings": {
             "stretch_image": true,
-            "link_text": "",
+            "link_text": "CARTES A L'UNITÉ",
             "link_url": "",
             "background": "",
             "text_color": "#ffffff",
@@ -267,8 +285,8 @@
           "type": "item",
           "settings": {
             "stretch_image": true,
-            "link_text": "",
-            "link_url": "",
+            "link_text": "ACCESSOIRES",
+            "link_url": "shopify://collections/protections-accessoires",
             "background": "",
             "text_color": "#ffffff",
             "overlay_color": "#000000",
@@ -518,7 +536,7 @@
     "slideshow",
     "featured-collection",
     "press",
-    "scrolling-text",
+    "rich_text_9GJYgh",
     "image-link-blocks",
     "scrolling_text_kgTrei",
     "featured-product",
