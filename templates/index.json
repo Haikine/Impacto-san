@@ -272,7 +272,7 @@
         "1664424046b00c932c-3": {
           "type": "item",
           "settings": {
-            "stretch_image": true,
+            "stretch_image": false,
             "link_text": "CARTES A L'UNITÉ",
             "link_url": "",
             "background": "",
@@ -284,7 +284,7 @@
         "e4a0ef18-1856-4ddd-83d8-871a60d7acac": {
           "type": "item",
           "settings": {
-            "stretch_image": true,
+            "stretch_image": false,
             "link_text": "ACCESSOIRES",
             "link_url": "shopify://collections/protections-accessoires",
             "background": "",
