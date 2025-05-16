@@ -97,25 +97,17 @@
             "content": ""
           }
         },
-        "links": {
-          "type": "links",
-          "settings": {
-            "menu": "footer",
-            "show_menu_title": true
-          }
-        },
         "text": {
           "type": "text",
           "settings": {
             "title": "À propos",
             "content": "<p></p><p>Située à <strong>Caen</strong>, <strong>Pokeseller14</strong> est la boutique incontournable pour tous les passionnés de cartes Pokémon. <br/>Que vous soyez collectionneur, joueur ou simplement fan de l’univers Pokémon, vous y trouverez un large choix de produits : boosters, displays, coffrets, accessoires et bien plus encore !</p><p>Avec <strong>des dizaines de milliers de followers sur les réseaux sociaux</strong>, Pokeseller14 s’est imposée comme une véritable référence dans le monde du Pokémon en France. L’équipe, passionnée et experte, partage quotidiennement nouveautés, conseils et contenus exclusifs avec une communauté fidèle et engagée</p>",
-            "enable_follow_on_shop": true
+            "enable_follow_on_shop": false
           }
         }
       },
       "block_order": [
         "newsletter",
-        "links",
         "text"
       ],
       "settings": {
