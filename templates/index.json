@@ -300,7 +300,7 @@
       "name": "Scrolling text",
       "settings": {
         "full_width": true,
-        "text": "NOTRE BEST-SELLER",
+        "text": "BEST-SELLER",
         "text_size": "small",
         "text_style": "fill",
         "scrolling_mode": "auto",
