@@ -121,10 +121,13 @@
           "display-sv7a-paradise-dragona-jap",
           "display-sv9-battle-partners-jap",
           "display-wild-force-sv5k-jap",
-          "display-terastal-festival-sv8a-jap"
+          "display-terastal-festival-sv8a-jap",
+          "display-151-pokemon-sv2a-jap",
+          "display-sv7-stellar-miracle-jap",
+          "display-sv8-super-electric-breaker-jap"
         ],
         "full_width": true,
-        "stack_products": false,
+        "stack_products": true,
         "show_progress_bar": true,
         "products_count": 6,
         "products_per_row_mobile": "2",
