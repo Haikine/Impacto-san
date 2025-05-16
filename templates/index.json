@@ -470,7 +470,7 @@
           "type": "item",
           "settings": {
             "title": "Comment puis-je suivre l'évolution de l'expédition de ma commande ?",
-            "content": "<p>Un lien de suivi est envoyé automatiquement par mail pour suivre votre commande !</p><p>Pour toutes questions n'hésitez pas à nous joindre.</p>"
+            "content": "<p>Un lien de <strong>suivi est envoyé automatiquement par mail </strong>pour suivre votre commande !</p><p>Pour toutes questions n'hésitez pas à nous joindre.</p>"
           }
         }
       },
