@@ -105,7 +105,7 @@
         "allow_transparent_header": true,
         "image_size": "auto",
         "controls_type": "numbers",
-        "transition_type": "fade_with_text",
+        "transition_type": "fade",
         "autoplay": true,
         "cycle_speed": 6,
         "background": "#f2f2f2",
