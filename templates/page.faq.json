@@ -9,12 +9,6 @@
  */
 {
   "sections": {
-    "main": {
-      "type": "main-page",
-      "settings": {
-        "content_width": "80ch"
-      }
-    },
     "faq_MnLdBR": {
       "type": "faq",
       "blocks": {
@@ -67,10 +61,17 @@
         "accordion_background": "",
         "accordion_text_color": ""
       }
+    },
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "content_width": "80ch"
+      }
     }
   },
   "order": [
-    "main",
-    "faq_MnLdBR"
+    "faq_MnLdBR",
+    "main"
   ]
 }
