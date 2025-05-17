@@ -105,17 +105,17 @@
             "enable_follow_on_shop": false
           }
         },
-        "links_Pq9mGb": {
-          "type": "links",
-          "settings": {
-            "menu": "footer",
-            "show_menu_title": true
-          }
-        },
         "links_LFWfyd": {
           "type": "links",
           "settings": {
             "menu": "besoin-daide",
+            "show_menu_title": true
+          }
+        },
+        "links_Pq9mGb": {
+          "type": "links",
+          "settings": {
+            "menu": "footer",
             "show_menu_title": true
           }
         }
@@ -123,8 +123,8 @@
       "block_order": [
         "newsletter",
         "text",
-        "links_Pq9mGb",
-        "links_LFWfyd"
+        "links_LFWfyd",
+        "links_Pq9mGb"
       ],
       "settings": {
         "show_social_media": true,
