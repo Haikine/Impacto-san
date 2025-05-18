@@ -40,6 +40,7 @@
     "show_page_transition": true,
     "heading_apparition": "split_fade",
     "product_color_display": "swatch",
+    "product_image_aspect_ratio": "tall_crop",
     "product_info_alignment": "start",
     "social_instagram": "https://www.instagram.com/poke_seller14/?hl=fr",
     "social_tiktok": "https://www.tiktok.com/@pokeseller14",
