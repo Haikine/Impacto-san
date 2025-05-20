@@ -22,6 +22,22 @@
             "heading_tag": "h2"
           }
         },
+        "buy_box_star_rating_yBFCHX": {
+          "type": "shopify://apps/buy-box/blocks/star-rating/17b7c6ef-0c82-4743-acf4-050c34e5b233",
+          "settings": {
+            "rating": 4.7,
+            "text": "+ de 200 avis positifs",
+            "link": "",
+            "star_color": "#00b67a",
+            "star_background_color": "#eaeaea",
+            "text_color": "#000000",
+            "star_size": 16,
+            "font_size": 14,
+            "margin_top": -10,
+            "margin_bottom": -10,
+            "max-width": "44rem"
+          }
+        },
         "buy_box_inventory_bar_BycVWB": {
           "type": "shopify://apps/buy-box/blocks/inventory-bar/17b7c6ef-0c82-4743-acf4-050c34e5b233",
           "settings": {
@@ -154,6 +170,7 @@
       "block_order": [
         "vendor",
         "title",
+        "buy_box_star_rating_yBFCHX",
         "buy_box_inventory_bar_BycVWB",
         "price",
         "rating",
