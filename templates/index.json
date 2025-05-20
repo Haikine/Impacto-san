@@ -209,8 +209,8 @@
         "heading_Kemthi": {
           "type": "heading",
           "settings": {
-            "text": "Nos catégories :",
-            "heading_tag": "h1",
+            "text": "Nos catégories",
+            "heading_tag": "h2",
             "text_color": "",
             "gradient": ""
           }
