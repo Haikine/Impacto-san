@@ -18,7 +18,7 @@
         "show_collection_title": true,
         "show_collection_description": false,
         "show_collection_image": false,
-        "collection_title_size": "h1",
+        "collection_title_size": "h2",
         "image_size": "auto",
         "mobile_text_position": "place-self-start text-start",
         "desktop_text_position": "sm:place-self-center sm:text-center",
