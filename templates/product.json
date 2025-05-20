@@ -34,12 +34,12 @@
             "z": "<strong>%IC%</strong> en stock - <strong>livraison en 48h</strong>",
             "y": "<strong>%IC%</strong> en stock - <strong>Stock bas</strong>",
             "x": "<strong>%IC%</strong> en stock - <strong>Stock très bas</strong>",
-            "d": "#00BF4D",
-            "i": "#00BF4D",
-            "e": "#FFA500",
-            "n": "#FFA500",
-            "j": "#B40C1C",
-            "o": "#B40C1C",
+            "d": "#00bf4d",
+            "i": "#00bf4d",
+            "e": "#ffa500",
+            "n": "#ffa500",
+            "j": "#b40c1c",
+            "o": "#b40c1c",
             "r": "rgba(0,0,0,0)",
             "k": "#e6e6e6",
             "f": 15,
@@ -101,6 +101,23 @@
             "payment_button_background": "",
             "payment_button_text_color": ""
           }
+        },
+        "buy_box_buy_box_wrapper_JWRGJE": {
+          "type": "shopify://apps/buy-box/blocks/buy-box-wrapper/17b7c6ef-0c82-4743-acf4-050c34e5b233",
+          "settings": {
+            "use_in_mobile": false,
+            "background_color": "#e9f6f9",
+            "border_color": "#000000",
+            "border_radius": 5,
+            "border_width": 1,
+            "box_shadow": "none",
+            "padding_top": 20,
+            "padding_bottom": 20,
+            "padding_sides": 20,
+            "margin_sides_mobile": 20,
+            "margin_left": 0,
+            "max-width": "44rem"
+          }
         }
       },
       "block_order": [
@@ -114,7 +131,8 @@
         "description",
         "variant_picker",
         "quantity_selector",
-        "buy_buttons"
+        "buy_buttons",
+        "buy_box_buy_box_wrapper_JWRGJE"
       ],
       "settings": {
         "full_width": true,
