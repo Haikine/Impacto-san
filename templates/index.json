@@ -343,6 +343,35 @@
             "heading_tag": "h2"
           }
         },
+        "buy_box_inventory_bar_FT6W9T": {
+          "type": "shopify://apps/buy-box/blocks/inventory-bar/17b7c6ef-0c82-4743-acf4-050c34e5b233",
+          "settings": {
+            "a": false,
+            "m": 5,
+            "mi": 100,
+            "s": true,
+            "l": 25,
+            "c": 10,
+            "z": "<strong>%IC%</strong> in stock - delivery in <strong>1-2</strong> days",
+            "y": "<strong>%IC%</strong> left in stock - Only a few left!",
+            "x": "<strong>%IC%</strong> left in stock - Nearly sold out!",
+            "d": "#00BF4D",
+            "i": "#00BF4D",
+            "e": "#FFA500",
+            "n": "#FFA500",
+            "j": "#B40C1C",
+            "o": "#B40C1C",
+            "r": "rgba(0,0,0,0)",
+            "k": "#e6e6e6",
+            "f": 14,
+            "h": 8,
+            "u": 5,
+            "g": "center",
+            "t": 0,
+            "b": 0,
+            "w": "44rem"
+          }
+        },
         "badges": {
           "type": "badges",
           "settings": {}
@@ -391,6 +420,7 @@
       },
       "block_order": [
         "title",
+        "buy_box_inventory_bar_FT6W9T",
         "badges",
         "price",
         "rating",
@@ -522,7 +552,7 @@
         "button_text": "",
         "button_url": "",
         "text_position": "start",
-        "background": "#f0f7f9",
+        "background": "#f7f9f9",
         "background_gradient": "",
         "text_color": "",
         "heading_color": "",

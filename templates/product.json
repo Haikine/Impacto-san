@@ -107,24 +107,6 @@
           "type": "quantity_selector",
           "settings": {}
         },
-        "buy_box_trust_badges_LRf9fa": {
-          "type": "shopify://apps/buy-box/blocks/trust-badges/17b7c6ef-0c82-4743-acf4-050c34e5b233",
-          "settings": {
-            "i1": "delivery",
-            "t1": "<p>Livraison sous 48h</p>",
-            "i2": "gift",
-            "t2": "<p>Booster offert dès 80€ !</p>",
-            "i3": "support",
-            "t3": "<p>Support 7j/7j </p>",
-            "ic": "#000000",
-            "e": "#000000",
-            "d": 20,
-            "f": 12,
-            "a": 0,
-            "b": 0,
-            "c": "44rem"
-          }
-        },
         "buy_buttons": {
           "type": "buy_buttons",
           "settings": {
@@ -147,6 +129,24 @@
             "margin_top": 0,
             "margin_bottom": 0,
             "max-width": "44rem"
+          }
+        },
+        "buy_box_trust_badges_LRf9fa": {
+          "type": "shopify://apps/buy-box/blocks/trust-badges/17b7c6ef-0c82-4743-acf4-050c34e5b233",
+          "settings": {
+            "i1": "delivery",
+            "t1": "<p><strong>Livraison sous 48h</strong></p>",
+            "i2": "gift",
+            "t2": "<p><strong>Booster offert dès 80€ !</strong></p>",
+            "i3": "support",
+            "t3": "<p><strong>Support 7j/7j </strong></p>",
+            "ic": "#000000",
+            "e": "#000000",
+            "d": 20,
+            "f": 12,
+            "a": 0,
+            "b": 0,
+            "c": "44rem"
           }
         },
         "buy_box_buy_box_wrapper_JWRGJE": {
@@ -179,9 +179,9 @@
         "description",
         "variant_picker",
         "quantity_selector",
-        "buy_box_trust_badges_LRf9fa",
         "buy_buttons",
         "buy_box_payment_icons_dH4rdK",
+        "buy_box_trust_badges_LRf9fa",
         "buy_box_buy_box_wrapper_JWRGJE"
       ],
       "settings": {
