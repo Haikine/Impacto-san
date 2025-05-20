@@ -56,6 +56,7 @@
         "image_efEayh": {
           "type": "image",
           "settings": {
+            "mobile_image": "shopify://shop_images/Mobile_jap.png",
             "content_max_width": 780,
             "mobile_text_position": "place-self-center text-center",
             "desktop_text_position": "sm:place-self-center sm:text-center",
