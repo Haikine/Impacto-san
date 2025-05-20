@@ -77,6 +77,24 @@
             "collapse_content": false
           }
         },
+        "buy_box_trust_badges_LRf9fa": {
+          "type": "shopify://apps/buy-box/blocks/trust-badges/17b7c6ef-0c82-4743-acf4-050c34e5b233",
+          "settings": {
+            "i1": "delivery",
+            "t1": "<p>Livraison en 48h maximum</p>",
+            "i2": "handshake",
+            "t2": "<p>Produits 100% authentiques</p>",
+            "i3": "support",
+            "t3": "<p>Support rapide et disponible </p>",
+            "ic": "#000000",
+            "e": "#000000",
+            "d": 20,
+            "f": 12,
+            "a": 0,
+            "b": 0,
+            "c": "44rem"
+          }
+        },
         "variant_picker": {
           "type": "variant_picker",
           "settings": {
@@ -142,6 +160,7 @@
         "payment_terms",
         "separator",
         "description",
+        "buy_box_trust_badges_LRf9fa",
         "variant_picker",
         "quantity_selector",
         "buy_buttons",
