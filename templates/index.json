@@ -29,7 +29,7 @@
             "button_text_color": "#000000",
             "overlay_color": "#000000",
             "overlay_opacity": 30,
-            "background": "",
+            "background": "#e4f8fd",
             "background_gradient": ""
           }
         },
@@ -103,10 +103,10 @@
       ],
       "settings": {
         "full_width": true,
-        "allow_transparent_header": true,
+        "allow_transparent_header": false,
         "image_size": "auto",
         "controls_type": "numbers",
-        "transition_type": "fade",
+        "transition_type": "fade_with_text",
         "autoplay": true,
         "cycle_speed": 6,
         "background": "#f2f2f2",

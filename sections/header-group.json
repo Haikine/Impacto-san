@@ -63,9 +63,10 @@
         "show_country_flag": true,
         "show_country_name": false,
         "transparent_header_text_color": "#e4f8fd",
+        "transparent_logo": "shopify://shop_images/11dc2150-4cc2-439c-a669-bbaaf8956ce4-removebg-preview.png",
         "reduce_padding": true,
         "background_opacity": 100,
-        "background_blur_radius": 0
+        "background_blur_radius": 12
       }
     }
   },
