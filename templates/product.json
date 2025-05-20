@@ -22,6 +22,30 @@
             "heading_tag": "h2"
           }
         },
+        "buy_box_inventory_status_m4mewk": {
+          "type": "shopify://apps/buy-box/blocks/inventory-status/17b7c6ef-0c82-4743-acf4-050c34e5b233",
+          "settings": {
+            "inventory_status": "automatically_tracked",
+            "low_stock_threshold": 10,
+            "show_zero_as_out": false,
+            "text_available": "<strong>EN STOCK - </strong>livraison en 48h",
+            "text_low_stock": "<strong>FAIBLE STOCK - </strong>livraison en 48h",
+            "text_unavailable": "<strong>PLUS DE STOCK - </strong>restock à venir",
+            "alignment": "left",
+            "dot_style": "dot_with_animated_ring",
+            "dot_color_available": "#00BF4D",
+            "text_color_available": "#00BF4D",
+            "dot_color_low_stock": "#FFA500",
+            "text_color_low_stock": "#FFA500",
+            "dot_color_unavailable": "#B40C1C",
+            "text_color_unavailable": "#B40C1C",
+            "font_size": 14,
+            "dot_size": 8,
+            "margin_top": -10,
+            "margin_bottom": -10,
+            "max-width": "44rem"
+          }
+        },
         "badges": {
           "type": "badges",
           "settings": {}
@@ -81,6 +105,7 @@
       "block_order": [
         "vendor",
         "title",
+        "buy_box_inventory_status_m4mewk",
         "badges",
         "price",
         "rating",
