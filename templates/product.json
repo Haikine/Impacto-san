@@ -102,6 +102,19 @@
             "payment_button_text_color": ""
           }
         },
+        "buy_box_payment_icons_dH4rdK": {
+          "type": "shopify://apps/buy-box/blocks/payment-icons/17b7c6ef-0c82-4743-acf4-050c34e5b233",
+          "settings": {
+            "exc": "",
+            "icon_size": 30,
+            "min_gap": 8,
+            "alignment": "space-between",
+            "padding_sides": 0,
+            "margin_top": 0,
+            "margin_bottom": 0,
+            "max-width": "44rem"
+          }
+        },
         "buy_box_buy_box_wrapper_JWRGJE": {
           "type": "shopify://apps/buy-box/blocks/buy-box-wrapper/17b7c6ef-0c82-4743-acf4-050c34e5b233",
           "settings": {
@@ -132,6 +145,7 @@
         "variant_picker",
         "quantity_selector",
         "buy_buttons",
+        "buy_box_payment_icons_dH4rdK",
         "buy_box_buy_box_wrapper_JWRGJE"
       ],
       "settings": {
