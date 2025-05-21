@@ -129,7 +129,7 @@ Supported variables
         <span class="sr-only">{{ 'product.price.sale_price' | t }}</span>
 
         {%- if settings.currency_code_enabled -%}
-          {{- product.price | money_with_currency -}}
+          {{- product.price | money_without_currency -}}€
         {%- else -%}
           {{- product.price | money -}}
         {%- endif -%}
