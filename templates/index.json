@@ -29,7 +29,7 @@
             "button_background": "#f0f7f9",
             "button_text_color": "#000000",
             "overlay_color": "#000000",
-            "overlay_opacity": 18,
+            "overlay_opacity": 15,
             "background": "#e4f8fd",
             "background_gradient": ""
           }
@@ -71,7 +71,7 @@
             "button_background": "#ffffff",
             "button_text_color": "#000000",
             "overlay_color": "#000000",
-            "overlay_opacity": 5,
+            "overlay_opacity": 0,
             "background": "",
             "background_gradient": ""
           }
@@ -441,7 +441,7 @@
         "enable_video_looping": false,
         "enable_image_zoom": true,
         "max_image_zoom_level": 3,
-        "background": "#e4f8fd",
+        "background": "#f7f9f9",
         "background_gradient": "",
         "text_color": "",
         "input_background": "rgba(0,0,0,0)",
