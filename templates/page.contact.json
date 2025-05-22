@@ -20,9 +20,9 @@
       "type": "contact",
       "settings": {
         "full_width": true,
-        "subheading": "Contactez nous :",
-        "title": "Formulaire de contact.",
-        "content": "",
+        "subheading": "Faites nous part de vos questions directement avec notre",
+        "title": "Formulaire de contact :",
+        "content": "<p>Nous sommes disponible du lundi au samedi de 8h30 à 18h00. Vous pouvez aussi nous joindre par téléphone au : 06.34.56.66.12</p>",
         "text_position": "start",
         "contact_form_size": "large",
         "background": "",
