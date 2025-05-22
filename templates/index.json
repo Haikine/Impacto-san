@@ -243,7 +243,7 @@
         "1664424046b00c932c-0": {
           "type": "item",
           "settings": {
-            "image": "shopify://shop_images/1_49789662-5cc9-4999-a831-7ce5cc969ab7.png",
+            "image": "shopify://shop_images/Collection_display_japonais.png",
             "stretch_image": false,
             "link_text": "POKEMON JAPONAIS",
             "link_url": "shopify://collections/japonais",
@@ -256,7 +256,7 @@
         "1664424046b00c932c-1": {
           "type": "item",
           "settings": {
-            "image": "shopify://shop_images/3_c0903308-35ef-412e-af24-bf6ddd3e6608.png",
+            "image": "shopify://shop_images/Collection_pokemon_francais.png",
             "stretch_image": false,
             "link_text": "POKEMON FRANCAIS",
             "link_url": "shopify://collections/pokemon-francais",
@@ -269,7 +269,7 @@
         "1664424046b00c932c-2": {
           "type": "item",
           "settings": {
-            "image": "shopify://shop_images/2_2a742f42-fd44-4787-9c48-e86a868b9a41.png",
+            "image": "shopify://shop_images/Collection_Produits_chinois.png",
             "stretch_image": false,
             "link_text": "POKEMON CHINOIS",
             "link_url": "shopify://collections/pokemon-chinois",
@@ -282,6 +282,7 @@
         "1664424046b00c932c-3": {
           "type": "item",
           "settings": {
+            "image": "shopify://shop_images/Collection_Booster_Pokemon.png",
             "stretch_image": false,
             "link_text": "POKEMON BOOSTERS",
             "link_url": "shopify://collections/booster-sortis-de-display",
@@ -294,8 +295,9 @@
         "e4a0ef18-1856-4ddd-83d8-871a60d7acac": {
           "type": "item",
           "settings": {
+            "image": "shopify://shop_images/Collection_accessoires_et_protections.png",
             "stretch_image": false,
-            "link_text": "ACCESSOIRES & SLEEVES",
+            "link_text": "ACCESSOIRES & PROTECTIONS",
             "link_url": "shopify://collections/protections-accessoires",
             "background": "#ffffff",
             "text_color": "#000000",
@@ -313,7 +315,7 @@
       ],
       "settings": {
         "full_width": true,
-        "block_size": "medium",
+        "block_size": "large",
         "subheading": "",
         "title": "",
         "content": "",
