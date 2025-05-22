@@ -17,7 +17,7 @@
     "block_border_radius": 24,
     "block_shadow_opacity": 10,
     "block_shadow_vertical_offset": 18,
-    "button_style": "outline",
+    "button_style": "fill",
     "button_hover_effect": "reverse",
     "background": "#f7f9f9",
     "text_color": "#1a1a1a",
