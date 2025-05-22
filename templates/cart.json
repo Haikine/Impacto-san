@@ -40,46 +40,6 @@
     },
     "1747906656a7538856": {
       "type": "apps",
-      "blocks": {
-        "monster_cart_upsell_free_gifts_monster_deals_47kPRq": {
-          "type": "shopify://apps/monster-cart-upsell-free-gifts/blocks/monster-deals/a1b8e58a-bf1d-4e0f-8768-a387c3f643c0",
-          "settings": {
-            "offer_collection": [
-              "pokemon-francais",
-              "pokemon-chinois",
-              "japonais"
-            ],
-            "offer_product": [],
-            "hide_product_variants": true,
-            "show_variants": true,
-            "reward_type": "percentage",
-            "offer_a_title": "Single",
-            "offer_a_subtitle": "Standard price",
-            "offer_b_quantity": 2,
-            "offer_b_price_value": 10,
-            "offer_b_title": "Duo",
-            "offer_b_subtitle": "You save 10%",
-            "offer_b_label": "Popular",
-            "offer_c_quantity": 3,
-            "offer_c_price_value": 20,
-            "offer_c_title": "Trio",
-            "offer_c_subtitle": "You save 20%",
-            "offer_c_label": "Best Price ⚡",
-            "highlight_color": "#5A75F8",
-            "highlight_text_color": "#FFF",
-            "secondary_color": "#D7DEFF",
-            "secondary_text_color": "#000",
-            "highlight_border_color": "#5A75F8",
-            "secondary_border_color": "#5A75F8",
-            "block_curves": 9,
-            "custom_html_above": "<div></div>",
-            "custom_html_below": "<div></div>"
-          }
-        }
-      },
-      "block_order": [
-        "monster_cart_upsell_free_gifts_monster_deals_47kPRq"
-      ],
       "settings": {
         "full_width": true,
         "remove_vertical_spacing": false,
