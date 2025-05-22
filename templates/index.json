@@ -517,7 +517,7 @@
           "type": "item",
           "settings": {
             "title": "Quel est le délai de livraison de ma commande ?",
-            "content": "<p>Recevez votre commande en <strong>48h avec Chronopost</strong> !*</p>"
+            "content": "<p>Le délai d’expédition est d’environ 24h et recevez votre commande en <strong>48h avec Chronopost</strong> !*</p>"
           }
         },
         "item_D6cFU9": {
