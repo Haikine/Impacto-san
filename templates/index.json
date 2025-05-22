@@ -93,7 +93,7 @@
             "button_link": "",
             "text_color": "#1a1a1a",
             "button_background": "#ffffff",
-            "button_text_color": "#ffffff",
+            "button_text_color": "#000000",
             "overlay_color": "#f0f7f9",
             "overlay_opacity": 10,
             "background": "",
