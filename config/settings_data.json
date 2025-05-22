@@ -61,6 +61,11 @@
         "type": "shopify://apps/seoant-ai-seo/blocks/seoant-core/8e57283b-dcb0-4f7b-a947-fb5c57a0d59d",
         "disabled": false,
         "settings": {}
+      },
+      "15539626159989124859": {
+        "type": "shopify://apps/maxbundle-product-bundles/blocks/app-embed/469560a3-d600-4f5e-a767-2a4cdaceacca",
+        "disabled": false,
+        "settings": {}
       }
     }
   },
