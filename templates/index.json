@@ -40,7 +40,7 @@
             "image": "shopify://shop_images/2.png",
             "mobile_image": "shopify://shop_images/2_39d0619c-3cc8-4831-9c3f-5c910dae557e.png",
             "content_max_width": 780,
-            "mobile_text_position": "place-self-center text-center",
+            "mobile_text_position": "place-self-end-center text-center",
             "desktop_text_position": "sm:place-self-center sm:text-center",
             "subheading": "",
             "title": "",
@@ -51,7 +51,7 @@
             "button_background": "#ffffff",
             "button_text_color": "#000000",
             "overlay_color": "#000000",
-            "overlay_opacity": 7,
+            "overlay_opacity": 5,
             "background": "",
             "background_gradient": ""
           }
