@@ -26,7 +26,7 @@
             "button_text": "Disponible dès maintenant !",
             "button_link": "",
             "text_color": "#f0f7f9",
-            "button_background": "#214d90",
+            "button_background": "#a7b3c6",
             "button_text_color": "#e9f6f9",
             "overlay_color": "#000000",
             "overlay_opacity": 15,
@@ -68,10 +68,10 @@
             "button_text": "Commande ta display !",
             "button_link": "shopify://collections/japonais",
             "text_color": "#ffffff",
-            "button_background": "#214d90",
+            "button_background": "#3e5370",
             "button_text_color": "#e9f6f9",
             "overlay_color": "#000000",
-            "overlay_opacity": 0,
+            "overlay_opacity": 21,
             "background": "",
             "background_gradient": ""
           }
