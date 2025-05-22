@@ -277,7 +277,7 @@
           "settings": {
             "stretch_image": false,
             "link_text": "POKEMON BOOSTERS",
-            "link_url": "",
+            "link_url": "shopify://collections/booster-sortis-de-display",
             "background": "",
             "text_color": "#000000",
             "overlay_color": "#000000",
@@ -288,7 +288,7 @@
           "type": "item",
           "settings": {
             "stretch_image": false,
-            "link_text": "ACCESSOIRES",
+            "link_text": "ACCESSOIRES / PROTECTIONS",
             "link_url": "shopify://collections/protections-accessoires",
             "background": "",
             "text_color": "#000000",
