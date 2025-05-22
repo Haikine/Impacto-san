@@ -37,6 +37,8 @@
         "image_KiHkNi": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/2.png",
+            "mobile_image": "shopify://shop_images/2_39d0619c-3cc8-4831-9c3f-5c910dae557e.png",
             "content_max_width": 780,
             "mobile_text_position": "place-self-center text-center",
             "desktop_text_position": "sm:place-self-center sm:text-center",
@@ -79,6 +81,8 @@
         "slide-2": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/3.png",
+            "mobile_image": "shopify://shop_images/3_78d8c68a-d81e-4fdc-8a43-322e1820f052.png",
             "content_max_width": 780,
             "mobile_text_position": "place-self-center text-center",
             "desktop_text_position": "sm:place-self-center sm:text-center",
@@ -87,11 +91,11 @@
             "heading_tag": "h0",
             "button_text": "Voir nos produits",
             "button_link": "",
-            "text_color": "#ffffff",
+            "text_color": "#1a1a1a",
             "button_background": "#214d90",
             "button_text_color": "#ffffff",
             "overlay_color": "#f0f7f9",
-            "overlay_opacity": 30,
+            "overlay_opacity": 10,
             "background": "",
             "background_gradient": ""
           }
@@ -239,6 +243,7 @@
         "1664424046b00c932c-0": {
           "type": "item",
           "settings": {
+            "image": "shopify://shop_images/1_49789662-5cc9-4999-a831-7ce5cc969ab7.png",
             "stretch_image": false,
             "link_text": "POKEMON JAPONAIS",
             "link_url": "shopify://collections/japonais",
@@ -251,6 +256,7 @@
         "1664424046b00c932c-1": {
           "type": "item",
           "settings": {
+            "image": "shopify://shop_images/3_c0903308-35ef-412e-af24-bf6ddd3e6608.png",
             "stretch_image": false,
             "link_text": "POKEMON FRANCAIS",
             "link_url": "shopify://collections/pokemon-francais",
@@ -263,6 +269,7 @@
         "1664424046b00c932c-2": {
           "type": "item",
           "settings": {
+            "image": "shopify://shop_images/2_2a742f42-fd44-4787-9c48-e86a868b9a41.png",
             "stretch_image": false,
             "link_text": "POKEMON CHINOIS",
             "link_url": "shopify://collections/pokemon-chinois",
