@@ -285,7 +285,7 @@
             "stretch_image": false,
             "link_text": "POKEMON BOOSTERS",
             "link_url": "shopify://collections/booster-sortis-de-display",
-            "background": "",
+            "background": "#ffffff",
             "text_color": "#000000",
             "overlay_color": "#000000",
             "overlay_opacity": 0
@@ -294,10 +294,10 @@
         "e4a0ef18-1856-4ddd-83d8-871a60d7acac": {
           "type": "item",
           "settings": {
-            "stretch_image": true,
+            "stretch_image": false,
             "link_text": "ACCESSOIRES & SLEEVES",
             "link_url": "shopify://collections/protections-accessoires",
-            "background": "",
+            "background": "#ffffff",
             "text_color": "#000000",
             "overlay_color": "#000000",
             "overlay_opacity": 0
