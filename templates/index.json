@@ -243,7 +243,7 @@
         "1664424046b00c932c-0": {
           "type": "item",
           "settings": {
-            "image": "shopify://shop_images/Collection_display_japonais.png",
+            "image": "shopify://shop_images/1_cd72721d-28fb-46cb-9f85-8b9205bf5013.png",
             "stretch_image": false,
             "link_text": "POKEMON JAPONAIS",
             "link_url": "shopify://collections/japonais",
@@ -256,7 +256,7 @@
         "1664424046b00c932c-1": {
           "type": "item",
           "settings": {
-            "image": "shopify://shop_images/Collection_pokemon_francais.png",
+            "image": "shopify://shop_images/3_6960f2f6-cfb0-4247-bb9e-bfe45d77c497.png",
             "stretch_image": false,
             "link_text": "POKEMON FRANCAIS",
             "link_url": "shopify://collections/pokemon-francais",
@@ -269,7 +269,7 @@
         "1664424046b00c932c-2": {
           "type": "item",
           "settings": {
-            "image": "shopify://shop_images/Collection_Produits_chinois.png",
+            "image": "shopify://shop_images/2_20e71674-5a3e-4430-a712-006b996cdbbb.png",
             "stretch_image": false,
             "link_text": "POKEMON CHINOIS",
             "link_url": "shopify://collections/pokemon-chinois",
