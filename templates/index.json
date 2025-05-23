@@ -282,7 +282,7 @@
         "1664424046b00c932c-3": {
           "type": "item",
           "settings": {
-            "image": "shopify://shop_images/Collection_Booster_Pokemon.png",
+            "image": "shopify://shop_images/5.png",
             "stretch_image": false,
             "link_text": "POKEMON BOOSTERS",
             "link_url": "shopify://collections/booster-sortis-de-display",
@@ -295,7 +295,7 @@
         "e4a0ef18-1856-4ddd-83d8-871a60d7acac": {
           "type": "item",
           "settings": {
-            "image": "shopify://shop_images/Collection_accessoires_et_protections.png",
+            "image": "shopify://shop_images/4.png",
             "stretch_image": false,
             "link_text": "ACCESSOIRES & PROTECTIONS",
             "link_url": "shopify://collections/protections-accessoires",
