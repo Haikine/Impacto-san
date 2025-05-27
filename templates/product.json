@@ -135,7 +135,7 @@
           "type": "shopify://apps/buy-box/blocks/trust-badges/17b7c6ef-0c82-4743-acf4-050c34e5b233",
           "settings": {
             "i1": "delivery",
-            "t1": "<p><strong>Livraison sous 48h</strong></p><p>( Envoi depuis la France )</p>",
+            "t1": "<p><strong>Livraison sous 48h<br/></strong>( Envoi depuis la France )</p>",
             "i2": "gift",
             "t2": "<p><strong>Booster offert dès 80€ !</strong></p>",
             "i3": "support",
