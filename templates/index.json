@@ -124,19 +124,19 @@
       "settings": {
         "collection": "",
         "products": [
+          "display-sv11b-black-bolt-jap",
+          "display-sv11w-white-flare-jap",
+          "coffret-dragon-boat-festival-cn",
+          "display-gem-pack-2-cn",
+          "coffret-premium-ampibidou-de-mashynn-ex-fr",
+          "coffret-super-premium-ev8-5-evolutions-prismatiques-fr",
           "display-sv10-glory-of-team-rocket-jap",
-          "display-sv7a-paradise-dragona-jap",
-          "display-sv9-battle-partners-jap",
-          "display-terastal-festival-sv8a-jap",
-          "display-151-pokemon-sv2a-jap",
-          "display-sv7-stellar-miracle-jap",
-          "display-sv8-super-electric-breaker-jap",
-          "display-wild-force-sv5k-jap"
+          "etb-ev10-rivalites-destinees-fr"
         ],
         "full_width": true,
         "stack_products": false,
         "show_progress_bar": true,
-        "products_count": 4,
+        "products_count": 8,
         "products_per_row_mobile": "2",
         "products_per_row_desktop": 4,
         "subheading": "",
