@@ -126,12 +126,18 @@
         "products": [
           "display-sv11b-black-bolt-jap",
           "display-sv11w-white-flare-jap",
-          "coffret-dragon-boat-festival-cn",
           "display-gem-pack-2-cn",
           "coffret-premium-ampibidou-de-mashynn-ex-fr",
-          "coffret-super-premium-ev8-5-evolutions-prismatiques-fr",
           "display-sv10-glory-of-team-rocket-jap",
-          "etb-ev10-rivalites-destinees-fr"
+          "booster-sv11b-black-white",
+          "booster-sv11w-black-white",
+          "display-sv11b-deluxe-black-white",
+          "display-sv11w-deluxe-black-white",
+          "display-sv7a-paradise-dragona-jap",
+          "display-sv8-super-electric-breaker-jap",
+          "display-sv9-battle-partners-jap",
+          "display-sv9a-heat-wave-arena-jap",
+          "display-terastal-festival-sv8a-jap"
         ],
         "full_width": true,
         "stack_products": false,
