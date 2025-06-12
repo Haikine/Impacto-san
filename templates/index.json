@@ -124,10 +124,10 @@
       "settings": {
         "collection": "",
         "products": [
-          "display-sv11b-deluxe-black-white",
-          "display-sv11w-deluxe-black-white",
           "display-sv11b-black-bolt-jap",
           "display-sv11w-white-flare-jap",
+          "display-sv11b-deluxe-black-white",
+          "display-sv11w-deluxe-black-white",
           "display-gem-pack-2-cn",
           "coffret-premium-ampibidou-de-mashynn-ex-fr",
           "display-sv10-glory-of-team-rocket-jap",
@@ -233,7 +233,6 @@
         "subheading_jwEFTm",
         "heading_Kemthi"
       ],
-      "name": "Rich text",
       "settings": {
         "full_width": true,
         "content_width": "small",
@@ -336,7 +335,6 @@
     },
     "scrolling_text_kgTrei": {
       "type": "scrolling-text",
-      "name": "Scrolling text",
       "settings": {
         "full_width": true,
         "text": "BEST-SELLER",
