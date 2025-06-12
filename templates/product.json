@@ -209,25 +209,24 @@
     },
     "related_products_iPWA9j": {
       "type": "related-products",
-      "name": "Related products",
       "settings": {
         "recommendations_count": 6,
         "products": [
+          "display-sv11w-white-flare-jap",
+          "display-sv11b-black-bolt-jap",
           "display-sv11b-deluxe-black-white",
           "display-sv11w-deluxe-black-white",
           "booster-sv11b-black-white",
           "booster-sv11w-black-white",
-          "booster-ev3-5-pokemon-151-fr",
-          "display-sv11w-white-flare-jap",
-          "display-sv11b-black-bolt-jap",
           "display-sv10-glory-of-team-rocket-jap",
           "display-gem-pack-2-cn",
+          "booster-ev3-5-pokemon-151-fr",
           "booster-sv9a-heat-wave-arena-jap",
+          "booster-gem-pack-2",
           "booster-sv9-battle-partners-jap",
           "booster-sv8a-terastal-festival-jap",
           "booster-sv8-super-electric-breaker-jap",
-          "booster-sv10-glory-of-team-rocket-jap",
-          "booster-gem-pack-2"
+          "booster-sv10-glory-of-team-rocket-jap"
         ],
         "full_width": true,
         "stack_products": false,
