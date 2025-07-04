@@ -259,6 +259,56 @@
         "product_card_text_color": ""
       }
     },
+    "images_with_text_scrolling_haJCKD": {
+      "type": "images-with-text-scrolling",
+      "blocks": {
+        "item_UnmnDk": {
+          "type": "item",
+          "settings": {
+            "icon": "none",
+            "icon_width": 48,
+            "title": "Des produits Importés du Japon",
+            "content": "<p>L'ensemble de nos produits japonais sont authentiques et proviennent de fournisseurs japonais ayant tous les droits de revente des licences concernées.</p>"
+          }
+        },
+        "item_cwUKJ7": {
+          "type": "item",
+          "settings": {
+            "icon": "none",
+            "icon_width": 48,
+            "title": "Heading",
+            "content": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+          }
+        },
+        "item_HewWD8": {
+          "type": "item",
+          "settings": {
+            "icon": "none",
+            "icon_width": 48,
+            "title": "Envoi rapide en 24/48H",
+            "content": "<p>Toutes nos commandes sont traitées au plus vite. En choisisant Chronopost pour assurer votre livraison, nous sommes capable de vous faire parvenir vos colis en 24/48H seulement !</p>"
+          }
+        }
+      },
+      "block_order": [
+        "item_UnmnDk",
+        "item_cwUKJ7",
+        "item_HewWD8"
+      ],
+      "name": "Nos services",
+      "settings": {
+        "full_width": true,
+        "stack_on_mobile": false,
+        "show_counter": true,
+        "desktop_image_effect": "reveal",
+        "image_position": "end",
+        "background": "",
+        "background_gradient": "",
+        "text_color": "",
+        "heading_color": "",
+        "heading_gradient": ""
+      }
+    },
     "press": {
       "type": "press",
       "blocks": {
@@ -523,46 +573,6 @@
         "accordion_background": "",
         "accordion_text_color": ""
       }
-    },
-    "images_with_text_scrolling_haJCKD": {
-      "type": "images-with-text-scrolling",
-      "blocks": {
-        "item_UnmnDk": {
-          "type": "item",
-          "settings": {
-            "icon": "none",
-            "icon_width": 48,
-            "title": "Des produits Importés du Japon",
-            "content": "<p>L'ensemble de nos produits japonais sont authentiques et proviennent de fournisseurs japonais ayant tous les droits de revente des licences concernées.</p>"
-          }
-        },
-        "item_HewWD8": {
-          "type": "item",
-          "settings": {
-            "icon": "none",
-            "icon_width": 48,
-            "title": "Envoi rapide en 24/48H",
-            "content": "<p>Toutes nos commandes sont traitées au plus vite. En choisisant Chronopost pour assurer votre livraison, nous sommes capable de vous faire parvenir vos colis en 24/48H seulement !</p>"
-          }
-        }
-      },
-      "block_order": [
-        "item_UnmnDk",
-        "item_HewWD8"
-      ],
-      "name": "Nos services",
-      "settings": {
-        "full_width": true,
-        "stack_on_mobile": false,
-        "show_counter": true,
-        "desktop_image_effect": "reveal",
-        "image_position": "end",
-        "background": "",
-        "background_gradient": "",
-        "text_color": "",
-        "heading_color": "",
-        "heading_gradient": ""
-      }
     }
   },
   "order": [
@@ -570,11 +580,11 @@
     "rich_text_9GJYgh",
     "image-link-blocks",
     "featured-collection",
-    "press",
+    "images_with_text_scrolling_haJCKD",
     "scrolling_text_kgTrei",
     "featured-product",
     "impact-text",
     "faq",
-    "images_with_text_scrolling_haJCKD"
+    "press"
   ]
 }
