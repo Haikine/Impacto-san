@@ -15,8 +15,6 @@
         "image_hCh9j3": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/Design_sans_titre_7.png",
-            "mobile_image": "shopify://shop_images/SV11_841dd21d-b038-41fa-9525-eab18a119fa1.png",
             "content_max_width": 800,
             "mobile_text_position": "place-self-center text-center",
             "desktop_text_position": "sm:place-self-center sm:text-center",
@@ -37,8 +35,6 @@
         "image_KiHkNi": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/2.png",
-            "mobile_image": "shopify://shop_images/2_39d0619c-3cc8-4831-9c3f-5c910dae557e.png",
             "content_max_width": 780,
             "mobile_text_position": "place-self-end-center text-center",
             "desktop_text_position": "sm:place-self-center sm:text-center",
@@ -59,8 +55,6 @@
         "image_efEayh": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/PC_jap.png",
-            "mobile_image": "shopify://shop_images/Mobile_jap.png",
             "content_max_width": 500,
             "mobile_text_position": "place-self-end-center text-center",
             "desktop_text_position": "sm:place-self-center sm:text-center",
@@ -81,8 +75,6 @@
         "slide-2": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/3.png",
-            "mobile_image": "shopify://shop_images/3_78d8c68a-d81e-4fdc-8a43-322e1820f052.png",
             "content_max_width": 780,
             "mobile_text_position": "place-self-end-center text-center",
             "desktop_text_position": "sm:place-self-center sm:text-center",
@@ -119,25 +111,133 @@
         "background_gradient": "linear-gradient(60deg, rgba(60, 65, 68, 1), rgba(23, 29, 33, 1) 98%)"
       }
     },
+    "rich_text_9GJYgh": {
+      "type": "rich-text",
+      "blocks": {
+        "subheading_jwEFTm": {
+          "type": "subheading",
+          "settings": {
+            "text": ""
+          }
+        },
+        "heading_Kemthi": {
+          "type": "heading",
+          "settings": {
+            "text": "NOS CATÉGORIES",
+            "heading_tag": "h2",
+            "text_color": "",
+            "gradient": ""
+          }
+        }
+      },
+      "block_order": [
+        "subheading_jwEFTm",
+        "heading_Kemthi"
+      ],
+      "settings": {
+        "full_width": true,
+        "content_width": "small",
+        "text_position": "center",
+        "background": "",
+        "background_gradient": "",
+        "text_color": ""
+      }
+    },
+    "image-link-blocks": {
+      "type": "image-link-blocks",
+      "blocks": {
+        "1664424046b00c932c-0": {
+          "type": "item",
+          "settings": {
+            "stretch_image": false,
+            "link_text": "POKEMON JAPONAIS",
+            "link_url": "shopify://collections/japonais",
+            "background": "#ffffff",
+            "text_color": "#000000",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          }
+        },
+        "1664424046b00c932c-1": {
+          "type": "item",
+          "settings": {
+            "stretch_image": false,
+            "link_text": "POKEMON FRANCAIS",
+            "link_url": "shopify://collections/pokemon-francais",
+            "background": "#ffffff",
+            "text_color": "#000000",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          }
+        },
+        "1664424046b00c932c-2": {
+          "type": "item",
+          "settings": {
+            "stretch_image": false,
+            "link_text": "POKEMON CHINOIS",
+            "link_url": "shopify://collections/pokemon-chinois",
+            "background": "#ffffff",
+            "text_color": "#000000",
+            "overlay_color": "#e9f6f9",
+            "overlay_opacity": 0
+          }
+        },
+        "1664424046b00c932c-3": {
+          "type": "item",
+          "settings": {
+            "stretch_image": false,
+            "link_text": "POKEMON BOOSTERS",
+            "link_url": "shopify://collections/booster-sortis-de-display",
+            "background": "#ffffff",
+            "text_color": "#000000",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          }
+        },
+        "e4a0ef18-1856-4ddd-83d8-871a60d7acac": {
+          "type": "item",
+          "settings": {
+            "stretch_image": false,
+            "link_text": "ACCESSOIRES & PROTECTIONS",
+            "link_url": "shopify://collections/protections-accessoires",
+            "background": "#ffffff",
+            "text_color": "#000000",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          }
+        }
+      },
+      "block_order": [
+        "1664424046b00c932c-0",
+        "1664424046b00c932c-1",
+        "1664424046b00c932c-2",
+        "1664424046b00c932c-3",
+        "e4a0ef18-1856-4ddd-83d8-871a60d7acac"
+      ],
+      "settings": {
+        "full_width": false,
+        "block_size": "large",
+        "subheading": "",
+        "title": "",
+        "content": "",
+        "link_url": "",
+        "link_text": "",
+        "background": "",
+        "background_gradient": "",
+        "text_color": "",
+        "heading_color": "",
+        "heading_gradient": ""
+      }
+    },
     "featured-collection": {
       "type": "featured-collection",
       "settings": {
         "collection": "",
         "products": [
-          "display-sv11b-black-bolt-jap",
-          "display-sv11w-white-flare-jap",
-          "display-sv11b-deluxe-black-white",
-          "display-sv11w-deluxe-black-white",
-          "display-gem-pack-2-cn",
-          "coffret-premium-ampibidou-de-mashynn-ex-fr",
-          "display-sv10-glory-of-team-rocket-jap",
-          "booster-sv11b-black-white",
-          "booster-sv11w-black-white",
-          "display-sv7a-paradise-dragona-jap",
-          "display-sv8-super-electric-breaker-jap",
-          "display-sv9-battle-partners-jap",
-          "display-sv9a-heat-wave-arena-jap",
-          "display-terastal-festival-sv8a-jap"
+          "display-deluxe-sv11b-black-bolt-pokemon-japonais",
+          "display-deluxe-sv11w-white-flare-pokemon-japonais",
+          "display-sv11b-black-bolt-pokemon-japonais",
+          "display-sv11w-white-flare-pokemon-japonais"
         ],
         "full_width": true,
         "stack_products": false,
@@ -167,7 +267,7 @@
           "settings": {
             "logo_width": 100,
             "author": "Julien Dumont",
-            "content": "Je n’ai jamais été déçu de mes commandes chez Pokeseller14.",
+            "content": "Je n’ai jamais été déçu de mes commandes chez Sugoi TCG !",
             "show_rating": true,
             "rating": 5
           }
@@ -210,129 +310,6 @@
         "logo_item_border": ""
       }
     },
-    "rich_text_9GJYgh": {
-      "type": "rich-text",
-      "blocks": {
-        "subheading_jwEFTm": {
-          "type": "subheading",
-          "settings": {
-            "text": ""
-          }
-        },
-        "heading_Kemthi": {
-          "type": "heading",
-          "settings": {
-            "text": "NOS CATÉGORIES",
-            "heading_tag": "h2",
-            "text_color": "",
-            "gradient": ""
-          }
-        }
-      },
-      "block_order": [
-        "subheading_jwEFTm",
-        "heading_Kemthi"
-      ],
-      "settings": {
-        "full_width": true,
-        "content_width": "small",
-        "text_position": "center",
-        "background": "",
-        "background_gradient": "",
-        "text_color": ""
-      }
-    },
-    "image-link-blocks": {
-      "type": "image-link-blocks",
-      "blocks": {
-        "1664424046b00c932c-0": {
-          "type": "item",
-          "settings": {
-            "image": "shopify://shop_images/1_cd72721d-28fb-46cb-9f85-8b9205bf5013.png",
-            "stretch_image": false,
-            "link_text": "POKEMON JAPONAIS",
-            "link_url": "shopify://collections/japonais",
-            "background": "#ffffff",
-            "text_color": "#000000",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0
-          }
-        },
-        "1664424046b00c932c-1": {
-          "type": "item",
-          "settings": {
-            "image": "shopify://shop_images/3_6960f2f6-cfb0-4247-bb9e-bfe45d77c497.png",
-            "stretch_image": false,
-            "link_text": "POKEMON FRANCAIS",
-            "link_url": "shopify://collections/pokemon-francais",
-            "background": "#ffffff",
-            "text_color": "#000000",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0
-          }
-        },
-        "1664424046b00c932c-2": {
-          "type": "item",
-          "settings": {
-            "image": "shopify://shop_images/2_20e71674-5a3e-4430-a712-006b996cdbbb.png",
-            "stretch_image": false,
-            "link_text": "POKEMON CHINOIS",
-            "link_url": "shopify://collections/pokemon-chinois",
-            "background": "#ffffff",
-            "text_color": "#000000",
-            "overlay_color": "#e9f6f9",
-            "overlay_opacity": 0
-          }
-        },
-        "1664424046b00c932c-3": {
-          "type": "item",
-          "settings": {
-            "image": "shopify://shop_images/5.png",
-            "stretch_image": false,
-            "link_text": "POKEMON BOOSTERS",
-            "link_url": "shopify://collections/booster-sortis-de-display",
-            "background": "#ffffff",
-            "text_color": "#000000",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0
-          }
-        },
-        "e4a0ef18-1856-4ddd-83d8-871a60d7acac": {
-          "type": "item",
-          "settings": {
-            "image": "shopify://shop_images/4.png",
-            "stretch_image": false,
-            "link_text": "ACCESSOIRES & PROTECTIONS",
-            "link_url": "shopify://collections/protections-accessoires",
-            "background": "#ffffff",
-            "text_color": "#000000",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0
-          }
-        }
-      },
-      "block_order": [
-        "1664424046b00c932c-0",
-        "1664424046b00c932c-1",
-        "1664424046b00c932c-2",
-        "1664424046b00c932c-3",
-        "e4a0ef18-1856-4ddd-83d8-871a60d7acac"
-      ],
-      "settings": {
-        "full_width": false,
-        "block_size": "large",
-        "subheading": "",
-        "title": "",
-        "content": "",
-        "link_url": "",
-        "link_text": "",
-        "background": "",
-        "background_gradient": "",
-        "text_color": "",
-        "heading_color": "",
-        "heading_gradient": ""
-      }
-    },
     "scrolling_text_kgTrei": {
       "type": "scrolling-text",
       "settings": {
@@ -355,36 +332,6 @@
           "type": "title",
           "settings": {
             "heading_tag": "h2"
-          }
-        },
-        "buy_box_inventory_bar_FT6W9T": {
-          "type": "shopify://apps/buy-box/blocks/inventory-bar/17b7c6ef-0c82-4743-acf4-050c34e5b233",
-          "settings": {
-            "a": false,
-            "m": 5,
-            "mi": 100,
-            "s2": false,
-            "s": true,
-            "l": 25,
-            "c": 10,
-            "z": "<strong>%IC%</strong> in stock - delivery in <strong>1-2</strong> days",
-            "y": "<strong>%IC%</strong> left in stock - Only a few left!",
-            "x": "<strong>%IC%</strong> left in stock - Nearly sold out!",
-            "d": "#00bf4d",
-            "i": "#00bf4d",
-            "e": "#ffa500",
-            "n": "#ffa500",
-            "j": "#b40c1c",
-            "o": "#b40c1c",
-            "r": "rgba(0,0,0,0)",
-            "k": "#e6e6e6",
-            "f": 14,
-            "h": 8,
-            "u": 5,
-            "g": "center",
-            "t": 0,
-            "b": 0,
-            "w": "44rem"
           }
         },
         "badges": {
@@ -435,7 +382,6 @@
       },
       "block_order": [
         "title",
-        "buy_box_inventory_bar_FT6W9T",
         "badges",
         "price",
         "rating",
@@ -577,17 +523,58 @@
         "accordion_background": "",
         "accordion_text_color": ""
       }
+    },
+    "images_with_text_scrolling_haJCKD": {
+      "type": "images-with-text-scrolling",
+      "blocks": {
+        "item_UnmnDk": {
+          "type": "item",
+          "settings": {
+            "icon": "none",
+            "icon_width": 48,
+            "title": "Des produits Importés du Japon",
+            "content": "<p>L'ensemble de nos produits japonais sont authentiques et proviennent de fournisseurs japonais ayant tous les droits de revente des licences concernées.</p>"
+          }
+        },
+        "item_HewWD8": {
+          "type": "item",
+          "settings": {
+            "icon": "none",
+            "icon_width": 48,
+            "title": "Envoi rapide en 24/48H",
+            "content": "<p>Toutes nos commandes sont traitées au plus vite. En choisisant Chronopost pour assurer votre livraison, nous sommes capable de vous faire parvenir vos colis en 24/48H seulement !</p>"
+          }
+        }
+      },
+      "block_order": [
+        "item_UnmnDk",
+        "item_HewWD8"
+      ],
+      "name": "Nos services",
+      "settings": {
+        "full_width": true,
+        "stack_on_mobile": false,
+        "show_counter": true,
+        "desktop_image_effect": "reveal",
+        "image_position": "end",
+        "background": "",
+        "background_gradient": "",
+        "text_color": "",
+        "heading_color": "",
+        "heading_gradient": ""
+      }
     }
   },
   "order": [
     "slideshow",
-    "featured-collection",
-    "press",
     "rich_text_9GJYgh",
     "image-link-blocks",
+    "featured-collection",
+    "press",
     "scrolling_text_kgTrei",
     "featured-product",
     "impact-text",
-    "faq"
+    "faq",
+    "images_with_text_scrolling_haJCKD"
   ]
 }
