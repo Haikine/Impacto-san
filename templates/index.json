@@ -119,129 +119,6 @@
         "background_gradient": "linear-gradient(60deg, rgba(60, 65, 68, 1), rgba(23, 29, 33, 1) 98%)"
       }
     },
-    "image-link-blocks": {
-      "type": "image-link-blocks",
-      "blocks": {
-        "1664424046b00c932c-0": {
-          "type": "item",
-          "settings": {
-            "image": "shopify://shop_images/1_cd72721d-28fb-46cb-9f85-8b9205bf5013.png",
-            "stretch_image": false,
-            "link_text": "POKEMON JAPONAIS",
-            "link_url": "shopify://collections/japonais",
-            "background": "#ffffff",
-            "text_color": "#000000",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0
-          }
-        },
-        "1664424046b00c932c-1": {
-          "type": "item",
-          "settings": {
-            "image": "shopify://shop_images/3_6960f2f6-cfb0-4247-bb9e-bfe45d77c497.png",
-            "stretch_image": false,
-            "link_text": "POKEMON FRANCAIS",
-            "link_url": "shopify://collections/pokemon-francais",
-            "background": "#ffffff",
-            "text_color": "#000000",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0
-          }
-        },
-        "1664424046b00c932c-2": {
-          "type": "item",
-          "settings": {
-            "image": "shopify://shop_images/2_20e71674-5a3e-4430-a712-006b996cdbbb.png",
-            "stretch_image": false,
-            "link_text": "POKEMON CHINOIS",
-            "link_url": "shopify://collections/pokemon-chinois",
-            "background": "#ffffff",
-            "text_color": "#000000",
-            "overlay_color": "#e9f6f9",
-            "overlay_opacity": 0
-          }
-        },
-        "1664424046b00c932c-3": {
-          "type": "item",
-          "settings": {
-            "image": "shopify://shop_images/5.png",
-            "stretch_image": false,
-            "link_text": "POKEMON BOOSTERS",
-            "link_url": "shopify://collections/booster-sortis-de-display",
-            "background": "#ffffff",
-            "text_color": "#000000",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0
-          }
-        },
-        "e4a0ef18-1856-4ddd-83d8-871a60d7acac": {
-          "type": "item",
-          "settings": {
-            "image": "shopify://shop_images/4.png",
-            "stretch_image": false,
-            "link_text": "ACCESSOIRES & PROTECTIONS",
-            "link_url": "shopify://collections/protections-accessoires",
-            "background": "#ffffff",
-            "text_color": "#000000",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0
-          }
-        }
-      },
-      "block_order": [
-        "1664424046b00c932c-0",
-        "1664424046b00c932c-1",
-        "1664424046b00c932c-2",
-        "1664424046b00c932c-3",
-        "e4a0ef18-1856-4ddd-83d8-871a60d7acac"
-      ],
-      "settings": {
-        "full_width": false,
-        "block_size": "large",
-        "subheading": "",
-        "title": "",
-        "content": "",
-        "link_url": "",
-        "link_text": "",
-        "background": "",
-        "background_gradient": "",
-        "text_color": "",
-        "heading_color": "",
-        "heading_gradient": ""
-      }
-    },
-    "rich_text_9GJYgh": {
-      "type": "rich-text",
-      "blocks": {
-        "subheading_jwEFTm": {
-          "type": "subheading",
-          "settings": {
-            "text": ""
-          }
-        },
-        "heading_Kemthi": {
-          "type": "heading",
-          "settings": {
-            "text": "NOS CATÉGORIES",
-            "heading_tag": "h2",
-            "text_color": "",
-            "gradient": ""
-          }
-        }
-      },
-      "block_order": [
-        "subheading_jwEFTm",
-        "heading_Kemthi"
-      ],
-      "settings": {
-        "full_width": true,
-        "content_width": "small",
-        "text_position": "center",
-        "background": "",
-        "background_gradient": "",
-        "text_color": ""
-      }
-    },
     "featured-collection": {
       "type": "featured-collection",
       "settings": {
@@ -280,6 +157,89 @@
         "heading_gradient": "",
         "product_card_background": "",
         "product_card_text_color": ""
+      }
+    },
+    "press": {
+      "type": "press",
+      "blocks": {
+        "quote_zgwNxH": {
+          "type": "quote",
+          "settings": {
+            "logo_width": 100,
+            "author": "Julien Dumont",
+            "content": "Je n’ai jamais été déçu de mes commandes chez Pokeseller14 !",
+            "show_rating": true,
+            "rating": 5
+          }
+        },
+        "16644243327ba53d2a-0": {
+          "type": "quote",
+          "settings": {
+            "logo_width": 100,
+            "author": "Muller.",
+            "content": "Au top, meilleur prix du marché",
+            "show_rating": true,
+            "rating": 5
+          }
+        },
+        "16644243327ba53d2a-1": {
+          "type": "quote",
+          "settings": {
+            "logo_width": 100,
+            "author": "Florian Philoreau.",
+            "content": "Qualité au top, envoi au top 👌🏻",
+            "show_rating": true,
+            "rating": 5
+          }
+        }
+      },
+      "block_order": [
+        "quote_zgwNxH",
+        "16644243327ba53d2a-0",
+        "16644243327ba53d2a-1"
+      ],
+      "settings": {
+        "full_width": true,
+        "content_size": "medium",
+        "background": "",
+        "background_gradient": "",
+        "text_color": "",
+        "heading_color": "",
+        "heading_gradient": "",
+        "logo_item_background": "",
+        "logo_item_border": ""
+      }
+    },
+    "rich_text_9GJYgh": {
+      "type": "rich-text",
+      "blocks": {
+        "subheading_jwEFTm": {
+          "type": "subheading",
+          "settings": {
+            "text": ""
+          }
+        },
+        "heading_Kemthi": {
+          "type": "heading",
+          "settings": {
+            "text": "NOS CATÉGORIES",
+            "heading_tag": "h2",
+            "text_color": "",
+            "gradient": ""
+          }
+        }
+      },
+      "block_order": [
+        "subheading_jwEFTm",
+        "heading_Kemthi"
+      ],
+      "settings": {
+        "full_width": true,
+        "content_width": "small",
+        "text_position": "center",
+        "background": "",
+        "background_gradient": "",
+        "text_color": ""
       }
     },
     "scrolling_text_kgTrei": {
@@ -378,6 +338,97 @@
         "text_color": "",
         "input_background": "rgba(0,0,0,0)",
         "input_text_color": ""
+      }
+    },
+    "image-link-blocks": {
+      "type": "image-link-blocks",
+      "blocks": {
+        "1664424046b00c932c-0": {
+          "type": "item",
+          "settings": {
+            "image": "shopify://shop_images/1_cd72721d-28fb-46cb-9f85-8b9205bf5013.png",
+            "stretch_image": false,
+            "link_text": "POKEMON JAPONAIS",
+            "link_url": "shopify://collections/japonais",
+            "background": "#ffffff",
+            "text_color": "#000000",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          }
+        },
+        "1664424046b00c932c-1": {
+          "type": "item",
+          "settings": {
+            "image": "shopify://shop_images/3_6960f2f6-cfb0-4247-bb9e-bfe45d77c497.png",
+            "stretch_image": false,
+            "link_text": "POKEMON FRANCAIS",
+            "link_url": "shopify://collections/pokemon-francais",
+            "background": "#ffffff",
+            "text_color": "#000000",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          }
+        },
+        "1664424046b00c932c-2": {
+          "type": "item",
+          "settings": {
+            "image": "shopify://shop_images/2_20e71674-5a3e-4430-a712-006b996cdbbb.png",
+            "stretch_image": false,
+            "link_text": "POKEMON CHINOIS",
+            "link_url": "shopify://collections/pokemon-chinois",
+            "background": "#ffffff",
+            "text_color": "#000000",
+            "overlay_color": "#e9f6f9",
+            "overlay_opacity": 0
+          }
+        },
+        "1664424046b00c932c-3": {
+          "type": "item",
+          "settings": {
+            "image": "shopify://shop_images/5.png",
+            "stretch_image": false,
+            "link_text": "POKEMON BOOSTERS",
+            "link_url": "shopify://collections/booster-sortis-de-display",
+            "background": "#ffffff",
+            "text_color": "#000000",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          }
+        },
+        "e4a0ef18-1856-4ddd-83d8-871a60d7acac": {
+          "type": "item",
+          "settings": {
+            "image": "shopify://shop_images/4.png",
+            "stretch_image": false,
+            "link_text": "ACCESSOIRES & PROTECTIONS",
+            "link_url": "shopify://collections/protections-accessoires",
+            "background": "#ffffff",
+            "text_color": "#000000",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          }
+        }
+      },
+      "block_order": [
+        "1664424046b00c932c-0",
+        "1664424046b00c932c-1",
+        "1664424046b00c932c-2",
+        "1664424046b00c932c-3",
+        "e4a0ef18-1856-4ddd-83d8-871a60d7acac"
+      ],
+      "settings": {
+        "full_width": false,
+        "block_size": "large",
+        "subheading": "",
+        "title": "",
+        "content": "",
+        "link_url": "",
+        "link_text": "",
+        "background": "",
+        "background_gradient": "",
+        "text_color": "",
+        "heading_color": "",
+        "heading_gradient": ""
       }
     },
     "impact-text": {
@@ -495,66 +546,15 @@
         "accordion_background": "",
         "accordion_text_color": ""
       }
-    },
-    "press": {
-      "type": "press",
-      "blocks": {
-        "quote_zgwNxH": {
-          "type": "quote",
-          "settings": {
-            "logo_width": 100,
-            "author": "Julien Dumont",
-            "content": "Je n’ai jamais été déçu de mes commandes chez Pokeseller14 !",
-            "show_rating": true,
-            "rating": 5
-          }
-        },
-        "16644243327ba53d2a-0": {
-          "type": "quote",
-          "settings": {
-            "logo_width": 100,
-            "author": "Muller.",
-            "content": "Au top, meilleur prix du marché",
-            "show_rating": true,
-            "rating": 5
-          }
-        },
-        "16644243327ba53d2a-1": {
-          "type": "quote",
-          "settings": {
-            "logo_width": 100,
-            "author": "Florian Philoreau.",
-            "content": "Qualité au top, envoi au top 👌🏻",
-            "show_rating": true,
-            "rating": 5
-          }
-        }
-      },
-      "block_order": [
-        "quote_zgwNxH",
-        "16644243327ba53d2a-0",
-        "16644243327ba53d2a-1"
-      ],
-      "settings": {
-        "full_width": true,
-        "content_size": "medium",
-        "background": "",
-        "background_gradient": "",
-        "text_color": "",
-        "heading_color": "",
-        "heading_gradient": "",
-        "logo_item_background": "",
-        "logo_item_border": ""
-      }
     }
   },
   "order": [
     "slideshow",
     "featured-collection",
     "press",
+    "rich_text_9GJYgh",
     "scrolling_text_kgTrei",
     "featured-product",
-    "rich_text_9GJYgh",
     "image-link-blocks",
     "impact-text",
     "faq"
