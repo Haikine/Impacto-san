@@ -119,38 +119,6 @@
         "background_gradient": "linear-gradient(60deg, rgba(60, 65, 68, 1), rgba(23, 29, 33, 1) 98%)"
       }
     },
-    "rich_text_9GJYgh": {
-      "type": "rich-text",
-      "blocks": {
-        "subheading_jwEFTm": {
-          "type": "subheading",
-          "settings": {
-            "text": ""
-          }
-        },
-        "heading_Kemthi": {
-          "type": "heading",
-          "settings": {
-            "text": "NOS CATÉGORIES",
-            "heading_tag": "h2",
-            "text_color": "",
-            "gradient": ""
-          }
-        }
-      },
-      "block_order": [
-        "subheading_jwEFTm",
-        "heading_Kemthi"
-      ],
-      "settings": {
-        "full_width": true,
-        "content_width": "small",
-        "text_position": "center",
-        "background": "",
-        "background_gradient": "",
-        "text_color": ""
-      }
-    },
     "image-link-blocks": {
       "type": "image-link-blocks",
       "blocks": {
@@ -240,6 +208,38 @@
         "text_color": "",
         "heading_color": "",
         "heading_gradient": ""
+      }
+    },
+    "rich_text_9GJYgh": {
+      "type": "rich-text",
+      "blocks": {
+        "subheading_jwEFTm": {
+          "type": "subheading",
+          "settings": {
+            "text": ""
+          }
+        },
+        "heading_Kemthi": {
+          "type": "heading",
+          "settings": {
+            "text": "NOS CATÉGORIES",
+            "heading_tag": "h2",
+            "text_color": "",
+            "gradient": ""
+          }
+        }
+      },
+      "block_order": [
+        "subheading_jwEFTm",
+        "heading_Kemthi"
+      ],
+      "settings": {
+        "full_width": true,
+        "content_width": "small",
+        "text_position": "center",
+        "background": "",
+        "background_gradient": "",
+        "text_color": ""
       }
     },
     "featured-collection": {
@@ -550,13 +550,13 @@
   },
   "order": [
     "slideshow",
-    "rich_text_9GJYgh",
-    "image-link-blocks",
     "featured-collection",
+    "press",
     "scrolling_text_kgTrei",
     "featured-product",
+    "rich_text_9GJYgh",
+    "image-link-blocks",
     "impact-text",
-    "faq",
-    "press"
+    "faq"
   ]
 }
