@@ -209,6 +209,7 @@
         "e4a0ef18-1856-4ddd-83d8-871a60d7acac": {
           "type": "item",
           "settings": {
+            "image": "shopify://shop_images/4.png",
             "stretch_image": false,
             "link_text": "ACCESSOIRES & PROTECTIONS",
             "link_url": "shopify://collections/protections-accessoires",
