@@ -17,8 +17,8 @@
           "settings": {
             "image": "shopify://shop_images/Collect_151_Vol._3_98aae581-95b3-4ec6-b2c1-8ba38db36231.png",
             "mobile_image": "shopify://shop_images/Collect_151_Vol._3_1c503253-c3d1-4b86-8b51-cef895618ea5.png",
-            "content_max_width": 800,
-            "mobile_text_position": "place-self-center text-center",
+            "content_max_width": 860,
+            "mobile_text_position": "place-self-end-center text-center",
             "desktop_text_position": "sm:place-self-center sm:text-center",
             "subheading": "",
             "title": "",
