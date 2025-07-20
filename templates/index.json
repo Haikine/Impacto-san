@@ -26,7 +26,7 @@
             "button_text": "Disponible prochainement !",
             "button_link": "shopify://collections/pokemon-chinois",
             "text_color": "#1a1a1a",
-            "button_background": "#ffffff",
+            "button_background": "rgba(0,0,0,0)",
             "button_text_color": "#1a1a1a",
             "overlay_color": "#000000",
             "overlay_opacity": 0,
