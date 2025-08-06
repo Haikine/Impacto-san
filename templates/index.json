@@ -196,7 +196,7 @@
         "heading_Kemthi": {
           "type": "heading",
           "settings": {
-            "text": "NOS CATÉGORIES",
+            "text": "NOS TCG JAPONAIS",
             "heading_tag": "h2",
             "text_color": "",
             "gradient": ""
@@ -257,38 +257,12 @@
             "overlay_color": "#e9f6f9",
             "overlay_opacity": 0
           }
-        },
-        "1664424046b00c932c-3": {
-          "type": "item",
-          "settings": {
-            "stretch_image": false,
-            "link_text": "POKEMON BOOSTERS",
-            "link_url": "shopify://collections/booster-sortis-de-display",
-            "background": "#ffffff",
-            "text_color": "#000000",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0
-          }
-        },
-        "e4a0ef18-1856-4ddd-83d8-871a60d7acac": {
-          "type": "item",
-          "settings": {
-            "stretch_image": false,
-            "link_text": "ACCESSOIRES & PROTECTIONS",
-            "link_url": "shopify://collections/protections-accessoires",
-            "background": "#ffffff",
-            "text_color": "#000000",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0
-          }
         }
       },
       "block_order": [
         "1664424046b00c932c-0",
         "1664424046b00c932c-1",
-        "1664424046b00c932c-2",
-        "1664424046b00c932c-3",
-        "e4a0ef18-1856-4ddd-83d8-871a60d7acac"
+        "1664424046b00c932c-2"
       ],
       "settings": {
         "full_width": false,
