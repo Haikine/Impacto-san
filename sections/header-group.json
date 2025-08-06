@@ -17,7 +17,7 @@
         "message": {
           "type": "message",
           "settings": {
-            "text": "BOOSTER OFFERT TOUS LES 80€ D'ACHAT🎁",
+            "text": "BOOSTER OFFERT TOUS LES 90€ D'ACHAT🎁",
             "url": "https://www.tiktok.com/@pokeseller14"
           }
         },
@@ -48,7 +48,6 @@
       "settings": {
         "enable_sticky": false,
         "hide_on_scroll": true,
-        "logo": "shopify://shop_images/11dc2150-4cc2-439c-a669-bbaaf8956ce4-removebg-preview.png",
         "logo_max_width": 180,
         "logo_mobile_max_width": 145,
         "menu": "main-menu",
@@ -63,7 +62,6 @@
         "show_country_flag": true,
         "show_country_name": false,
         "transparent_header_text_color": "#f7f9f9",
-        "transparent_logo": "shopify://shop_images/11dc2150-4cc2-439c-a669-bbaaf8956ce4-removebg-preview.png",
         "reduce_padding": true,
         "background_opacity": 100,
         "background_blur_radius": 12
