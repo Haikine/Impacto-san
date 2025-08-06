@@ -96,43 +96,6 @@
         "background_gradient": "linear-gradient(60deg, rgba(60, 65, 68, 1), rgba(23, 29, 33, 1) 98%)"
       }
     },
-    "featured-collection": {
-      "type": "featured-collection",
-      "settings": {
-        "collection": "",
-        "products": [
-          "display-m1l-mega-brave-pokemon-japonais",
-          "display-m1s-mega-symphonia-pokemon-japonais",
-          "coffret-mega-premium-trainer-box-pokemon-japonais",
-          "display-deluxe-sv11b-black-bolt-pokemon-japonais",
-          "display-deluxe-sv11w-white-flare-pokemon-japonais",
-          "display-sv11b-black-bolt-pokemon-japonais",
-          "display-sv11w-white-flare-pokemon-japonais",
-          "display-sv10-glory-of-the-team-rocket-japonais",
-          "display-obsidian-flames-sv3-japonais",
-          "display-sv2a-pokemon-151-japonais",
-          "display-sv9a-hot-wind-arena-japonais"
-        ],
-        "full_width": true,
-        "stack_products": false,
-        "show_progress_bar": true,
-        "products_count": 8,
-        "products_per_row_mobile": "2",
-        "products_per_row_desktop": 4,
-        "subheading": "",
-        "title": "NOUVEAUTÉS",
-        "content": "",
-        "link_url": "shopify://collections/japonais",
-        "link_text": "Voir tout",
-        "background": "",
-        "background_gradient": "",
-        "text_color": "",
-        "heading_color": "",
-        "heading_gradient": "",
-        "product_card_background": "",
-        "product_card_text_color": ""
-      }
-    },
     "press": {
       "type": "press",
       "blocks": {
@@ -184,6 +147,43 @@
         "logo_item_border": ""
       }
     },
+    "featured-collection": {
+      "type": "featured-collection",
+      "settings": {
+        "collection": "",
+        "products": [
+          "display-m1l-mega-brave-pokemon-japonais",
+          "display-m1s-mega-symphonia-pokemon-japonais",
+          "coffret-mega-premium-trainer-box-pokemon-japonais",
+          "display-deluxe-sv11b-black-bolt-pokemon-japonais",
+          "display-deluxe-sv11w-white-flare-pokemon-japonais",
+          "display-sv11b-black-bolt-pokemon-japonais",
+          "display-sv11w-white-flare-pokemon-japonais",
+          "display-sv10-glory-of-the-team-rocket-japonais",
+          "display-obsidian-flames-sv3-japonais",
+          "display-sv2a-pokemon-151-japonais",
+          "display-sv9a-hot-wind-arena-japonais"
+        ],
+        "full_width": true,
+        "stack_products": false,
+        "show_progress_bar": true,
+        "products_count": 8,
+        "products_per_row_mobile": "2",
+        "products_per_row_desktop": 4,
+        "subheading": "",
+        "title": "NOUVEAUTÉS",
+        "content": "",
+        "link_url": "shopify://collections/japonais",
+        "link_text": "Voir tout",
+        "background": "",
+        "background_gradient": "",
+        "text_color": "",
+        "heading_color": "",
+        "heading_gradient": "",
+        "product_card_background": "",
+        "product_card_text_color": ""
+      }
+    },
     "rich_text_9GJYgh": {
       "type": "rich-text",
       "blocks": {
@@ -222,6 +222,7 @@
         "1664424046b00c932c-0": {
           "type": "item",
           "settings": {
+            "image": "shopify://shop_images/Design_sans_titre.png",
             "stretch_image": false,
             "link_text": "POKEMON JAPONAIS",
             "link_url": "shopify://collections/japonais",
@@ -234,9 +235,10 @@
         "1664424046b00c932c-1": {
           "type": "item",
           "settings": {
+            "image": "shopify://shop_images/Design_sans_titre_1.png",
             "stretch_image": false,
-            "link_text": "POKEMON FRANCAIS",
-            "link_url": "shopify://collections/pokemon-francais",
+            "link_text": "ONE PIECE TCG",
+            "link_url": "shopify://collections/one-piece",
             "background": "#ffffff",
             "text_color": "#000000",
             "overlay_color": "#000000",
