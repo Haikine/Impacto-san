@@ -15,8 +15,8 @@
         "image_hCh9j3": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/b3a1e894-b860-4cf1-96bd-144996faba09.jpg",
-            "mobile_image": "shopify://shop_images/b3a1e894-b860-4cf1-96bd-144996faba09.jpg",
+            "image": "shopify://shop_images/M1L_M1S.png",
+            "mobile_image": "shopify://shop_images/M1L_M1S.png",
             "content_max_width": 860,
             "mobile_text_position": "place-self-end-center text-center",
             "desktop_text_position": "sm:place-self-center sm:text-center",
@@ -24,7 +24,7 @@
             "title": "",
             "heading_tag": "h2",
             "button_text": "Disponible dès maintenant !",
-            "button_link": "shopify://collections/japonais",
+            "button_link": "shopify://collections/pokemon-japonais",
             "text_color": "#1a1a1a",
             "button_background": "#ffffff",
             "button_text_color": "#1a1a1a",
@@ -37,8 +37,8 @@
         "image_KiHkNi": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/2.png",
-            "mobile_image": "shopify://shop_images/2_39d0619c-3cc8-4831-9c3f-5c910dae557e.png",
+            "image": "shopify://shop_images/Banniere_B_W.png",
+            "mobile_image": "shopify://shop_images/Banniere_B_W.png",
             "content_max_width": 780,
             "mobile_text_position": "place-self-end-center text-center",
             "desktop_text_position": "sm:place-self-center sm:text-center",
@@ -46,7 +46,7 @@
             "title": "",
             "heading_tag": "h0",
             "button_text": "Découvrez nos produits",
-            "button_link": "shopify://collections/pokemon-francais",
+            "button_link": "shopify://collections/pokemon-japonais",
             "text_color": "#1a1a1a",
             "button_background": "#ffffff",
             "button_text_color": "#000000",
@@ -59,8 +59,6 @@
         "image_efEayh": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/1.png",
-            "mobile_image": "shopify://shop_images/Mobile_jap.png",
             "content_max_width": 500,
             "mobile_text_position": "place-self-end-center text-center",
             "desktop_text_position": "sm:place-self-center sm:text-center",
@@ -81,8 +79,6 @@
         "slide-2": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/3.png",
-            "mobile_image": "shopify://shop_images/3_78d8c68a-d81e-4fdc-8a43-322e1820f052.png",
             "content_max_width": 780,
             "mobile_text_position": "place-self-end-center text-center",
             "desktop_text_position": "sm:place-self-center sm:text-center",
@@ -247,7 +243,6 @@
         "1664424046b00c932c-0": {
           "type": "item",
           "settings": {
-            "image": "shopify://shop_images/1_cd72721d-28fb-46cb-9f85-8b9205bf5013.png",
             "stretch_image": false,
             "link_text": "POKEMON JAPONAIS",
             "link_url": "shopify://collections/japonais",
@@ -260,7 +255,6 @@
         "1664424046b00c932c-1": {
           "type": "item",
           "settings": {
-            "image": "shopify://shop_images/3_6960f2f6-cfb0-4247-bb9e-bfe45d77c497.png",
             "stretch_image": false,
             "link_text": "POKEMON FRANCAIS",
             "link_url": "shopify://collections/pokemon-francais",
@@ -273,7 +267,6 @@
         "1664424046b00c932c-2": {
           "type": "item",
           "settings": {
-            "image": "shopify://shop_images/2_20e71674-5a3e-4430-a712-006b996cdbbb.png",
             "stretch_image": false,
             "link_text": "POKEMON CHINOIS",
             "link_url": "shopify://collections/pokemon-chinois",
@@ -286,7 +279,6 @@
         "1664424046b00c932c-3": {
           "type": "item",
           "settings": {
-            "image": "shopify://shop_images/5.png",
             "stretch_image": false,
             "link_text": "POKEMON BOOSTERS",
             "link_url": "shopify://collections/booster-sortis-de-display",
@@ -299,7 +291,6 @@
         "e4a0ef18-1856-4ddd-83d8-871a60d7acac": {
           "type": "item",
           "settings": {
-            "image": "shopify://shop_images/4.png",
             "stretch_image": false,
             "link_text": "ACCESSOIRES & PROTECTIONS",
             "link_url": "shopify://collections/protections-accessoires",
