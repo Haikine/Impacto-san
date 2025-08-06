@@ -237,7 +237,7 @@
           "settings": {
             "image": "shopify://shop_images/Design_sans_titre_1.png",
             "stretch_image": false,
-            "link_text": "ONE PIECE TCG",
+            "link_text": "ONE PIECE JAPONAIS",
             "link_url": "shopify://collections/one-piece",
             "background": "#ffffff",
             "text_color": "#000000",
@@ -248,8 +248,9 @@
         "1664424046b00c932c-2": {
           "type": "item",
           "settings": {
+            "image": "shopify://shop_images/Cartes_a_l_unite_2.png",
             "stretch_image": false,
-            "link_text": "POKEMON CHINOIS",
+            "link_text": "CARTES A L'UNITE",
             "link_url": "shopify://collections/pokemon-chinois",
             "background": "#ffffff",
             "text_color": "#000000",
