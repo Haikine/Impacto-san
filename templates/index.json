@@ -533,7 +533,7 @@
         "desktop_text_position": "sm:place-self-center sm:text-center",
         "text_color": "#ffffff",
         "overlay_color": "#000000",
-        "overlay_opacity": 30
+        "overlay_opacity": 69
       }
     }
   },
@@ -541,12 +541,12 @@
     "slideshow",
     "press",
     "featured-collection",
+    "image_with_text_overlay_FzL7cN",
     "rich_text_9GJYgh",
     "image-link-blocks",
     "scrolling_text_kgTrei",
     "featured-product",
     "impact-text",
-    "faq",
-    "image_with_text_overlay_FzL7cN"
+    "faq"
   ]
 }
