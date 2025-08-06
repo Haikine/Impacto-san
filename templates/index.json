@@ -59,6 +59,8 @@
         "image_efEayh": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/SV10_banniere.png",
+            "mobile_image": "shopify://shop_images/SV10_banniere.png",
             "content_max_width": 500,
             "mobile_text_position": "place-self-end-center text-center",
             "desktop_text_position": "sm:place-self-center sm:text-center",
@@ -75,33 +77,12 @@
             "background": "",
             "background_gradient": ""
           }
-        },
-        "slide-2": {
-          "type": "image",
-          "settings": {
-            "content_max_width": 780,
-            "mobile_text_position": "place-self-end-center text-center",
-            "desktop_text_position": "sm:place-self-center sm:text-center",
-            "subheading": "",
-            "title": "",
-            "heading_tag": "h0",
-            "button_text": "Voir nos produits",
-            "button_link": "shopify://collections/pokemon-chinois",
-            "text_color": "#1a1a1a",
-            "button_background": "#ffffff",
-            "button_text_color": "#1a1a1a",
-            "overlay_color": "#f0f7f9",
-            "overlay_opacity": 0,
-            "background": "",
-            "background_gradient": ""
-          }
         }
       },
       "block_order": [
         "image_hCh9j3",
         "image_KiHkNi",
-        "image_efEayh",
-        "slide-2"
+        "image_efEayh"
       ],
       "settings": {
         "full_width": true,
@@ -120,19 +101,17 @@
       "settings": {
         "collection": "",
         "products": [
-          "display-m1l-mega-brave",
-          "premium-trainer-box-mega-japonais",
-          "display-m1s-mega-symphonia-japonais",
-          "booster-m1l-mega-brave-japonais",
-          "booster-m1s-mega-symphonia-japonais",
-          "classeur-toploader-zip-360-binder-marron",
-          "display-sv11b-black-bolt-jap",
-          "display-sv11w-white-flare-jap",
-          "display-sv10-glory-of-team-rocket-jap",
-          "display-sv7-stellar-miracle-jap",
-          "display-sv9-battle-partners-jap",
-          "display-sv9a-heat-wave-arena-jap",
-          "display-terastal-festival-sv8a-jap"
+          "display-m1l-mega-brave-pokemon-japonais",
+          "display-m1s-mega-symphonia-pokemon-japonais",
+          "coffret-mega-premium-trainer-box-pokemon-japonais",
+          "display-deluxe-sv11b-black-bolt-pokemon-japonais",
+          "display-deluxe-sv11w-white-flare-pokemon-japonais",
+          "display-sv11b-black-bolt-pokemon-japonais",
+          "display-sv11w-white-flare-pokemon-japonais",
+          "display-sv10-glory-of-the-team-rocket-japonais",
+          "display-obsidian-flames-sv3-japonais",
+          "display-sv2a-pokemon-151-japonais",
+          "display-sv9a-hot-wind-arena-japonais"
         ],
         "full_width": true,
         "stack_products": false,
@@ -405,7 +384,7 @@
       ],
       "settings": {
         "full_width": true,
-        "product": "display-m1l-mega-brave",
+        "product": "display-m1l-mega-brave-pokemon-japonais",
         "desktop_media_width": 50,
         "desktop_media_layout": "carousel_thumbnails_left",
         "mobile_media_size": "expanded",
@@ -540,8 +519,8 @@
   },
   "order": [
     "slideshow",
-    "featured-collection",
     "press",
+    "featured-collection",
     "rich_text_9GJYgh",
     "image-link-blocks",
     "scrolling_text_kgTrei",
