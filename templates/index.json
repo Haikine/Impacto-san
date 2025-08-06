@@ -103,8 +103,8 @@
           "type": "quote",
           "settings": {
             "logo_width": 100,
-            "author": "Julien Dumont",
-            "content": "Je n’ai jamais été déçu de mes commandes chez Pokeseller14 !",
+            "author": "Laura M",
+            "content": "Emballage au top et vendeurs trop sympa 👌🏼",
             "show_rating": true,
             "rating": 5
           }
@@ -182,6 +182,49 @@
         "heading_gradient": "",
         "product_card_background": "",
         "product_card_text_color": ""
+      }
+    },
+    "image_with_text_overlay_FzL7cN": {
+      "type": "image-with-text-overlay",
+      "blocks": {
+        "subheading_hnNtEG": {
+          "type": "subheading",
+          "settings": {
+            "text": "Tout les soirs sur Tiktok"
+          }
+        },
+        "heading_b6b6dR": {
+          "type": "heading",
+          "settings": {
+            "text": "Boxbreak en live",
+            "heading_tag": "h1"
+          }
+        },
+        "richtext_LypeqY": {
+          "type": "richtext",
+          "settings": {
+            "content": "<p>Pour profiter de nos lives boxbreak sur Tik tok, choisissez l'option ouverture en live lorsque vous ajoutez vos produits au panier. Après validation du paiement, vous rejoindrez la file d'attente pour ouvrir vos produits.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "subheading_hnNtEG",
+        "heading_b6b6dR",
+        "richtext_LypeqY"
+      ],
+      "name": "Image with text overlay",
+      "settings": {
+        "full_width": true,
+        "allow_transparent_header": false,
+        "enable_parallax": false,
+        "image_size": "auto",
+        "image": "shopify://shop_images/tiktok-live-1.png",
+        "mobile_image": "shopify://shop_images/tiktok-live-1_29252e0d-0fa5-4ada-9ff3-071862af25b7.png",
+        "mobile_text_position": "place-self-center text-center",
+        "desktop_text_position": "sm:place-self-center sm:text-center",
+        "text_color": "#ffffff",
+        "overlay_color": "#000000",
+        "overlay_opacity": 69
       }
     },
     "rich_text_9GJYgh": {
@@ -491,49 +534,6 @@
         "button_text_color": "",
         "accordion_background": "",
         "accordion_text_color": ""
-      }
-    },
-    "image_with_text_overlay_FzL7cN": {
-      "type": "image-with-text-overlay",
-      "blocks": {
-        "subheading_hnNtEG": {
-          "type": "subheading",
-          "settings": {
-            "text": "Tout les soirs sur Tiktok"
-          }
-        },
-        "heading_b6b6dR": {
-          "type": "heading",
-          "settings": {
-            "text": "Boxbreak en live",
-            "heading_tag": "h1"
-          }
-        },
-        "richtext_LypeqY": {
-          "type": "richtext",
-          "settings": {
-            "content": "<p>Pour profiter de nos lives boxbreak sur Tik tok, choisissez l'option ouverture en live lorsque vous ajoutez vos produits au panier. Après validation du paiement, vous rejoindrez la file d'attente pour ouvrir vos produits.</p>"
-          }
-        }
-      },
-      "block_order": [
-        "subheading_hnNtEG",
-        "heading_b6b6dR",
-        "richtext_LypeqY"
-      ],
-      "name": "Image with text overlay",
-      "settings": {
-        "full_width": true,
-        "allow_transparent_header": false,
-        "enable_parallax": false,
-        "image_size": "auto",
-        "image": "shopify://shop_images/tiktok-live-1.png",
-        "mobile_image": "shopify://shop_images/tiktok-live-1_29252e0d-0fa5-4ada-9ff3-071862af25b7.png",
-        "mobile_text_position": "place-self-center text-center",
-        "desktop_text_position": "sm:place-self-center sm:text-center",
-        "text_color": "#ffffff",
-        "overlay_color": "#000000",
-        "overlay_opacity": 69
       }
     }
   },
