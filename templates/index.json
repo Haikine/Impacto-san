@@ -124,9 +124,9 @@
       "settings": {
         "collection": "",
         "products": [
+          "display-m1s-mega-symphonia-japonais",
           "display-m1l-mega-brave",
           "premium-trainer-box-mega-japonais",
-          "display-m1s-mega-symphonia-japonais",
           "booster-m1l-mega-brave-japonais",
           "booster-m1s-mega-symphonia-japonais",
           "classeur-toploader-zip-360-binder-marron",
@@ -414,7 +414,7 @@
       ],
       "settings": {
         "full_width": true,
-        "product": "display-m1l-mega-brave",
+        "product": "display-m1s-mega-symphonia-japonais",
         "desktop_media_width": 50,
         "desktop_media_layout": "carousel_thumbnails_left",
         "mobile_media_size": "expanded",
