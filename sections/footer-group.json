@@ -37,7 +37,7 @@
             "icon_background": "",
             "icon_color": "",
             "title": "Service client",
-            "content": "<p>Nous répondons à votre demande 7j/7j<br/>Contact : <strong>Pokeseller14@gmail.com</strong></p>"
+            "content": "<p>Nous répondons à votre demande 7j/7j<br/>Contact : <strong>contact@sugoitcg.com</strong></p>"
           }
         },
         "discount": {
@@ -63,7 +63,7 @@
             "icon_background": "",
             "icon_color": "",
             "title": "Paiement sécurisé",
-            "content": "<p>Paiement 100% sécurisé avec Apple Pay / Shop pay / Carte bancaire…</p>"
+            "content": "<p>Paiement 100% sécurisé avec Apple Pay / Paypal / Carte bancaire…</p>"
           }
         }
       },
@@ -93,7 +93,7 @@
           "settings": {
             "image_width": 130,
             "heading_size": "h3",
-            "title": "Inscrivez-vous ici pour ne plus rien manquer.",
+            "title": "Inscrivez-vous pour ne pas manquer les offres exclusives aux abonnés.",
             "content": ""
           }
         },
@@ -101,14 +101,14 @@
           "type": "text",
           "settings": {
             "title": "À propos",
-            "content": "<p></p><p>Située à <strong>Caen</strong>, <strong>Pokeseller14</strong> est la boutique incontournable pour tous les passionnés de cartes Pokémon. <br/>Que vous soyez collectionneur, joueur ou simplement fan de l’univers Pokémon, vous y trouverez un large choix de produits : boosters, displays, coffrets, accessoires et bien plus encore !</p><p>Avec <strong>des dizaines de milliers de followers sur les réseaux sociaux</strong>, Pokeseller14 s’est imposée comme une véritable référence dans le monde du Pokémon en France. L’équipe, passionnée et experte, partage quotidiennement nouveautés, conseils et contenus exclusifs avec une communauté fidèle et engagée.</p>",
+            "content": "<p></p><p>Située à <strong>Paris</strong>, <strong>Sugoi TCG </strong>est la boutique incontournable pour tous les passionnés de cartes Pokémon. <br/><br/>Que vous soyez collectionneur, joueur ou simplement fan de l’univers Pokémon, vous y trouverez un large choix de produits : boosters, displays, coffrets, accessoires et bien plus encore !</p><p>L’équipe, passionnée et experte, partage quotidiennement nouveautés, conseils et contenus exclusifs avec une communauté fidèle et engagée.</p>",
             "enable_follow_on_shop": false
           }
         },
         "links_LFWfyd": {
           "type": "links",
           "settings": {
-            "menu": "besoin-daide",
+            "menu": "",
             "show_menu_title": true
           }
         },
