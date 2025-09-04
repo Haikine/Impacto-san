@@ -124,15 +124,17 @@
       "settings": {
         "collection": "",
         "products": [
-          "protection-acrylique-etb-elite-trainer-box",
-          "paquet-de-50-sleeves-premium",
-          "paquet-de-100-sleeves-classique",
-          "paquet-de-25-toploader-premium",
-          "paquet-de-100-toploader-premium",
-          "pack-de-200-toploader-premium",
-          "paquet-de-25-toploader-classique",
+          "display-m1l-mega-brave",
+          "display-m1s-mega-symphonia-japonais",
+          "premium-trainer-box-mega-japonais",
+          "booster-m1s-mega-symphonia-japonais",
+          "booster-m1l-mega-brave-japonais",
+          "display-sv11b-black-bolt-jap",
+          "display-sv11w-white-flare-jap",
+          "booster-sv11w-black-white",
+          "booster-sv11b-black-white",
           "classeur-480-toploader-zip-premium",
-          "classeur-360-toploader-zip-premium"
+          "pack-de-200-toploader-premium"
         ],
         "full_width": true,
         "stack_products": false,
