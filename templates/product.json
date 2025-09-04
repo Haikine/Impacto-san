@@ -46,6 +46,7 @@
             "mi": 100,
             "s2": false,
             "s": true,
+            "hz": true,
             "l": 40,
             "c": 20,
             "z": "<strong>%IC%</strong> en stock - <strong>livraison en 48h</strong>",
@@ -124,8 +125,8 @@
           "settings": {
             "exc": "",
             "icon_size": 30,
-            "min_gap": 8,
             "alignment": "space-between",
+            "min_gap": 8,
             "padding_sides": 0,
             "margin_top": 0,
             "margin_bottom": 0,
@@ -154,6 +155,7 @@
           "type": "shopify://apps/buy-box/blocks/buy-box-wrapper/17b7c6ef-0c82-4743-acf4-050c34e5b233",
           "settings": {
             "use_in_mobile": false,
+            "box_shadow": "none",
             "ht": "",
             "hb": "#f0f0f0",
             "htc": "#000000",
@@ -162,7 +164,6 @@
             "header_font_size": 13,
             "border_radius": 5,
             "border_width": 1,
-            "box_shadow": "none",
             "padding_top": 20,
             "padding_bottom": 20,
             "padding_sides": 20,
@@ -212,17 +213,20 @@
       "settings": {
         "recommendations_count": 6,
         "products": [
-          "booster-m1l-mega-brave-japonais",
+          "paquet-de-100-sleeves-classique",
           "booster-m1s-mega-symphonia-japonais",
-          "display-m1l-mega-brave",
-          "display-m1s-mega-symphonia-japonais",
-          "premium-trainer-box-mega-japonais",
+          "paquet-de-50-sleeves-premium",
           "booster-sv10-glory-of-team-rocket-jap",
-          "booster-sv8a-terastal-festival-jap",
+          "booster-sv11w-black-white",
+          "booster-sv11b-black-white",
           "booster-sv9-battle-partners-jap",
           "booster-sv9a-heat-wave-arena-jap",
-          "display-sv11b-black-bolt-jap",
-          "display-sv11w-white-flare-jap"
+          "paquet-de-100-toploader-premium",
+          "pack-de-200-toploader-premium",
+          "paquet-de-25-toploader-premium",
+          "paquet-de-25-toploader-classique",
+          "classeur-480-toploader-zip-premium",
+          "classeur-360-toploader-zip-premium"
         ],
         "full_width": true,
         "stack_products": false,
@@ -246,7 +250,10 @@
       "blocks": {
         "judge_me_reviews_review_widget_Uw7wyn": {
           "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
-          "settings": {}
+          "settings": {
+            "review_data": "sample_data",
+            "max_width": 1200
+          }
         }
       },
       "block_order": [
