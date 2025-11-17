@@ -26,11 +26,11 @@
             "button_text": "Disponible Prochainement !",
             "button_link": "shopify://collections/japonais",
             "text_color": "#1a1a1a",
-            "button_background": "#f7f9f9",
+            "button_background": "#f2f2f2",
             "button_text_color": "#1a1a1a",
             "overlay_color": "#000000",
             "overlay_opacity": 5,
-            "background": "#e4f8fd",
+            "background": "#f4f4f4",
             "background_gradient": ""
           }
         },
