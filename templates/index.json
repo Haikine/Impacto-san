@@ -18,7 +18,7 @@
             "image": "shopify://shop_images/efefa63f-c0fb-45bb-8cfb-6b6458818e0f.jpg",
             "mobile_image": "shopify://shop_images/1d85b61a-3b94-4790-816b-d1f8150b72be.jpg",
             "content_max_width": 860,
-            "mobile_text_position": "place-self-center text-center",
+            "mobile_text_position": "place-self-end-center text-center",
             "desktop_text_position": "sm:place-self-center sm:text-center",
             "subheading": "",
             "title": "",
