@@ -124,19 +124,13 @@
       "settings": {
         "collection": "",
         "products": [
-          "display-mega-inferno-m2-japonais",
-          "booster-m2-mega-inferno-japonais",
-          "display-gem-pack-vol-3-chinois",
+          "display-m2a-mega-dream-japonais",
           "display-m1s-mega-symphonia-japonais",
-          "display-csv5c-dracaufeu",
-          "fukuoka-box-pokemon-center-japonais",
-          "coffret-151-salameche",
-          "coffret-151-first-partner-carapuce",
-          "coffret-151-first-partner-bulbizarre",
+          "display-mega-inferno-m2-japonais",
           "display-sv10-glory-of-team-rocket-jap",
-          "display-sv11b-black-bolt-jap",
-          "display-sv11w-white-flare-jap",
-          "display-sv9a-heat-wave-arena-jap"
+          "display-gem-pack-2-cn",
+          "protection-acrylique-etb-elite-trainer-box",
+          "protection-acrylique-display"
         ],
         "full_width": true,
         "stack_products": false,
@@ -414,7 +408,7 @@
       ],
       "settings": {
         "full_width": true,
-        "product": "display-mega-inferno-m2-japonais",
+        "product": "display-m2a-mega-dream-japonais",
         "desktop_media_width": 50,
         "desktop_media_layout": "carousel_thumbnails_left",
         "mobile_media_size": "expanded",
