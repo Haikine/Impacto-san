@@ -214,19 +214,15 @@
         "recommendations_count": 6,
         "products": [
           "paquet-de-100-sleeves-classique",
-          "booster-m1s-mega-symphonia-japonais",
           "paquet-de-50-sleeves-premium",
-          "booster-sv10-glory-of-team-rocket-jap",
-          "booster-sv11w-black-white",
-          "booster-sv11b-black-white",
-          "booster-sv9-battle-partners-jap",
-          "booster-sv9a-heat-wave-arena-jap",
-          "paquet-de-100-toploader-premium",
-          "pack-de-200-toploader-premium",
-          "paquet-de-25-toploader-premium",
-          "paquet-de-25-toploader-classique",
-          "classeur-480-toploader-zip-premium",
-          "classeur-360-toploader-zip-premium"
+          "booster-m1s-mega-symphonia-japonais",
+          "booster-m2a-mega-dream-japonais",
+          "display-m1s-mega-symphonia-japonais",
+          "display-m2a-mega-dream-japonais",
+          "booster-m1l-mega-brave-japonais",
+          "display-mega-inferno-m2-japonais",
+          "protection-acrylique-etb-elite-trainer-box",
+          "protection-acrylique-display"
         ],
         "full_width": true,
         "stack_products": false,
@@ -252,7 +248,9 @@
           "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
           "settings": {
             "review_data": "sample_data",
-            "max_width": 1200
+            "max_width": 1200,
+            "show_shop_reviews": false,
+            "empty_state": "empty_widget"
           }
         }
       },
