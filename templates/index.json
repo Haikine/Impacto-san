@@ -451,7 +451,7 @@
         "impact_text_style": "fill",
         "text_divider": "diamond",
         "impact_text_size_ratio": 1,
-        "background": "",
+        "background": "#eeeff9",
         "background_gradient": "",
         "heading_text_color": "",
         "heading_gradient": "linear-gradient(180deg, rgba(26, 26, 26, 0.2), rgba(26, 26, 26, 0) 100%)",
@@ -506,6 +506,7 @@
         "item_D6cFU9",
         "item_j8gKzK"
       ],
+      "disabled": true,
       "settings": {
         "full_width": false,
         "subheading": "",
