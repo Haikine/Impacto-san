@@ -183,14 +183,26 @@
         "richtext_LypeqY": {
           "type": "richtext",
           "settings": {
-            "content": "<p>Pour profiter de nos lives boxbreak sur Tik tok, choisissez l'option ouverture en live lorsque vous ajoutez vos produits au panier. Après validation du paiement, vous rejoindrez la file d'attente pour ouvrir vos produits.</p>"
+            "content": "<p>Pour profiter de nos lives boxbreak sur Twitch, choisissez l'option ouverture en live lorsque vous ajoutez vos produits au panier. Après validation du paiement, vous rejoindrez la file d'attente pour ouvrir vos produits en Direct ! Nous vous donnons rendez vous <strong>tout les mercredi soir à partir de 20h45 !</strong></p>"
+          }
+        },
+        "button_CkpE3n": {
+          "type": "button",
+          "settings": {
+            "style": "fill",
+            "size": "lg",
+            "text": "Twitch",
+            "url": "https://www.twitch.tv/sugoitcg",
+            "background": "#803cee",
+            "text_color": "#000000"
           }
         }
       },
       "block_order": [
         "subheading_hnNtEG",
         "heading_b6b6dR",
-        "richtext_LypeqY"
+        "richtext_LypeqY",
+        "button_CkpE3n"
       ],
       "name": "Image with text overlay",
       "settings": {
@@ -198,8 +210,8 @@
         "allow_transparent_header": false,
         "enable_parallax": false,
         "image_size": "auto",
-        "image": "shopify://shop_images/tiktok-live-1.png",
-        "mobile_image": "shopify://shop_images/tiktok-live-1_29252e0d-0fa5-4ada-9ff3-071862af25b7.png",
+        "image": "shopify://shop_images/how-to-stream-on-twitch.jpg",
+        "mobile_image": "shopify://shop_images/how-to-stream-on-twitch_812b7b45-9690-4db7-a385-dc7eeac535e5.jpg",
         "mobile_text_position": "place-self-center text-center",
         "desktop_text_position": "sm:place-self-center sm:text-center",
         "text_color": "#ffffff",
@@ -469,7 +481,7 @@
           "type": "item",
           "settings": {
             "title": "Quel est le délai de livraison de ma commande ?",
-            "content": "<p>Le délai d’expédition est d’environ 24h et recevez votre commande en <strong>48h avec Chronopost</strong> !*</p>"
+            "content": "<p>Le délai d’expédition est d’environ 24h et recevez votre commande en <strong>48h avec Chronopost</strong> !</p>"
           }
         },
         "item_D6cFU9": {
