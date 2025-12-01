@@ -206,7 +206,7 @@
       ],
       "name": "Image with text overlay",
       "settings": {
-        "full_width": true,
+        "full_width": false,
         "allow_transparent_header": false,
         "enable_parallax": false,
         "image_size": "auto",
@@ -216,7 +216,7 @@
         "desktop_text_position": "sm:place-self-center sm:text-center",
         "text_color": "#ffffff",
         "overlay_color": "#000000",
-        "overlay_opacity": 69
+        "overlay_opacity": 52
       }
     },
     "rich_text_9GJYgh": {
@@ -251,62 +251,68 @@
         "text_color": ""
       }
     },
-    "image-link-blocks": {
-      "type": "image-link-blocks",
+    "collection_list_ACmUUN": {
+      "type": "collection-list",
       "blocks": {
-        "1664424046b00c932c-0": {
-          "type": "item",
+        "collection_pfFb99": {
+          "type": "collection",
           "settings": {
-            "image": "shopify://shop_images/Design_sans_titre.png",
-            "stretch_image": false,
-            "link_text": "POKEMON JAPONAIS",
-            "link_url": "shopify://collections/japonais",
-            "background": "#ffffff",
-            "text_color": "#000000",
+            "collection": "pokemon-japonais",
+            "subheading": "",
+            "title": "",
+            "url": "",
+            "heading_tag": "h2",
+            "text_position": "place-self-center text-center",
+            "text_color": "#ffffff",
             "overlay_color": "#000000",
-            "overlay_opacity": 0
+            "overlay_opacity": 30
           }
         },
-        "1664424046b00c932c-1": {
-          "type": "item",
+        "collection_9FrJpU": {
+          "type": "collection",
           "settings": {
-            "image": "shopify://shop_images/Design_sans_titre_1.png",
-            "stretch_image": false,
-            "link_text": "ONE PIECE JAPONAIS",
-            "link_url": "shopify://collections/one-piece",
-            "background": "#ffffff",
-            "text_color": "#000000",
+            "collection": "one-piece",
+            "subheading": "",
+            "title": "",
+            "url": "",
+            "heading_tag": "h2",
+            "text_position": "place-self-center text-center",
+            "text_color": "#ffffff",
             "overlay_color": "#000000",
-            "overlay_opacity": 0
+            "overlay_opacity": 30
           }
         },
-        "1664424046b00c932c-2": {
-          "type": "item",
+        "collection_pxBtTJ": {
+          "type": "collection",
           "settings": {
-            "image": "shopify://shop_images/Cartes_a_l_unite_2.png",
-            "stretch_image": false,
-            "link_text": "CARTES A L'UNITE",
-            "link_url": "shopify://collections/pokemon-chinois",
-            "background": "#ffffff",
-            "text_color": "#000000",
-            "overlay_color": "#e9f6f9",
-            "overlay_opacity": 0
+            "collection": "carte-a-lunite",
+            "subheading": "",
+            "title": "",
+            "url": "",
+            "heading_tag": "h2",
+            "text_position": "place-self-center text-center",
+            "text_color": "#ffffff",
+            "overlay_color": "#000000",
+            "overlay_opacity": 30
           }
         }
       },
       "block_order": [
-        "1664424046b00c932c-0",
-        "1664424046b00c932c-1",
-        "1664424046b00c932c-2"
+        "collection_pfFb99",
+        "collection_9FrJpU",
+        "collection_pxBtTJ"
       ],
+      "name": "Collection list",
       "settings": {
-        "full_width": false,
-        "block_size": "large",
+        "full_width": true,
+        "stack_collections": false,
+        "collections_per_row": 3,
+        "show_progress_bar": true,
         "subheading": "",
-        "title": "",
+        "title": "Collection list",
         "content": "",
         "link_url": "",
-        "link_text": "",
+        "link_text": "View all",
         "background": "",
         "background_gradient": "",
         "text_color": "",
@@ -536,7 +542,7 @@
     "featured-collection",
     "image_with_text_overlay_FzL7cN",
     "rich_text_9GJYgh",
-    "image-link-blocks",
+    "collection_list_ACmUUN",
     "scrolling_text_kgTrei",
     "featured-product",
     "impact-text",
