@@ -51,28 +51,6 @@
             "button_background": "#ffffff",
             "button_text_color": "#000000",
             "overlay_color": "#000000",
-            "overlay_opacity": 5,
-            "background": "",
-            "background_gradient": ""
-          }
-        },
-        "image_efEayh": {
-          "type": "image",
-          "settings": {
-            "image": "shopify://shop_images/SV10_banniere.png",
-            "mobile_image": "shopify://shop_images/SV10_banniere.png",
-            "content_max_width": 500,
-            "mobile_text_position": "place-self-end-center text-center",
-            "desktop_text_position": "sm:place-self-center sm:text-center",
-            "subheading": "",
-            "title": "",
-            "heading_tag": "h0",
-            "button_text": "Commande ta display !",
-            "button_link": "shopify://collections/japonais",
-            "text_color": "#1a1a1a",
-            "button_background": "#ffffff",
-            "button_text_color": "#1a1a1a",
-            "overlay_color": "#000000",
             "overlay_opacity": 0,
             "background": "",
             "background_gradient": ""
@@ -81,8 +59,7 @@
       },
       "block_order": [
         "image_hCh9j3",
-        "image_KiHkNi",
-        "image_efEayh"
+        "image_KiHkNi"
       ],
       "settings": {
         "full_width": true,
@@ -152,6 +129,8 @@
       "settings": {
         "collection": "",
         "products": [
+          "display-m2a-mega-dream-ex-pokemon-japonais",
+          "display-m2-mega-inferno-xpokemon-japonais",
           "display-m1l-mega-brave-pokemon-japonais",
           "display-m1s-mega-symphonia-pokemon-japonais",
           "coffret-mega-premium-trainer-box-pokemon-japonais",
@@ -162,7 +141,8 @@
           "display-sv10-glory-of-the-team-rocket-japonais",
           "display-obsidian-flames-sv3-japonais",
           "display-sv2a-pokemon-151-japonais",
-          "display-sv9a-hot-wind-arena-japonais"
+          "display-sv9a-hot-wind-arena-japonais",
+          "display-vstar-universe-sv6-japonais"
         ],
         "full_width": true,
         "stack_products": false,
