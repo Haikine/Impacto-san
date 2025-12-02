@@ -61,6 +61,7 @@
         "image_hCh9j3",
         "image_KiHkNi"
       ],
+      "name": "Promotion des offres",
       "settings": {
         "full_width": true,
         "allow_transparent_header": false,
@@ -112,6 +113,7 @@
         "16644243327ba53d2a-0",
         "16644243327ba53d2a-1"
       ],
+      "name": "Retours clients",
       "settings": {
         "full_width": true,
         "content_size": "medium",
@@ -204,7 +206,7 @@
         "richtext_LypeqY",
         "button_CkpE3n"
       ],
-      "name": "Image with text overlay",
+      "name": "Bloc Twitch",
       "settings": {
         "full_width": false,
         "allow_transparent_header": false,
@@ -242,6 +244,7 @@
         "subheading_jwEFTm",
         "heading_Kemthi"
       ],
+      "name": "Les TCG Jap",
       "settings": {
         "full_width": true,
         "content_width": "small",
@@ -302,7 +305,7 @@
         "collection_9FrJpU",
         "collection_pxBtTJ"
       ],
-      "name": "Collection list",
+      "name": "Collections",
       "settings": {
         "full_width": true,
         "stack_collections": false,
@@ -400,6 +403,7 @@
         "quantity-selector",
         "buy-buttons"
       ],
+      "name": "Dernière sortie",
       "settings": {
         "full_width": true,
         "product": "display-m2a-mega-dream-ex-pokemon-japonais",
@@ -450,6 +454,7 @@
         "item_WUxHaT",
         "1664424181b38582d5-0"
       ],
+      "name": "Stats Sugoi",
       "settings": {
         "full_width": true,
         "stack_mobile": true,

@@ -73,6 +73,7 @@
         "discount",
         "payment"
       ],
+      "name": "Icones de réassurance",
       "settings": {
         "full_width": true,
         "stack_on_mobile": false,
