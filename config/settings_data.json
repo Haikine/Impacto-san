@@ -77,7 +77,6 @@
           "hide_when_opened": "",
           "show_item_properties": false,
           "stop_shopify_rate": true,
-          "enable_collections_mapping": true,
           "dev_mode": false,
           "force_v1_scripts": false,
           "beta_version": false,
