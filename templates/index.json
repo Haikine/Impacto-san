@@ -124,9 +124,11 @@
       "settings": {
         "collection": "",
         "products": [
+          "coffret-nouvel-an-chinois-2026",
           "display-m2a-mega-dream-japonais",
-          "display-gem-pack-vol-3-chinois",
           "booster-m2a-mega-dream-japonais",
+          "display-m3-munikis-zero-japonais",
+          "display-gem-pack-vol-3-chinois",
           "display-m1s-mega-symphonia-japonais",
           "display-mega-inferno-m2-japonais",
           "display-sv10-glory-of-team-rocket-jap",
@@ -337,9 +339,9 @@
         "text_style": "fill",
         "scrolling_mode": "auto",
         "scrolling_speed": 20,
-        "background": "",
+        "background": "#1a1a1a",
         "background_gradient": "",
-        "text_color": "",
+        "text_color": "#f7f9f9",
         "text_gradient": ""
       }
     },
