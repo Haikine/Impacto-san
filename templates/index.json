@@ -124,8 +124,8 @@
       "settings": {
         "collection": "",
         "products": [
+          "display-gem-pack-4",
           "display-m3-munikis-zero-japonais",
-          "coffret-nouvel-an-chinois-2026",
           "display-m2a-mega-dream-japonais",
           "booster-m2a-mega-dream-japonais",
           "display-mega-inferno-m2-japonais",
@@ -134,7 +134,8 @@
           "display-sv10-glory-of-team-rocket-jap",
           "protection-acrylique-display",
           "protection-acrylique-etb-elite-trainer-box",
-          "display-gem-pack-2-cn"
+          "display-gem-pack-2-cn",
+          "coffret-nouvel-an-chinois-2026"
         ],
         "full_width": true,
         "stack_products": false,
