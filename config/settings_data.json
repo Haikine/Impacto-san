@@ -205,11 +205,12 @@
   },
   "platform_customizations": {
     "custom_css": [
-      "/* Style des pastilles */.product-form__input label {border-radius: 50%;width: 28px;height: 28px;display: inline-block;border: 2px solid #ddd;cursor: pointer;}",
-      "/* Couleurs (mapping) */.product-form__input label[title=\"Rouge\"] {background-color: red; }",
-      ".product-form__input label[title=\"Bleu\"] {background-color: blue; }",
-      ".product-form__input label[title=\"Rose\"] {background-color: pink; }",
-      ".product-form__input label[title=\"Black Édition\"] {background-color: black; }"
+      "/* Style des pastilles */.product-form__input label {border-radius: 50%; width: 28px; height: 28px; display: inline-block; border: 2px solid #ddd; cursor: pointer;}",
+      "/* Couleurs (mapping) */.product-form__input label[title=\"Rouge\"] {background-color: red;}",
+      ".product-form__input label[title=\"Bleu\"] {background-color: blue;}",
+      ".product-form__input label[title=\"Rose\"] {background-color: pink;}",
+      ".product-form__input label[title=\"Black Édition\"] {background-color: black;}",
+      "/* Effet sélection */.product-form__input input:checked + label {border: 2px solid #000;transform: scale(1.1);}"
     ]
   }
 }
