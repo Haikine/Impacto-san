@@ -32,10 +32,9 @@
     "main": {
       "type": "main-collection",
       "custom_css": [
-        ".product-form__input label[title=\"Rouge\"] {background-color: red; }",
-        ".product-form__input label[title=\"Bleu\"] {background-color: blue; }",
-        ".product-form__input label[title=\"Rose\"] {background-color: pink; }",
-        ".product-form__input label[title=\"Black Édition\"] {background-color: black; }"
+        "/* Option de filtre sélectionnée - case à cocher */.active-facets__button,.facets__label input:checked + .facets__checkbox,.facet-checkbox input:checked ~ label,.facets__item input:checked + label {background-color: #e63946; color: #ffffff; border-color: #e63946;}",
+        "/* Bouton de filtre actif */.active-facets__button-inner {background-color: #e63946; color: #ffffff;}",
+        "/* Badge/tag des filtres actifs */.active-facets .active-facets__button {background-color: #e63946; color: #ffffff; border-radius: 4px; padding: 4px 8px;}"
       ],
       "settings": {
         "products_per_page": 24,
