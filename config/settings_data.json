@@ -21,6 +21,7 @@
     "button_hover_effect": "reverse",
     "background": "#f7f9f9",
     "text_color": "#1a1a1a",
+    "error_color": "#f83a3a",
     "header_background": "#e9f6f9",
     "header_text_color": "#1a1a1a",
     "footer_background": "#e9f6f9",
@@ -32,6 +33,9 @@
     "secondary_button_text_color": "#f0f7f9",
     "product_card_background": "#f7f9f9",
     "product_card_text_color": "#1a1a1a",
+    "product_rating_color": "#ffb74a",
+    "product_on_sale_accent": "#f83a3a",
+    "product_sold_out_badge_background": "#000000",
     "product_primary_badge_background": "#803cee",
     "heading_font": "din_next_n7",
     "heading_font_size": "large",
@@ -40,6 +44,7 @@
     "currency_code_enabled": true,
     "show_page_transition": true,
     "heading_apparition": "split_fade",
+    "color_swatch_config": "Black: #000000\nWhite: #ffffff\nRed: #dc2626\nBlue: #1e40af\nPink: #ec4899\nGreen: #00a341\nYellow: #ffb74a\nOrange: #ff8c00\nPurple: #803cee\nGrey: #808080",
     "show_vendor": false,
     "show_quick_buy": true,
     "show_product_rating": true,
@@ -197,5 +202,14 @@
       "product_color_display": "swatch",
       "product_info_alignment": "center"
     }
+  },
+  "platform_customizations": {
+    "custom_css": [
+      "/* Style des pastilles */.product-form__input label {border-radius: 50%;width: 28px;height: 28px;display: inline-block;border: 2px solid #ddd;cursor: pointer;}",
+      "/* Couleurs (mapping) */.product-form__input label[title=\"Rouge\"] {background-color: red; }",
+      ".product-form__input label[title=\"Bleu\"] {background-color: blue; }",
+      ".product-form__input label[title=\"Rose\"] {background-color: pink; }",
+      ".product-form__input label[title=\"Black Édition\"] {background-color: black; }"
+    ]
   }
 }
