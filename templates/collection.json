@@ -31,6 +31,12 @@
     },
     "main": {
       "type": "main-collection",
+      "custom_css": [
+        ".product-form__input label[title=\"Rouge\"] {background-color: red; }",
+        ".product-form__input label[title=\"Bleu\"] {background-color: blue; }",
+        ".product-form__input label[title=\"Rose\"] {background-color: pink; }",
+        ".product-form__input label[title=\"Black Édition\"] {background-color: black; }"
+      ],
       "settings": {
         "products_per_page": 24,
         "products_per_row_mobile": "2",
