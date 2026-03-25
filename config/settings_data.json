@@ -44,7 +44,8 @@
     "currency_code_enabled": true,
     "show_page_transition": true,
     "heading_apparition": "split_fade",
-    "color_swatch_config": "Black: #000000\nWhite: #ffffff\nRed: #dc2626\nBlue: #1e40af\nPink: #ec4899\nGreen: #00a341\nYellow: #ffb74a\nOrange: #ff8c00\nPurple: #803cee\nGrey: #808080",
+    "color_swatch_style": "round",
+    "color_swatch_config": "black édition: #000000\nWhite: #ffffff\nrouge: #dc2626\nbleu: #1e40af\nRose: #ec4899\nGreen: #00a341\nYellow: #ffb74a\nOrange: #ff8c00\nPurple: #803cee\nGrey: #808080",
     "show_vendor": false,
     "show_quick_buy": true,
     "show_product_rating": true,
@@ -206,11 +207,11 @@
   "platform_customizations": {
     "custom_css": [
       "/* Style des pastilles */.product-form__input label {border-radius: 50%; width: 28px; height: 28px; display: inline-block; border: 2px solid #ddd; cursor: pointer;}",
-      "/* Couleurs (mapping) */.product-form__input label[title=\"Rouge\"] {background-color: red;}",
+      " /* Couleurs (mapping) */.product-form__input label[title=\"Rouge\"] {background-color: red;}",
       ".product-form__input label[title=\"Bleu\"] {background-color: blue;}",
       ".product-form__input label[title=\"Rose\"] {background-color: pink;}",
       ".product-form__input label[title=\"Black Édition\"] {background-color: black;}",
-      "/* Effet sélection */.product-form__input input:checked + label {border: 2px solid #000;transform: scale(1.1);}"
+      " /* Effet sélection */.product-form__input input:checked + label {border: 2px solid #000; transform: scale(1.1);}"
     ]
   }
 }
