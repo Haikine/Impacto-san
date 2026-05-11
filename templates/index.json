@@ -123,7 +123,17 @@
       "type": "featured-collection",
       "settings": {
         "collection": "",
-        "products": [],
+        "products": [
+          "copie-classeur-360-toploader-zip-premium-pokeseller14",
+          "classeur-360-toploader-zip-premium",
+          "classeur-480-toploader-zip-premium",
+          "paquet-de-100-toploader-premium",
+          "paquet-de-100-sleeves-classique",
+          "paquet-de-50-sleeves-premium",
+          "protection-acrylique-etb-elite-trainer-box",
+          "protection-acrylique-display",
+          "protection-ultra-premium-dracaufeu"
+        ],
         "full_width": true,
         "stack_products": false,
         "show_progress_bar": true,
