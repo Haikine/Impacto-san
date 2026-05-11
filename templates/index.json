@@ -55,15 +55,16 @@
       "settings": {
         "collection": "",
         "products": [
+          "classeur-480-cartes-zip-premium-copie",
           "copie-classeur-360-toploader-zip-premium-pokeseller14",
+          "paquet-de-100-toploader-premium",
           "classeur-360-toploader-zip-premium",
           "classeur-480-toploader-zip-premium",
-          "paquet-de-100-toploader-premium",
-          "paquet-de-100-sleeves-classique",
-          "paquet-de-50-sleeves-premium",
           "protection-acrylique-etb-elite-trainer-box",
+          "protection-ultra-premium-dracaufeu",
           "protection-acrylique-display",
-          "protection-ultra-premium-dracaufeu"
+          "paquet-de-100-sleeves-classique",
+          "paquet-de-50-sleeves-premium"
         ],
         "full_width": true,
         "stack_products": false,
