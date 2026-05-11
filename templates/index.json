@@ -12,28 +12,6 @@
     "slideshow": {
       "type": "slideshow",
       "blocks": {
-        "image_hCh9j3": {
-          "type": "image",
-          "settings": {
-            "image": "shopify://shop_images/efefa63f-c0fb-45bb-8cfb-6b6458818e0f.jpg",
-            "mobile_image": "shopify://shop_images/fc8ce9d7-be3f-47e8-94ef-349136850f30_23733f6a-df4f-4d4e-8e42-db4a1fea9e36.jpg",
-            "content_max_width": 860,
-            "mobile_text_position": "place-self-end-center text-center",
-            "desktop_text_position": "sm:place-self-center sm:text-center",
-            "subheading": "",
-            "title": "",
-            "heading_tag": "h2",
-            "button_text": "Mega Dream M2a🔥",
-            "button_link": "shopify://collections/pokemon-francais",
-            "text_color": "#1a1a1a",
-            "button_background": "#f7f9f9",
-            "button_text_color": "#1a1a1a",
-            "overlay_color": "#000000",
-            "overlay_opacity": 5,
-            "background": "#f4f4f4",
-            "background_gradient": ""
-          }
-        },
         "image_KiHkNi": {
           "type": "image",
           "settings": {
@@ -55,57 +33,10 @@
             "background": "",
             "background_gradient": ""
           }
-        },
-        "image_efEayh": {
-          "type": "image",
-          "settings": {
-            "image": "shopify://shop_images/1.png",
-            "mobile_image": "shopify://shop_images/Mobile_jap.png",
-            "content_max_width": 500,
-            "mobile_text_position": "place-self-end-center text-center",
-            "desktop_text_position": "sm:place-self-center sm:text-center",
-            "subheading": "",
-            "title": "",
-            "heading_tag": "h0",
-            "button_text": "Commande ta display !",
-            "button_link": "shopify://collections/japonais",
-            "text_color": "#1a1a1a",
-            "button_background": "#ffffff",
-            "button_text_color": "#1a1a1a",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "background": "",
-            "background_gradient": ""
-          }
-        },
-        "slide-2": {
-          "type": "image",
-          "settings": {
-            "image": "shopify://shop_images/3.png",
-            "mobile_image": "shopify://shop_images/3_78d8c68a-d81e-4fdc-8a43-322e1820f052.png",
-            "content_max_width": 780,
-            "mobile_text_position": "place-self-end-center text-center",
-            "desktop_text_position": "sm:place-self-center sm:text-center",
-            "subheading": "",
-            "title": "",
-            "heading_tag": "h0",
-            "button_text": "Voir nos produits",
-            "button_link": "shopify://collections/pokemon-chinois",
-            "text_color": "#1a1a1a",
-            "button_background": "#ffffff",
-            "button_text_color": "#1a1a1a",
-            "overlay_color": "#f0f7f9",
-            "overlay_opacity": 0,
-            "background": "",
-            "background_gradient": ""
-          }
         }
       },
       "block_order": [
-        "image_hCh9j3",
-        "image_KiHkNi",
-        "image_efEayh",
-        "slide-2"
+        "image_KiHkNi"
       ],
       "settings": {
         "full_width": true,
