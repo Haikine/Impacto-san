@@ -123,22 +123,7 @@
       "type": "featured-collection",
       "settings": {
         "collection": "",
-        "products": [
-          "display-m4-ninja-spinner-japonais",
-          "display-gem-pack-4",
-          "gem-pack-badge-set",
-          "display-m3-munikis-zero-japonais",
-          "display-m2a-mega-dream-japonais",
-          "display-gem-pack-vol-3-chinois",
-          "booster-m2a-mega-dream-japonais",
-          "protection-acrylique-etb-elite-trainer-box",
-          "display-mega-inferno-m2-japonais",
-          "display-m1s-mega-symphonia-japonais",
-          "display-sv10-glory-of-team-rocket-jap",
-          "protection-acrylique-display",
-          "display-gem-pack-2-cn",
-          "coffret-nouvel-an-chinois-2026"
-        ],
+        "products": [],
         "full_width": true,
         "stack_products": false,
         "show_progress_bar": true,
