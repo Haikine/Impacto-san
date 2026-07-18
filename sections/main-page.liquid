@@ -11,7 +11,8 @@
 
       {%- if page.content != empty -%}
         <div class="prose">
-          {{ page.content }}
+          {%- comment -%} Impact core override: legacy brand cleanup at render time. Page bodies still mention Pokeseller14 and are not editable until admin rights are granted. Remove these filters once the page contents are fixed in admin. {%- endcomment -%}
+          {{ page.content | replace: 'Pokeseller14@gmail.com', 'vcollect@gmail.com' | replace: 'pokeseller14@gmail.com', 'vcollect@gmail.com' | replace: 'Pokeseller14', 'VCOLLECT' | replace: 'pokeseller14', 'VCOLLECT' }}
         </div>
       {%- endif -%}
     </div>
