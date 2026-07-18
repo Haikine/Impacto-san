@@ -18,7 +18,7 @@
           "type": "message",
           "settings": {
             "text": "BOOSTER OFFERT TOUS LES 80€ D'ACHAT🎁",
-            "url": "https://www.tiktok.com/@pokeseller14"
+            "url": "https://www.tiktok.com/@vcollect_"
           }
         },
         "message_6FeqTp": {
@@ -27,11 +27,19 @@
             "text": "LIVRAISON EN 48H🚚",
             "url": ""
           }
+        },
+        "message_drop": {
+          "type": "message",
+          "settings": {
+            "text": "GROS DROP DE SCELLÉ POKÉMON EN APPROCHE🔥",
+            "url": "/collections/all"
+          }
         }
       },
       "block_order": [
         "message",
-        "message_6FeqTp"
+        "message_6FeqTp",
+        "message_drop"
       ],
       "settings": {
         "enable_sticky": false,

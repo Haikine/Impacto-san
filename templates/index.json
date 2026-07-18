@@ -24,7 +24,7 @@
             "title": "",
             "heading_tag": "h0",
             "button_text": "Découvrez nos produits",
-            "button_link": "shopify://collections/promotions",
+            "button_link": "shopify://collections/all",
             "text_color": "#1a1a1a",
             "button_background": "#ffffff",
             "button_text_color": "#000000",
@@ -48,6 +48,19 @@
         "cycle_speed": 6,
         "background": "#f2f2f2",
         "background_gradient": "linear-gradient(60deg, rgba(60, 65, 68, 1), rgba(23, 29, 33, 1) 98%)"
+      }
+    },
+    "newsletter_reconstruction": {
+      "type": "newsletter",
+      "settings": {
+        "full_width": true,
+        "show_icon": false,
+        "title": "VCOLLECT fait peau neuve ✨",
+        "content": "<p>Le site est en pleine reconstruction, mais pas question de vous faire attendre : retrouvez dès à présent toute notre gamme premium de <strong>protections et classeurs</strong>.</p><p>Et très bientôt, le grand retour du <strong>scellé</strong> : ETB, displays, boosters et bien plus encore.</p>",
+        "button_text": "Je m'inscris",
+        "subtext": "Inscrivez-vous à la newsletter pour être les premiers informés des nouveautés.",
+        "background": "#1a1a1a",
+        "text_color": "#f7f9f9"
       }
     },
     "featured-collection": {
@@ -75,7 +88,7 @@
         "subheading": "",
         "title": "NOUVEAUTÉS",
         "content": "",
-        "link_url": "shopify://collections/japonais",
+        "link_url": "shopify://collections/all",
         "link_text": "Voir tout",
         "background": "",
         "background_gradient": "",
@@ -94,7 +107,7 @@
           "settings": {
             "logo_width": 100,
             "author": "Julien Dumont",
-            "content": "Je n’ai jamais été déçu de mes commandes chez Pokeseller14 !",
+            "content": "Je n’ai jamais été déçu de mes commandes chez VCOLLECT !",
             "show_rating": true,
             "rating": 5
           }
@@ -139,6 +152,7 @@
     },
     "rich_text_9GJYgh": {
       "type": "rich-text",
+      "disabled": true,
       "blocks": {
         "subheading_jwEFTm": {
           "type": "subheading",
@@ -160,7 +174,6 @@
         "subheading_jwEFTm",
         "heading_Kemthi"
       ],
-      "disabled": true,
       "settings": {
         "full_width": true,
         "content_width": "small",
@@ -172,6 +185,7 @@
     },
     "image-link-blocks": {
       "type": "image-link-blocks",
+      "disabled": true,
       "blocks": {
         "1664424046b00c932c-0": {
           "type": "item",
@@ -192,7 +206,7 @@
             "image": "shopify://shop_images/3_6960f2f6-cfb0-4247-bb9e-bfe45d77c497.png",
             "stretch_image": false,
             "link_text": "POKEMON FRANCAIS",
-            "link_url": "shopify://collections/promotions",
+            "link_url": "shopify://collections/pokemon-francais",
             "background": "#ffffff",
             "text_color": "#000000",
             "overlay_color": "#000000",
@@ -246,7 +260,6 @@
         "1664424046b00c932c-3",
         "e4a0ef18-1856-4ddd-83d8-871a60d7acac"
       ],
-      "disabled": true,
       "settings": {
         "full_width": false,
         "block_size": "large",
@@ -479,6 +492,7 @@
   },
   "order": [
     "slideshow",
+    "newsletter_reconstruction",
     "featured-collection",
     "press",
     "rich_text_9GJYgh",
