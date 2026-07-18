@@ -11,6 +11,7 @@
   "sections": {
     "slideshow": {
       "type": "slideshow",
+      "disabled": true,
       "blocks": {
         "image_KiHkNi": {
           "type": "image",
@@ -52,6 +53,10 @@
     },
     "newsletter_reconstruction": {
       "type": "newsletter",
+      "custom_css": [
+        ".section {background-image: linear-gradient(rgba(26, 26, 26, 0.78), rgba(26, 26, 26, 0.78)), url('https://vcollect.fr/cdn/shop/files/2.png?v=1747936559&width=2000'); background-size: cover; background-position: center;}",
+        "@media screen and (max-width: 699px) {.section {background-image: linear-gradient(rgba(26, 26, 26, 0.78), rgba(26, 26, 26, 0.78)), url('https://vcollect.fr/cdn/shop/files/2_39d0619c-3cc8-4831-9c3f-5c910dae557e.png?v=1747936588&width=1000');}}"
+      ],
       "settings": {
         "full_width": true,
         "show_icon": false,
