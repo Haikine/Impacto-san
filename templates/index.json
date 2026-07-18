@@ -11,7 +11,6 @@
   "sections": {
     "slideshow": {
       "type": "slideshow",
-      "disabled": true,
       "blocks": {
         "image_KiHkNi": {
           "type": "image",
@@ -39,6 +38,7 @@
       "block_order": [
         "image_KiHkNi"
       ],
+      "disabled": true,
       "settings": {
         "full_width": true,
         "allow_transparent_header": false,
@@ -54,18 +54,21 @@
     "newsletter_reconstruction": {
       "type": "newsletter",
       "custom_css": [
-        ".section {background-image: linear-gradient(rgba(26, 26, 26, 0.78), rgba(26, 26, 26, 0.78)), url('https://vcollect.fr/cdn/shop/files/2.png?v=1747936559&width=2000'); background-size: cover; background-position: center;}",
-        "@media screen and (max-width: 699px) {.section {background-image: linear-gradient(rgba(26, 26, 26, 0.78), rgba(26, 26, 26, 0.78)), url('https://vcollect.fr/cdn/shop/files/2_39d0619c-3cc8-4831-9c3f-5c910dae557e.png?v=1747936588&width=1000');}}"
+        ".section {background-image: linear-gradient( rgba(26, 26, 26, 0.78), rgba(26, 26, 26, 0.78) ), url(\"https://vcollect.fr/cdn/shop/files/2.png?v=1747936559&width=2000\"); background-size: cover; background-position: center;}",
+        "@media screen and (max-width: 699px) {.section {background-image: linear-gradient( rgba(26, 26, 26, 0.78), rgba(26, 26, 26, 0.78) ), url(\"https://vcollect.fr/cdn/shop/files/2_39d0619c-3cc8-4831-9c3f-5c910dae557e.png?v=1747936588&width=1000\"); }}"
       ],
       "settings": {
         "full_width": true,
         "show_icon": false,
-        "title": "VCOLLECT fait peau neuve ✨",
+        "title": "VCOLLECT fait peau neuve",
         "content": "<p>Le site est en pleine reconstruction, mais pas question de vous faire attendre : retrouvez dès à présent toute notre gamme premium de <strong>protections et classeurs</strong>.</p><p>Et très bientôt, le grand retour du <strong>scellé</strong> : ETB, displays, boosters et bien plus encore.</p>",
         "button_text": "Je m'inscris",
         "subtext": "Inscrivez-vous à la newsletter pour être les premiers informés des nouveautés.",
         "background": "#1a1a1a",
-        "text_color": "#f7f9f9"
+        "background_gradient": "",
+        "text_color": "#f7f9f9",
+        "button_background": "",
+        "button_text_color": ""
       }
     },
     "featured-collection": {
@@ -157,7 +160,6 @@
     },
     "rich_text_9GJYgh": {
       "type": "rich-text",
-      "disabled": true,
       "blocks": {
         "subheading_jwEFTm": {
           "type": "subheading",
@@ -179,6 +181,7 @@
         "subheading_jwEFTm",
         "heading_Kemthi"
       ],
+      "disabled": true,
       "settings": {
         "full_width": true,
         "content_width": "small",
@@ -190,7 +193,6 @@
     },
     "image-link-blocks": {
       "type": "image-link-blocks",
-      "disabled": true,
       "blocks": {
         "1664424046b00c932c-0": {
           "type": "item",
@@ -265,6 +267,7 @@
         "1664424046b00c932c-3",
         "e4a0ef18-1856-4ddd-83d8-871a60d7acac"
       ],
+      "disabled": true,
       "settings": {
         "full_width": false,
         "block_size": "large",
