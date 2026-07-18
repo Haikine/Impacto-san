@@ -15,7 +15,7 @@ NOTE TO DEVELOPERS: welcome to Impact theme! We hope that you will enjoy editing
 	{% include 'avada-seo' %}
 	<!-- /Added by AVADA SEO Suite --><!-- SEOAnt Speed Up Script -->{%- if shop.metafields.seoantAppSiteSpeedUpV2.switch == 1 -%}{% include 'SEOAnt-SpeedUp' %}{%- endif -%}<!-- /SEOAnt Speed Up Script -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="{{ settings.header_background }}">
 
     <title>{% if page_title == blank %}{{ shop.name }}{% else %}{{ page_title }}{% if current_page != 1 %} &ndash; {{ 'general.page' | t: page: current_page }}{% endif %}{% endif %}</title>
@@ -87,5 +87,28 @@ NOTE TO DEVELOPERS: welcome to Impact theme! We hope that you will enjoy editing
         {%- sections 'footer-group' -%}
       {%- endif -%}
     </main>
+
+    {%- comment -%}
+    Impact core override: policy pages (/policies/*) are rendered by Shopify from
+    Settings > Policies, whose content still mentions the legacy Pokeseller14 brand
+    and is not editable until admin rights are granted. Client-side rebrand as a
+    stopgap; remove once the policies are fixed in admin.
+    {%- endcomment -%}
+    {%- if request.path contains '/policies/' -%}
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+          let node;
+          while ((node = walker.nextNode())) {
+            if (/pokeseller/i.test(node.nodeValue)) {
+              node.nodeValue = node.nodeValue
+                .replace(/pokeseller\s*14\s*@gmail\.com/gi, 'vcollect@gmail.com')
+                .replace(/pokeseller\s*14/gi, 'VCOLLECT')
+                .replace(/pokeseller/gi, 'VCOLLECT');
+            }
+          }
+        });
+      </script>
+    {%- endif -%}
   </body>
 </html>
