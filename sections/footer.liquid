@@ -172,7 +172,8 @@
             </div>
           {%- endif -%}
 
-          <p class="footer__copyright text-sm text-subdued">© {{ 'now' | date: '%Y' }}, {{ shop.name }}. {{ powered_by_link }}</p>
+          {%- comment -%} Impact core override: shop.name is still "Pokeseller14" (store rename pending owner rights). Revert to shop.name once the store is renamed to VCOLLECT. {%- endcomment -%}
+          <p class="footer__copyright text-sm text-subdued">© {{ 'now' | date: '%Y' }}, VCOLLECT. {{ powered_by_link }}</p>
         </div>
       </div>
     </div>
