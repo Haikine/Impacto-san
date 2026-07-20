@@ -27,8 +27,8 @@ SAFETY GATE
 ********************************************
 
 gift_tiers_enabled must stay false whenever the automatic discount is paused, deleted or edited to no longer cover this
-variant. The gift carries a real 5 EUR price, and the discount is the only thing bringing it to 0. Enabled without a
-matching discount, this would add a priced line labelled as a gift and the customer would be charged for it.
+variant. The gift carries a real price, and the discount is the only thing bringing it to 0. Enabled without a matching
+discount, this would add a priced line labelled as a gift and the customer would be charged for it.
 
 ********************************************
 Configuration
@@ -36,9 +36,10 @@ Configuration
 
 * gift_variant_id must be ACTIVE and published to the Online Store, otherwise /cart/update.js answers 404 "Cannot find
   variant" and no gift is ever added. That is exactly how the previous app broke.
-* Thresholds are in cents of the shop currency (EUR). Other markets are converted at runtime.
-* The number of thresholds must not exceed the discount's per-order cap, or the bar would promise more than checkout
-  grants.
+* gift_step is in cents of the shop currency (EUR). Other markets are converted at runtime.
+* gift_step and gift_max mirror the Shopify discount: the amount that earns one gift, and its per-order limit. Both
+  live in the admin too, so they must be changed in both places. A lower value here means gifts the shopper earned are
+  never added; a higher one means extra units are added and then charged at checkout.
 {%- endcomment -%}
 
 {%- liquid
@@ -46,7 +47,8 @@ Configuration
 
   assign gift_variant_id = 50520683020616
   assign gift_reward = 'Booster offert'
-  assign gift_thresholds = '8000,16000' | split: ','
+  assign gift_step = 8000
+  assign gift_max = 10
 -%}
 
 {%- if gift_tiers_enabled -%}
@@ -78,9 +80,11 @@ Configuration
       echo gift_variant_id
       echo ',"reward":'
       echo gift_reward | json
-      echo ',"thresholds":['
-      echo gift_thresholds | join: ','
-      echo ']}'
+      echo ',"step":'
+      echo gift_step
+      echo ',"max":'
+      echo gift_max
+      echo '}'
     endcapture
   -%}
 

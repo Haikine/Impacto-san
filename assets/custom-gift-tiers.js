@@ -45,7 +45,7 @@ const CART_URL = `${window.Shopify.routes.root}cart.js`;
  */
 const STALE_RENDER_WINDOW = 1400;
 
-/** @type {{variantId: number, thresholds: number[], reward: string}|null} */
+/** @type {{variantId: number, step: number, max: number, reward: string}|null} */
 let config = null;
 let reconciling = false;
 
@@ -82,11 +82,16 @@ const eligibleSubtotal = (cart) => {
 
 /**
  * How many gifts the customer has earned at a given subtotal.
+ *
+ * One gift per completed step, which is exactly how the Shopify discount behaves,
+ * capped the same way its per-order limit is. Keeping the two in step matters: a
+ * cap lower here means gifts the shopper earned are never added, and a cap higher
+ * here means the extra units are added and then charged at checkout.
+ *
  * @param {number} subtotal - Eligible subtotal in cents
  * @returns {number} Number of gift units earned
  */
-const earnedQuantity = (subtotal) =>
-  config.thresholds.filter((threshold) => subtotal >= threshold).length;
+const earnedQuantity = (subtotal) => Math.min(config.max, Math.floor(subtotal / config.step));
 
 /**
  * Build the /cart/update.js payload that brings the gift line in line with the
@@ -189,7 +194,7 @@ const reconcile = async (cart) => {
 /**
  * Register the gift configuration. Called by every <gift-tiers-bar> instance but
  * only honoured once, since the drawer and the cart page both render the bar.
- * @param {{variantId: number, thresholds: number[], reward: string}} definition - Thresholds in shop-currency cents
+ * @param {{variantId: number, step: number, max: number, reward: string}} definition - Step in shop-currency cents
  * @returns {void}
  */
 const registerConfig = (definition) => {
@@ -197,16 +202,11 @@ const registerConfig = (definition) => {
     return;
   }
 
-  /* Thresholds are authored in the shop currency; other markets need converting,
+  /* The step is authored in the shop currency; other markets need converting,
      otherwise 80 EUR would silently become 80 CHF on the Swiss market */
   const rate = parseFloat(window.Shopify?.currency?.rate) || 1;
 
-  config = {
-    ...definition,
-    thresholds: definition.thresholds
-      .map((threshold) => Math.round(threshold * rate))
-      .sort((first, second) => first - second),
-  };
+  config = { ...definition, step: Math.round(definition.step * rate) };
 
   /* A returning shopper can land with a cart that already crossed a threshold */
   fetch(CART_URL)
@@ -263,21 +263,27 @@ class GiftTiersBar extends HTMLElement {
       return;
     }
 
-    const maxThreshold = config.thresholds[config.thresholds.length - 1];
-    const nextThreshold = config.thresholds.find((threshold) => subtotal < threshold);
+    const earned = earnedQuantity(subtotal);
+    const capReached = earned >= config.max;
 
-    messageElement.innerHTML = nextThreshold
-      ? this.getAttribute('unreached-message')
-          .replace('@@remaining@@', `<span class="bold text-accent">${formatMoney(nextThreshold - subtotal)}</span>`)
-          .replace('@@reward@@', config.reward)
-      : this.getAttribute('all-reached-message');
+    /* The bar tracks the current step rather than the whole run. With a cap of 10
+       a full-run bar would sit near empty for every realistic cart, and would say
+       nothing about the gift actually within reach. */
+    const earnedValue = earned * config.step;
+    const towardNext = subtotal - earnedValue;
+
+    messageElement.innerHTML = capReached
+      ? this.getAttribute('all-reached-message')
+      : this.getAttribute('unreached-message')
+          .replace('@@remaining@@', `<span class="bold text-accent">${formatMoney(config.step - towardNext)}</span>`)
+          .replace('@@reward@@', config.reward);
 
     await window.customElements.whenDefined('progress-bar');
     const progressBarElement = this.querySelector('progress-bar');
 
     if (progressBarElement) {
-      progressBarElement.valueMax = maxThreshold;
-      progressBarElement.valueNow = Math.min(subtotal, maxThreshold);
+      progressBarElement.valueMax = config.step;
+      progressBarElement.valueNow = capReached ? config.step : towardNext;
     }
   }
 }
