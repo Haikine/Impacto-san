@@ -17,6 +17,16 @@ Supported variables
   {%- assign line_max_quantity = line_item.variant.inventory_quantity -%}
 {%- endif -%}
 
+{%- comment -%}
+  Custom (not Impact): gift lines earned through the free gift tiers are driven by the cart subtotal, not by the
+  shopper. Editing or removing them would be undone on the next reconciliation, so the controls are replaced by a
+  static label. Keyed on the tag rather than a variant ID so adding another gift product needs no code change.
+{%- endcomment -%}
+{%- assign is_gift_line = false -%}
+{%- if line_item.product.tags contains 'cadeau-offert' -%}
+  {%- assign is_gift_line = true -%}
+{%- endif -%}
+
 <line-item class="line-item">
   {%- if line_item.image != blank -%}
     <div class="line-item__media-wrapper">
@@ -68,7 +78,9 @@ Supported variables
     {%- endunless -%}
 
     <div class="text-sm text-subdued sm:hidden">
-      {%- if line_item.url_to_remove -%}
+      {%- if is_gift_line -%}
+        {{- 'customer.order.quantity' | t }}: {{ line_item.quantity -}}
+      {%- elsif line_item.url_to_remove -%}
         <line-item-quantity class="h-stack justify-center gap-3">
           <input class="quantity-input" type="text" is="quantity-input" inputmode="numeric" {% if line_max_quantity %}max="{{ line_max_quantity }}"{% endif %} data-line-key="{{ line_item.key }}" aria-label="{{ 'cart.order.change_quantity' | t | escape }}" value="{{ line_item.quantity }}">
 
@@ -81,12 +93,27 @@ Supported variables
       {%- endif -%}
     </div>
 
-    {%- if line_item.line_level_discount_allocations != blank -%}
+    {%- comment -%}
+      Custom (not Impact): a "buy X get Y" discount attaches a zero-value allocation to the products that trigger it,
+      which Impact renders as a "(-0,00 €)" badge on a line that is not actually discounted. The promotion being
+      triggered is already visible through the gift itself, so only allocations worth something are shown.
+    {%- endcomment -%}
+    {%- assign has_visible_discount = false -%}
+    {%- for discount_allocation in line_item.line_level_discount_allocations -%}
+      {%- if discount_allocation.amount > 0 -%}
+        {%- assign has_visible_discount = true -%}
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if has_visible_discount -%}
       <ul class="contents" role="list">
         {%- for discount_allocation in line_item.line_level_discount_allocations -%}
-          <li class="badge">
-            {%- render 'icon' with 'discount' -%} {{ discount_allocation.discount_application.title }} (-{{ discount_allocation.amount | money }})
-          </li>
+          {%- if discount_allocation.amount > 0 -%}
+            <li class="badge">
+              {%- render 'icon' with 'discount' -%} {{ discount_allocation.discount_application.title }} (-{{ discount_allocation.amount | money }})
+            </li>
+          {%- endif -%}
         {%- endfor -%}
       </ul>
     {%- endif -%}
@@ -94,13 +121,17 @@ Supported variables
 
   {%- if show_desktop_quantity -%}
     <div class="line-item__actions text-subdued hidden sm:block">
-      <line-item-quantity class="v-stack gap-2">
-        <input class="quantity-input" type="text" is="quantity-input" inputmode="numeric" {% if line_max_quantity %}max="{{ line_max_quantity }}"{% endif %} data-line-key="{{ line_item.key }}" aria-label="{{ 'cart.order.change_quantity' | t | escape }}" value="{{ line_item.quantity }}">
+      {%- if is_gift_line -%}
+        <span class="text-sm">{{- 'customer.order.quantity' | t }}: {{ line_item.quantity -}}</span>
+      {%- else -%}
+        <line-item-quantity class="v-stack gap-2">
+          <input class="quantity-input" type="text" is="quantity-input" inputmode="numeric" {% if line_max_quantity %}max="{{ line_max_quantity }}"{% endif %} data-line-key="{{ line_item.key }}" aria-label="{{ 'cart.order.change_quantity' | t | escape }}" value="{{ line_item.quantity }}">
 
-        <span class="text-xs text-center">
-          <a href="{{ line_item.url_to_remove }}" class="link">{{ 'cart.order.remove' | t }}</a>
-        </span>
-      </line-item-quantity>
+          <span class="text-xs text-center">
+            <a href="{{ line_item.url_to_remove }}" class="link">{{ 'cart.order.remove' | t }}</a>
+          </span>
+        </line-item-quantity>
+      {%- endif -%}
     </div>
   {%- endif -%}
 </line-item>
