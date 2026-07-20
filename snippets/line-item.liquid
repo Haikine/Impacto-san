@@ -95,25 +95,17 @@ Supported variables
 
     {%- comment -%}
       Custom (not Impact): a "buy X get Y" discount attaches a zero-value allocation to the products that trigger it,
-      which Impact renders as a "(-0,00 €)" badge on a line that is not actually discounted. The promotion being
-      triggered is already visible through the gift itself, so only allocations worth something are shown.
+      and Shopify splits those lines to mark which units earned the gift. Keeping the badge on those lines is what
+      makes the split understandable, so every allocation is shown. Only the amount is dropped when it is zero, since
+      "(-0,00 €)" reads as a bug on a line that is not actually discounted.
     {%- endcomment -%}
-    {%- assign has_visible_discount = false -%}
-    {%- for discount_allocation in line_item.line_level_discount_allocations -%}
-      {%- if discount_allocation.amount > 0 -%}
-        {%- assign has_visible_discount = true -%}
-        {%- break -%}
-      {%- endif -%}
-    {%- endfor -%}
-
-    {%- if has_visible_discount -%}
+    {%- if line_item.line_level_discount_allocations != blank -%}
       <ul class="contents" role="list">
         {%- for discount_allocation in line_item.line_level_discount_allocations -%}
-          {%- if discount_allocation.amount > 0 -%}
-            <li class="badge">
-              {%- render 'icon' with 'discount' -%} {{ discount_allocation.discount_application.title }} (-{{ discount_allocation.amount | money }})
-            </li>
-          {%- endif -%}
+          <li class="badge">
+            {%- render 'icon' with 'discount' -%} {{ discount_allocation.discount_application.title }}
+            {%- if discount_allocation.amount > 0 %} (-{{ discount_allocation.amount | money }}){% endif -%}
+          </li>
         {%- endfor -%}
       </ul>
     {%- endif -%}

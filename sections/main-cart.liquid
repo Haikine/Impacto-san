@@ -22,6 +22,12 @@
           {%- if settings.cart_show_free_shipping_threshold -%}
             {%- render 'free-shipping-bar' -%}
           {%- endif -%}
+
+          {%- comment -%}
+            Custom (not Impact): gift tiers bar replacing the Monster Cart Upsell app.
+            The snippet gates itself, so this render call is inert until the discounts are live.
+          {%- endcomment -%}
+          {%- render 'gift-tiers-bar' -%}
         </div>
 
         <div class="cart-order">
@@ -52,13 +58,22 @@
                     <td>{%- render 'line-item', line_item: line_item -%}</td>
 
                     <td class="hidden align-center text-center text-subdued sm:table-cell">
-                      <line-item-quantity class="v-stack justify-center gap-2">
-                        <input class="quantity-input" type="text" is="quantity-input" inputmode="numeric" {% if line_max_quantity != blank %}max="{{ line_max_quantity }}"{% endif %} data-line-key="{{ line_item.key }}" aria-label="{{ 'cart.order.change_quantity' | t | escape }}" value="{{ line_item.quantity }}">
+                      {%- comment -%}
+                        Custom (not Impact): the cart page renders its own quantity column rather than reusing the one
+                        in line-item.liquid, so the gift lock has to be repeated here. Gift quantities follow the cart
+                        subtotal, not the shopper, and any edit would be undone by the next reconciliation.
+                      {%- endcomment -%}
+                      {%- if line_item.product.tags contains 'cadeau-offert' -%}
+                        {{ line_item.quantity }}
+                      {%- else -%}
+                        <line-item-quantity class="v-stack justify-center gap-2">
+                          <input class="quantity-input" type="text" is="quantity-input" inputmode="numeric" {% if line_max_quantity != blank %}max="{{ line_max_quantity }}"{% endif %} data-line-key="{{ line_item.key }}" aria-label="{{ 'cart.order.change_quantity' | t | escape }}" value="{{ line_item.quantity }}">
 
-                        <span class="text-xs">
-                          <a href="{{ line_item.url_to_remove }}" class="link">{{ 'cart.order.remove' | t }}</a>
-                        </span>
-                      </line-item-quantity>
+                          <span class="text-xs">
+                            <a href="{{ line_item.url_to_remove }}" class="link">{{ 'cart.order.remove' | t }}</a>
+                          </span>
+                        </line-item-quantity>
+                      {%- endif -%}
                     </td>
 
                     <td class="hidden align-center text-subdued text-end sm:table-cell">{{ line_item.final_line_price | money }}</td>
