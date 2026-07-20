@@ -35,6 +35,17 @@ the underlying logic of the menu.
     z-index: 10;
   }
 
+  {%- comment -%}
+  Custom vcollect: entrée de menu mise en avant. La couleur est forcée en !important car
+  link-faded-reverse fixe déjà une couleur au survol, qui la masquerait sinon.
+  {%- endcomment -%}
+  {%- if section.settings.highlight_menu_item != blank -%}
+    #shopify-section-{{ section.id }} .header__link--highlight {
+      color: {{ section.settings.highlight_menu_color }} !important;
+      opacity: 1 !important;
+    }
+  {%- endif -%}
+
   {%- if section.settings.enable_sticky -%}
     .shopify-section--announcement-bar ~ #shopify-section-{{ section.id }} {
       top: calc(var(--sticky-announcement-bar-enabled, 0) * var(--announcement-bar-height, 0px));
@@ -137,11 +148,20 @@ the underlying logic of the menu.
                       endif
 
                     endfor
+
+                    # Custom vcollect: met en avant une entrée de premier niveau, repérée par son
+                    # libellé exact. Piloté par un réglage de thème plutôt qu'en dur, pour que la
+                    # gamme mise en avant puisse changer sans toucher au code.
+                    assign highlight_downcase = section.settings.highlight_menu_item | strip | downcase
+                    assign is_highlighted = false
+                    if highlight_downcase != blank and highlight_downcase == link_title_downcase
+                      assign is_highlighted = true
+                    endif
                   %}
 
                   <li>
                     {%- if link.levels == 0 and mega_menu_block == '' -%}
-                      <a href="{{ link.url }}" class="bold link-faded-reverse" {% if link.current %}aria-current="page"{% endif %}>{{- link.title -}}</a>
+                      <a href="{{ link.url }}" class="bold link-faded-reverse{% if is_highlighted %} header__link--highlight{% endif %}" {% if link.current %}aria-current="page"{% endif %}>{{- link.title -}}</a>
                     {%- else -%}
                       {%- if mega_menu_block != '' -%}
                         {%- comment -%}
@@ -395,6 +415,18 @@ the underlying logic of the menu.
       "id": "menu",
       "label": "Menu",
       "default": "main-menu"
+    },
+    {
+      "type": "text",
+      "id": "highlight_menu_item",
+      "label": "Entrée de menu à mettre en avant",
+      "info": "Saisir le libellé exact d'une entrée de premier niveau pour la colorer, par exemple une gamme événementielle. Laisser vide pour désactiver."
+    },
+    {
+      "type": "color",
+      "id": "highlight_menu_color",
+      "label": "Couleur de l'entrée mise en avant",
+      "default": "#c8a24a"
     },
     {
       "type": "link_list",
