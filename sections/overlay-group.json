@@ -40,7 +40,10 @@
         "show_checkout_button": true,
         "recommendations_title": "N'oubliez surtout pas",
         "products": [
-          "pack-100-toploader-sleeves"
+          "paquet-de-100-toploader-premium",
+          "paquet-de-50-sleeves-premium",
+          "protection-acrylique-display",
+          "copie-classeur-360-toploader-zip-premium-pokeseller14"
         ],
         "product_card_background": "#f2f2f2",
         "product_card_text_color": ""

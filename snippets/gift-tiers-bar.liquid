@@ -1,0 +1,99 @@
+{%- comment -%}
+----------------------------------------------------------------------------------------------------------------------
+GIFT TIERS BAR
+----------------------------------------------------------------------------------------------------------------------
+
+Custom addition to the Impact theme, not part of Maestrooo's base code. Renders the progress bar toward the free gift
+tiers and hands the configuration to assets/custom-gift-tiers.js, which adds and removes the gift line.
+
+Replaces the "Monster Cart Upsell+Free Gifts" app. Kept in its own snippet so free-shipping-bar.liquid stays untouched
+and a future Impact update has nothing to conflict with.
+
+********************************************
+How the promise is actually kept
+********************************************
+
+This snippet and its script only decide how many gift units sit in the cart. The price comes from the Shopify automatic
+discount "Cadeau palier - 1 Booster offert par tranche de 80 EUR (max 2)", which was verified on the live store:
+
+* it repeats once per completed 80 EUR step, capped at 2 per order
+* any gift unit beyond the entitlement is charged at full price, so over-adding cannot be exploited
+
+A single gift product with a varying quantity is used rather than one product per tier, because two automatic discounts
+do not stack outside Shopify Plus. That was measured on this store: the second discount simply overrode the first.
+
+********************************************
+SAFETY GATE
+********************************************
+
+gift_tiers_enabled must stay false whenever the automatic discount is paused, deleted or edited to no longer cover this
+variant. The gift carries a real 5 EUR price, and the discount is the only thing bringing it to 0. Enabled without a
+matching discount, this would add a priced line labelled as a gift and the customer would be charged for it.
+
+********************************************
+Configuration
+********************************************
+
+* gift_variant_id must be ACTIVE and published to the Online Store, otherwise /cart/update.js answers 404 "Cannot find
+  variant" and no gift is ever added. That is exactly how the previous app broke.
+* Thresholds are in cents of the shop currency (EUR). Other markets are converted at runtime.
+* The number of thresholds must not exceed the discount's per-order cap, or the bar would promise more than checkout
+  grants.
+{%- endcomment -%}
+
+{%- liquid
+  assign gift_tiers_enabled = true
+
+  assign gift_variant_id = 50520683020616
+  assign gift_reward = 'Booster offert'
+  assign gift_thresholds = '8000,16000' | split: ','
+-%}
+
+{%- if gift_tiers_enabled -%}
+  {%- liquid
+    # The gift must not count toward the goal that unlocks it
+
+    assign eligible_subtotal = 0
+
+    for line_item in cart.items
+      unless line_item.variant_id == gift_variant_id
+        assign eligible_subtotal = eligible_subtotal | plus: line_item.final_line_price
+      endunless
+    endfor
+
+    assign cart_discount = 0
+
+    for discount_application in cart.cart_level_discount_applications
+      assign cart_discount = cart_discount | plus: discount_application.total_allocated_amount
+    endfor
+
+    assign eligible_subtotal = eligible_subtotal | minus: cart_discount
+
+    if eligible_subtotal < 0
+      assign eligible_subtotal = 0
+    endif
+
+    capture config_json
+      echo '{"variantId":'
+      echo gift_variant_id
+      echo ',"reward":'
+      echo gift_reward | json
+      echo ',"thresholds":['
+      echo gift_thresholds | join: ','
+      echo ']}'
+    endcapture
+  -%}
+
+  <gift-tiers-bar
+    class="free-shipping-bar gift-tiers-bar"
+    config="{{ config_json | escape }}"
+    subtotal="{{ eligible_subtotal }}"
+    unreached-message="{{ 'cart.gift_tiers.limit_unreached_html' | t: remaining_amount: '@@remaining@@', reward: '@@reward@@' | escape }}"
+    all-reached-message="{{ 'cart.gift_tiers.all_reached_html' | t | escape }}"
+  >
+    {%- comment -%}Placeholder filled in by JS, mirroring how free-shipping-bar does it{%- endcomment -%}
+    <span data-gift-tiers-message>&nbsp;</span>
+
+    <progress-bar class="progress-bar" role="progressbar" aria-valuemin="0" style="--progress: 0"></progress-bar>
+  </gift-tiers-bar>
+{%- endif -%}

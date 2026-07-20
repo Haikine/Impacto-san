@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "general": {
     "page": "Strana {{ page }}",
@@ -335,6 +344,10 @@
     "free_shipping_bar": {
       "limit_unreached_html": "Pokud nakoupíte za dalších {{ remaining_amount }}, získáte dopravu zdarma!",
       "limit_reached_html": "Máte nárok na dopravu zdarma."
+    },
+    "gift_tiers": {
+      "limit_unreached_html": "Add {{ remaining_amount }} to receive your {{ reward }}.",
+      "all_reached_html": "All your gifts are unlocked!"
     },
     "shipping_estimator": {
       "estimate_shipping": "Odhad ceny dopravy",
