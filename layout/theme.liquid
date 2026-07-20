@@ -96,18 +96,34 @@ NOTE TO DEVELOPERS: welcome to Impact theme! We hope that you will enjoy editing
     {%- endcomment -%}
     {%- if request.path contains '/policies/' -%}
       <script>
-        document.addEventListener('DOMContentLoaded', () => {
-          const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-          let node;
-          while ((node = walker.nextNode())) {
-            if (/pokeseller/i.test(node.nodeValue)) {
-              node.nodeValue = node.nodeValue
-                .replace(/pokeseller\s*14\s*@gmail\.com/gi, 'vcollect@gmail.com')
-                .replace(/pokeseller\s*14/gi, 'VCOLLECT')
-                .replace(/pokeseller/gi, 'VCOLLECT');
+        (() => {
+          /* Skip SCRIPT/STYLE nodes: app configs (Judge.me and friends) embed JSON there */
+          const rebrand = (value) =>
+            value
+              .replace(/pokeseller\s*14\s*@gmail\.com/gi, 'vcollect@gmail.com')
+              .replace(/pokeseller\s*14/gi, 'VCOLLECT')
+              .replace(/pokeseller/gi, 'VCOLLECT');
+
+          const clean = () => {
+            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+              acceptNode: (node) =>
+                /^(SCRIPT|STYLE|NOSCRIPT)$/.test(node.parentNode.nodeName)
+                  ? NodeFilter.FILTER_REJECT
+                  : NodeFilter.FILTER_ACCEPT,
+            });
+            let node;
+            while ((node = walker.nextNode())) {
+              if (/pokeseller/i.test(node.nodeValue)) node.nodeValue = rebrand(node.nodeValue);
             }
-          }
-        });
+            document.querySelectorAll('a[href*="okeseller" i]').forEach((link) => {
+              link.setAttribute('href', rebrand(link.getAttribute('href')));
+            });
+          };
+
+          document.addEventListener('DOMContentLoaded', clean);
+          /* App widgets inject their markup after load, so run once more when they settle */
+          window.addEventListener('load', () => setTimeout(clean, 1500));
+        })();
       </script>
     {%- endif -%}
   </body>
