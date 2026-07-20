@@ -1,0 +1,30 @@
+{%- comment -%}
+----------------------------------------------------------------------------------------------------------------------
+CUSTOM PAYMENT ICONS
+----------------------------------------------------------------------------------------------------------------------
+
+Custom addition (not part of Impact core). Replaces the "Payment icons" block of the Buy Box app so the app can be
+uninstalled. Uses shop.enabled_payment_types, the same source the theme already uses in the footer and the cart, so the
+icons always reflect the payment methods actually enabled on the store.
+
+********************************************
+Supported variables
+********************************************
+
+* block: the section block holding the settings (required)
+{%- endcomment -%}
+
+{%- if shop.enabled_payment_types.size > 0 -%}
+  <div class="custom-payment-icons" style="
+    --cpi-icon-size: {{ block.settings.icon_size }}px;
+    --cpi-gap: {{ block.settings.min_gap }}px;
+    --cpi-alignment: {{ block.settings.alignment }};
+    --cpi-max-width: {{ block.settings.max_width }};
+    --cpi-margin-top: {{ block.settings.margin_top }}px;
+    --cpi-margin-bottom: {{ block.settings.margin_bottom }}px;
+  " {{ block.shopify_attributes }}>
+    {%- for type in shop.enabled_payment_types -%}
+      {{- type | payment_type_svg_tag -}}
+    {%- endfor -%}
+  </div>
+{%- endif -%}

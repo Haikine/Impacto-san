@@ -250,6 +250,23 @@
           </div>
         {%- endif -%}
 
+      {%- comment -%}
+        Impact core addition: custom blocks replacing the Buy Box app. See the matching `custom_*` entries
+        in the main-product schema and the `snippets/custom-*.liquid` files.
+      {%- endcomment -%}
+      {%- when 'custom_inventory_bar' -%}
+        {%- render 'custom-inventory-bar', product: product, form_id: product_form_id, block: block -%}
+
+      {%- when 'custom_payment_icons' -%}
+        {%- render 'custom-payment-icons', block: block -%}
+
+      {%- when 'custom_trust_badges' -%}
+        {%- render 'custom-trust-badges', block: block -%}
+
+      {%- when 'custom_info_wrapper' -%}
+        {%- comment -%}Styling only: the box is drawn by CSS in the main-product section.{%- endcomment -%}
+        <div hidden {{ block.shopify_attributes }}></div>
+
       {%- when 'liquid' -%}
         {%- if block.settings.liquid != blank -%}
           <div class="product-info__liquid" {{ block.shopify_attributes }}>

@@ -1,0 +1,70 @@
+{%- comment -%}
+----------------------------------------------------------------------------------------------------------------------
+CUSTOM INVENTORY BAR
+----------------------------------------------------------------------------------------------------------------------
+
+Custom addition (not part of Impact core). Replaces the "Inventory bar" block of the Buy Box app so the app can be
+uninstalled. Renders one row per variant inside <variant-inventory>, which is the theme's native element: it hides every
+direct child whose data-variant-id does not match the selected variant, so no extra JavaScript is needed here.
+
+Only variants with inventory tracking enabled and a positive quantity get a bar. Untracked variants would report a
+quantity of 0, so showing a bar for them would be misleading.
+
+********************************************
+Supported variables
+********************************************
+
+* product: the product from which the inventory is extracted (required)
+* form_id: the form ID linked to this input (required for variant switching)
+* block: the section block holding the settings (required)
+{%- endcomment -%}
+
+{%- assign max_quantity = block.settings.max_quantity | at_least: 1 -%}
+{%- assign low_threshold = block.settings.low_threshold -%}
+{%- assign critical_threshold = block.settings.critical_threshold -%}
+
+<variant-inventory {% if form_id %}form="{{ form_id }}"{% endif %} class="custom-inventory-bar" style="
+  --cib-track-color: {{ block.settings.track_color }};
+  --cib-height: {{ block.settings.bar_height }}px;
+  --cib-radius: {{ block.settings.bar_radius }}px;
+  --cib-font-size: {{ block.settings.font_size }}px;
+  --cib-max-width: {{ block.settings.max_width }};
+  --cib-margin-top: {{ block.settings.margin_top }}px;
+  --cib-margin-bottom: {{ block.settings.margin_bottom }}px;
+" {{ block.shopify_attributes }}>
+  {%- for variant in product.variants -%}
+    {%- if variant.inventory_management == blank or variant.inventory_quantity <= 0 -%}
+      {%- continue -%}
+    {%- endif -%}
+
+    {%- assign quantity = variant.inventory_quantity -%}
+
+    {%- if quantity > low_threshold -%}
+      {%- assign state_color = block.settings.high_color -%}
+      {%- assign state_text = block.settings.high_text -%}
+    {%- elsif quantity > critical_threshold -%}
+      {%- assign state_color = block.settings.low_color -%}
+      {%- assign state_text = block.settings.low_text -%}
+    {%- else -%}
+      {%- assign state_color = block.settings.critical_color -%}
+      {%- assign state_text = block.settings.critical_text -%}
+    {%- endif -%}
+
+    {%- assign fill_percent = quantity | times: 100 | divided_by: max_quantity | at_most: 100 | at_least: 1 -%}
+
+    <div
+      data-variant-id="{{ variant.id }}"
+      {% unless variant == product.selected_or_first_available_variant %}hidden{% endunless %}
+      class="custom-inventory-bar__item"
+      style="--cib-state-color: {{ state_color }};"
+    >
+      <span class="custom-inventory-bar__text">
+        {{- state_text | replace: '%IC%', quantity -}}
+      </span>
+
+      <div class="custom-inventory-bar__track">
+        <div class="custom-inventory-bar__fill" style="width: {{ fill_percent }}%;"></div>
+      </div>
+    </div>
+  {%- endfor -%}
+</variant-inventory>

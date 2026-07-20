@@ -1,0 +1,49 @@
+{%- comment -%}
+----------------------------------------------------------------------------------------------------------------------
+CUSTOM TRUST BADGES
+----------------------------------------------------------------------------------------------------------------------
+
+Custom addition (not part of Impact core). Replaces the "Trust badges" block of the Buy Box app so the app can be
+uninstalled. Icons come from the theme's own icon snippet instead of the app CDN, whose asset URLs stop resolving once
+the app is removed.
+
+********************************************
+Supported variables
+********************************************
+
+* block: the section block holding the settings (required)
+{%- endcomment -%}
+
+{%- capture badge_indexes -%}1,2,3{%- endcapture -%}
+{%- assign badge_indexes = badge_indexes | split: ',' -%}
+
+{%- assign has_badge = false -%}
+{%- for index in badge_indexes -%}
+  {%- assign text_key = 'text_' | append: index -%}
+  {%- if block.settings[text_key] != blank -%}
+    {%- assign has_badge = true -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- if has_badge -%}
+  <ul class="custom-trust-badges" style="
+    --ctb-icon-size: {{ block.settings.icon_size }}px;
+    --ctb-color: {{ block.settings.text_color }};
+    --ctb-font-size: {{ block.settings.font_size }}px;
+    --ctb-max-width: {{ block.settings.max_width }};
+    --ctb-margin-top: {{ block.settings.margin_top }}px;
+    --ctb-margin-bottom: {{ block.settings.margin_bottom }}px;
+  " {{ block.shopify_attributes }}>
+    {%- for index in badge_indexes -%}
+      {%- assign icon_key = 'icon_' | append: index -%}
+      {%- assign text_key = 'text_' | append: index -%}
+
+      {%- if block.settings[text_key] != blank -%}
+        <li class="custom-trust-badges__item">
+          {%- render 'icon' with block.settings[icon_key], width: block.settings.icon_size, height: block.settings.icon_size -%}
+          <div class="custom-trust-badges__text">{{ block.settings[text_key] }}</div>
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+{%- endif -%}
