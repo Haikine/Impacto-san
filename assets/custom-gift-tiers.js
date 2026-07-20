@@ -180,6 +180,7 @@ const reconcile = async (cart) => {
   /* The theme's delayed write is scheduled from the event we are reacting to, not
      from our own requests, so count the window from here */
   const windowOpenedAt = performance.now();
+  const giftsOnEntry = total;
 
   try {
     /* Let the drawer declare which sections it needs re-rendered, exactly as the
@@ -223,6 +224,18 @@ const reconcile = async (cart) => {
     }
 
     lastSubtotal = eligibleSubtotal(current);
+
+    const giftsChanged = giftUnits(current).total !== giftsOnEntry;
+
+    /* The cart page changes a quantity by navigating to /cart/change, so it renders
+       before we have touched the gift and then has no way to update itself: it does
+       not listen for cart:refresh, only the drawer does. Reloading is the honest
+       fix there. Guarded on an actual change so the probe's own round trip, which
+       ends where it started, cannot loop the page. */
+    if (giftsChanged && window.themeVariables?.settings?.pageType === 'cart') {
+      window.location.reload();
+      return;
+    }
 
     document.documentElement.dispatchEvent(
       new CustomEvent('cart:change', {
