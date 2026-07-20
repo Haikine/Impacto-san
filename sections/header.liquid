@@ -73,6 +73,30 @@ the underlying logic of the menu.
       }
     }
   {%- endif -%}
+
+  {%- comment -%}
+  CUSTOM (vcollect): desktop-only two-row header. Impact only ships single-row layouts, which made the
+  header very tall because the logo, the navigation and the icons all had to fit on one line. Row 1 keeps
+  the (small) logo aligned with the secondary nav and the icons, row 2 gives the main navigation the full
+  container width. Implemented by overriding --header-grid-template only, so Impact's markup stays intact
+  and future theme updates remain easy to merge.
+  {%- endcomment -%}
+  @media screen and (min-width: 1150px) {
+    #shopify-section-{{ section.id }} {
+      --header-grid-template: "logo secondary-nav" "main-nav main-nav" / minmax(0, 1fr) auto;
+      --header-padding-block: {% if section.settings.reduce_padding %}var(--spacing-3){% else %}var(--spacing-4-5){% endif %};
+    }
+
+    #shopify-section-{{ section.id }} .header__wrapper {
+      row-gap: var(--spacing-3);
+    }
+
+    /* The nav sits in a flex icon-list wrapper, so both levels need to stretch to fill the row */
+    #shopify-section-{{ section.id }} .header__main-nav > .header__icon-list,
+    #shopify-section-{{ section.id }} .header__main-nav .header__link-list {
+      width: 100%;
+    }
+  }
 </style>
 
 <height-observer variable="header">
