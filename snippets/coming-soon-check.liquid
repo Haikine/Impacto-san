@@ -1,0 +1,37 @@
+{%- comment -%}
+----------------------------------------------------------------------------------------------------------------------
+COMING SOON CHECK (custom vcollect)
+----------------------------------------------------------------------------------------------------------------------
+
+Outputs the string "true" when a product has an official release date set in the future, and nothing otherwise.
+
+Isolated in its own snippet on purpose: the badge, the buy buttons and the waitlist form must all derive "coming soon"
+from the exact same rule. Duplicating the date comparison would let them drift apart and show a badge on a product that
+can already be bought.
+
+Driven by vcollect.date_sortie rather than by the template_suffix, so a product flips to normal sale on its release day
+without anyone editing it.
+
+Usage:
+  {%- capture is_coming_soon -%}{%- render 'coming-soon-check', product: product -%}{%- endcapture -%}
+  {%- assign is_coming_soon = is_coming_soon | strip -%}
+
+********************************************
+Supported variables
+********************************************
+
+* product: the product to test
+{%- endcomment -%}
+
+{%- liquid
+  assign release_date = product.metafields.vcollect.date_sortie.value
+
+  if release_date != blank
+    assign release_timestamp = release_date | date: '%s' | plus: 0
+    assign now_timestamp = 'now' | date: '%s' | plus: 0
+
+    if release_timestamp > now_timestamp
+      echo 'true'
+    endif
+  endif
+-%}

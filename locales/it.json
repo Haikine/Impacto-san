@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "general": {
     "page": "Pagina {{ page }}",
@@ -325,6 +334,10 @@
     "free_shipping_bar": {
       "limit_unreached_html": "Ti mancano {{ remaining_amount }} per ottenere la spedizione gratuita!",
       "limit_reached_html": "Hai diritto alla spedizione gratuita!"
+    },
+    "gift_tiers": {
+      "limit_unreached_html": "Add {{ remaining_amount }} to receive your {{ reward }}.",
+      "all_reached_html": "All your gifts are unlocked!"
     },
     "shipping_estimator": {
       "estimate_shipping": "Calcola spedizione",

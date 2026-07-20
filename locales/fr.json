@@ -86,6 +86,7 @@
       "unavailable_button": "Indisponible",
       "added_to_cart": "Produit ajouté au panier !",
       "sold_out_badge": "En rupture",
+      "coming_soon_badge": "Bientôt disponible",
       "on_sale_badge": "Promo",
       "discount_badge_html": "Economisez {{ savings }}",
       "sku": "SKU:",
@@ -99,6 +100,13 @@
         "one": "{{ count }} couleur",
         "other": "{{ count }} couleurs"
       }
+    },
+    "waitlist": {
+      "intro": "Rejoins la liste d'attente pour ne pas manquer la mise en vente.",
+      "release_date": "Sortie officielle le {{ date }}",
+      "email_label": "Ton adresse e-mail",
+      "submit": "Rejoindre la liste d'attente",
+      "success": "C'est noté ! Tu seras prévenu par e-mail dès la mise en vente."
     },
     "gallery": {
       "close": "Fermer la galerie",
@@ -334,6 +342,10 @@
     "free_shipping_bar": {
       "limit_unreached_html": "Dépensez {{ remaining_amount }} de plus pour bénéficier des frais de livraison offerts.",
       "limit_reached_html": "Frais de livraison offerts !"
+    },
+    "gift_tiers": {
+      "limit_unreached_html": "Ajoutez {{ remaining_amount }} pour recevoir votre {{ reward }}.",
+      "all_reached_html": "Tous vos cadeaux sont débloqués !"
     },
     "shipping_estimator": {
       "estimate_shipping": "Estimer les frais de livraison",

@@ -144,10 +144,10 @@
         "rating",
         "payment_terms",
         "separator",
-        "description",
         "variant_picker",
         "quantity_selector",
         "buy_buttons",
+        "description",
         "custom_payment_icons",
         "custom_trust_badges",
         "custom_info_wrapper"
