@@ -74,7 +74,9 @@
         "transparent_logo": "shopify://shop_images/11dc2150-4cc2-439c-a669-bbaaf8956ce4-removebg-preview.png",
         "reduce_padding": true,
         "background_opacity": 100,
-        "background_blur_radius": 12
+        "background_blur_radius": 12,
+        "highlight_menu_item": "30 ans Pokémon",
+        "highlight_menu_color": "#c8a24a"
       }
     }
   },
