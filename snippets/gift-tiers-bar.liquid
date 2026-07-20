@@ -37,9 +37,12 @@ Configuration
 * gift_variant_id must be ACTIVE and published to the Online Store, otherwise /cart/update.js answers 404 "Cannot find
   variant" and no gift is ever added. That is exactly how the previous app broke.
 * gift_step is in cents of the shop currency (EUR). Other markets are converted at runtime.
-* gift_step and gift_max mirror the Shopify discount: the amount that earns one gift, and its per-order limit. Both
-  live in the admin too, so they must be changed in both places. A lower value here means gifts the shopper earned are
-  never added; a higher one means extra units are added and then charged at checkout.
+
+How many gifts a shopper gets is NOT configured here. The automatic discount in the admin decides, and the script reads
+the answer back from the cart, so raising its per-order limit or moving its threshold needs no change to this file.
+
+gift_step only drives the sentence in the progress bar, "spend X more for a booster". Leave it equal to the discount's
+threshold to keep that sentence truthful. If it drifts, the wording is wrong but the cart and the checkout are not.
 {%- endcomment -%}
 
 {%- liquid
@@ -48,7 +51,6 @@ Configuration
   assign gift_variant_id = 50520683020616
   assign gift_reward = 'Booster offert'
   assign gift_step = 8000
-  assign gift_max = 10
 -%}
 
 {%- if gift_tiers_enabled -%}
@@ -75,6 +77,17 @@ Configuration
       assign eligible_subtotal = 0
     endif
 
+    # Gifts Shopify is actually giving away right now, so the first paint matches
+    # the cart before any script runs
+
+    assign gift_earned = 0
+
+    for line_item in cart.items
+      if line_item.variant_id == gift_variant_id and line_item.final_line_price == 0
+        assign gift_earned = gift_earned | plus: line_item.quantity
+      endif
+    endfor
+
     capture config_json
       echo '{"variantId":'
       echo gift_variant_id
@@ -82,8 +95,6 @@ Configuration
       echo gift_reward | json
       echo ',"step":'
       echo gift_step
-      echo ',"max":'
-      echo gift_max
       echo '}'
     endcapture
   -%}
@@ -92,6 +103,7 @@ Configuration
     class="free-shipping-bar gift-tiers-bar"
     config="{{ config_json | escape }}"
     subtotal="{{ eligible_subtotal }}"
+    earned="{{ gift_earned }}"
     unreached-message="{{ 'cart.gift_tiers.limit_unreached_html' | t: remaining_amount: '@@remaining@@', reward: '@@reward@@' | escape }}"
     all-reached-message="{{ 'cart.gift_tiers.all_reached_html' | t | escape }}"
   >

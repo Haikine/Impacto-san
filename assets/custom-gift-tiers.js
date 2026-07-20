@@ -10,44 +10,60 @@
  * gifts entirely client-side and kept displaying "you unlocked a booster" long
  * after the gift products had been archived, with nothing added to the cart.
  *
- * Two halves, deliberately separated:
+ * ********************************************
+ * Shopify owns the rule, this file owns nothing
+ * ********************************************
  *
- *   1. A reconciler that keeps the gift line in sync with the cart subtotal. It
- *      decides presence and quantity only, never price.
- *   2. A <gift-tiers-bar> element that renders progress toward the next tier.
+ * The automatic discount configured in the admin is the only definition of who
+ * earns how many gifts. This script never recomputes it. An earlier version did,
+ * by mirroring the threshold and the per-order cap here, and the two drifted the
+ * first time the cap was raised in the admin: the discount allowed ten, the theme
+ * still added two, and nothing in the storefront explained why.
  *
- * Pricing stays authoritative on Shopify's side: a single automatic "Buy X get
- * Y" discount grants one free gift per threshold step, capped per order. That
- * discount was verified against the live store to behave as follows:
+ * Instead we ask. Shopify answers precisely: put more gift units in the cart than
+ * are owed and it discounts exactly the number earned while charging the rest, on
+ * its own separate line. So the reconciler over-shoots by a few units, reads back
+ * how many Shopify actually gave away, and trims to that number. Whatever the
+ * admin says today, the cart follows, including a rule this file has never heard
+ * of. Raising the cap or moving the threshold needs no deploy.
  *
- *   - it repeats once per completed step (2 free at 174 EUR, 3 at 244 EUR)
- *   - any gift unit beyond the entitlement is charged at full price
+ * The intermediate over-shoot never reaches the screen: the drawer is only asked
+ * to re-render once the trimming is done.
  *
- * So if this script breaks, or a shopper hand-edits the cart, checkout still
- * charges correctly. That split is the whole reason for the rewrite: the old
- * app made the browser the only source of truth, so a silent failure became a
- * broken promise to the customer.
- *
- * One gift product with a varying quantity, rather than one product per tier:
- * two automatic discounts do not stack outside Shopify Plus, which was measured
- * on this store, so a second discount would simply have overridden the first.
+ * Pricing stays authoritative on Shopify's side throughout. If this script fails,
+ * or a shopper hand-edits the cart, checkout still charges correctly.
  */
 
 const CART_UPDATE_URL = `${window.Shopify.routes.root}cart/update.js`;
 const CART_URL = `${window.Shopify.routes.root}cart.js`;
 
 /**
+ * How many extra units to put in the cart when asking Shopify how many it owes.
+ * Big enough to clear several thresholds at once so a large cart settles in one
+ * round trip, small enough that the surplus is trivial if a request is lost.
+ */
+const PROBE_HEADROOM = 3;
+
+/** Stops a misbehaving discount from looping the probe forever. */
+const MAX_PROBES = 4;
+
+/**
  * Impact rewrites the drawer's line items 1250 ms after a cart:change, reusing the
- * markup it fetched before we added the gift (see CartDrawer._onCartChanged in
+ * markup it fetched before we touched the gift (see CartDrawer._onCartChanged in
  * theme.js). Our own re-render lands earlier, so that delayed write would put the
- * stale, giftless markup back and the shopper would have to reload to see the gift.
- * Refreshing past that window is what keeps the drawer truthful.
+ * stale markup back and the shopper would have to reload to see the gift.
  */
 const STALE_RENDER_WINDOW = 1400;
 
-/** @type {{variantId: number, step: number, max: number, reward: string}|null} */
+/** @type {{variantId: number, step: number, reward: string}|null} */
 let config = null;
 let reconciling = false;
+
+/**
+ * Eligible subtotal at the last completed reconciliation, so we only pay for a
+ * probe when the shopper spent more than they had before.
+ */
+let lastSubtotal = null;
 
 /**
  * Format an amount in cents using the active market's currency.
@@ -61,7 +77,7 @@ const formatMoney = (cents) =>
   }).format(cents / 100);
 
 /**
- * Sum the cart lines that count toward a tier, excluding the gift itself.
+ * Sum the cart lines that count toward a gift, excluding the gift itself.
  * @param {Object} cart - Cart payload from the Ajax API
  * @returns {number} Eligible subtotal in cents
  */
@@ -81,51 +97,63 @@ const eligibleSubtotal = (cart) => {
 };
 
 /**
- * How many gifts the customer has earned at a given subtotal.
- *
- * One gift per completed step, which is exactly how the Shopify discount behaves,
- * capped the same way its per-order limit is. Keeping the two in step matters: a
- * cap lower here means gifts the shopper earned are never added, and a cap higher
- * here means the extra units are added and then charged at checkout.
- *
- * @param {number} subtotal - Eligible subtotal in cents
- * @returns {number} Number of gift units earned
- */
-const earnedQuantity = (subtotal) => Math.min(config.max, Math.floor(subtotal / config.step));
-
-/**
- * Build the /cart/update.js payload that brings the gift line in line with the
- * subtotal. Shopify may hold the gift across several lines, so every matching
- * line is addressed and the surplus collapsed into one.
+ * Split the gift units into those Shopify is giving away and those it is charging.
+ * Shopify keeps the two on separate lines, so each line is all-or-nothing.
  * @param {Object} cart - Cart payload from the Ajax API
- * @param {number} subtotal - Eligible subtotal in cents
- * @returns {Object} Updates keyed by line key or variant ID, empty when nothing to do
+ * @returns {{total: number, free: number, lines: Array<Object>}} Gift unit counts
  */
-const buildUpdates = (cart, subtotal) => {
+const giftUnits = (cart) => {
   const lines = cart.items.filter((item) => item.variant_id === config.variantId);
-  const current = lines.reduce((sum, line) => sum + line.quantity, 0);
-  const desired = earnedQuantity(subtotal);
 
-  if (current === desired) {
-    return {};
-  }
-
-  if (lines.length === 0) {
-    /* update.js creates the line when the variant isn't in the cart yet */
-    return { [config.variantId]: desired };
-  }
-
-  const updates = {};
-
-  lines.forEach((line, index) => {
-    updates[line.key] = index === 0 ? desired : 0;
-  });
-
-  return updates;
+  return {
+    lines,
+    total: lines.reduce((sum, line) => sum + line.quantity, 0),
+    free: lines
+      .filter((line) => line.final_line_price === 0)
+      .reduce((sum, line) => sum + line.quantity, 0),
+  };
 };
 
 /**
- * Add or remove gift units so the cart matches what the customer has earned.
+ * Set the gift to an exact number of units and return the cart Shopify answers with.
+ * @param {Object} cart - Current cart payload
+ * @param {number} quantity - Desired number of gift units
+ * @param {Array<string>} sections - Theme sections to bundle into the response
+ * @returns {Promise<Object|null>} Updated cart, or null when Shopify refused
+ */
+const setGiftQuantity = async (cart, quantity, sections) => {
+  const { lines } = giftUnits(cart);
+  const updates = {};
+
+  if (lines.length === 0) {
+    /* update.js creates the line when the variant isn't in the cart yet */
+    updates[config.variantId] = quantity;
+  } else {
+    /* Key by line key: Shopify splits gifts across lines, and this collapses them
+       back into one instead of letting the surplus drift */
+    lines.forEach((line, index) => {
+      updates[line.key] = index === 0 ? quantity : 0;
+    });
+  }
+
+  const response = await fetch(CART_UPDATE_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ updates, sections }),
+  });
+
+  if (!response.ok) {
+    /* A 404 "Cannot find variant" means the gift is unpublished or archived, which
+       is precisely how the previous app failed. Say so rather than pretend. */
+    console.warn('[gift-tiers] cart update refused:', response.status, await response.text());
+    return null;
+  }
+
+  return response.json();
+};
+
+/**
+ * Bring the gift quantity to whatever Shopify is willing to give away.
  * @param {Object} cart - Cart payload from the Ajax API
  * @returns {Promise<void>}
  */
@@ -134,17 +162,23 @@ const reconcile = async (cart) => {
     return;
   }
 
-  const updates = buildUpdates(cart, eligibleSubtotal(cart));
+  const subtotal = eligibleSubtotal(cart);
+  const { total, free } = giftUnits(cart);
 
-  if (Object.keys(updates).length === 0) {
+  /* Shopify has already priced this cart. If it is charging for gift units, that
+     is the answer, no probe needed. If everything is free and the shopper has not
+     spent more than last time, there is nothing new to earn either. */
+  const needsTrim = total > free;
+  const mightEarnMore = lastSubtotal === null || subtotal > lastSubtotal;
+
+  if (!needsTrim && !mightEarnMore) {
     return;
   }
 
   reconciling = true;
 
   /* The theme's delayed write is scheduled from the event we are reacting to, not
-     from our own request, so count the window from here rather than from the end
-     of the update. Saves the shopper the round trip we just spent. */
+     from our own requests, so count the window from here */
   const windowOpenedAt = performance.now();
 
   try {
@@ -155,30 +189,50 @@ const reconcile = async (cart) => {
       new CustomEvent('cart:prepare-bundled-sections', { bubbles: true, detail: { sections } })
     );
 
-    const response = await fetch(CART_UPDATE_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ updates, sections }),
-    });
+    let current = cart;
+    let settled = false;
 
-    if (!response.ok) {
-      /* A 404 "Cannot find variant" means the gift is unpublished or archived,
-         which is precisely how the previous app failed. Leave the cart alone and
-         say so in the console rather than showing an unfulfilled promise. */
-      console.warn('[gift-tiers] cart update refused:', response.status, await response.text());
-      return;
+    for (let probe = 0; probe < MAX_PROBES && !settled; probe += 1) {
+      const units = giftUnits(current);
+
+      if (units.total > units.free) {
+        /* Shopify is charging for the surplus: keep exactly what it gave away */
+        if (units.total !== units.free) {
+          const trimmed = await setGiftQuantity(current, units.free, sections);
+          if (!trimmed) return;
+          current = trimmed;
+        }
+        settled = true;
+        break;
+      }
+
+      /* Everything in the cart is free, so ask whether more would be */
+      const asked = await setGiftQuantity(current, units.total + PROBE_HEADROOM, sections);
+      if (!asked) return;
+      current = asked;
+
+      const answer = giftUnits(current);
+
+      if (answer.free < answer.total) {
+        const trimmed = await setGiftQuantity(current, answer.free, sections);
+        if (!trimmed) return;
+        current = trimmed;
+        settled = true;
+      }
+      /* Otherwise every probed unit came back free: loop and ask for more */
     }
 
-    const updatedCart = await response.json();
+    lastSubtotal = eligibleSubtotal(current);
 
     document.documentElement.dispatchEvent(
       new CustomEvent('cart:change', {
         bubbles: true,
-        detail: { baseEvent: 'gift-tiers:reconcile', cart: updatedCart },
+        detail: { baseEvent: 'gift-tiers:reconcile', cart: current },
       })
     );
 
-    /* Have the drawer re-fetch itself once the theme's delayed write has passed */
+    /* Have the drawer re-fetch itself once the theme's delayed write has passed.
+       This is also what keeps the probe's over-shoot off the screen. */
     const remaining = Math.max(0, STALE_RENDER_WINDOW - (performance.now() - windowOpenedAt));
 
     setTimeout(() => {
@@ -194,7 +248,7 @@ const reconcile = async (cart) => {
 /**
  * Register the gift configuration. Called by every <gift-tiers-bar> instance but
  * only honoured once, since the drawer and the cart page both render the bar.
- * @param {{variantId: number, step: number, max: number, reward: string}} definition - Step in shop-currency cents
+ * @param {{variantId: number, step: number, reward: string}} definition - Step in shop-currency cents
  * @returns {void}
  */
 const registerConfig = (definition) => {
@@ -225,8 +279,8 @@ document.addEventListener('cart:change', (event) => {
 });
 
 /**
- * Progress bar toward the next gift tier. Display only: it never writes to the
- * cart, so a rendering bug cannot cost the merchant stock.
+ * Progress bar toward the next gift. Display only: it never writes to the cart,
+ * so a wrong step here costs a wrong sentence, never a wrong charge.
  */
 class GiftTiersBar extends HTMLElement {
   connectedCallback() {
@@ -240,7 +294,7 @@ class GiftTiersBar extends HTMLElement {
     this._onCartChangedListener = this._onCartChanged.bind(this);
     document.addEventListener('cart:change', this._onCartChangedListener);
 
-    this.render(parseInt(this.getAttribute('subtotal'), 10) || 0);
+    this.render(parseInt(this.getAttribute('subtotal'), 10) || 0, parseInt(this.getAttribute('earned'), 10) || 0);
   }
 
   disconnectedCallback() {
@@ -248,34 +302,33 @@ class GiftTiersBar extends HTMLElement {
   }
 
   _onCartChanged(event) {
-    this.render(eligibleSubtotal(event.detail.cart));
+    this.render(eligibleSubtotal(event.detail.cart), giftUnits(event.detail.cart).free);
   }
 
   /**
-   * Paint the bar and the message for a given subtotal.
+   * Paint the bar and the message.
    * @param {number} subtotal - Eligible subtotal in cents
+   * @param {number} earned - Gift units Shopify is currently giving away
    * @returns {Promise<void>}
    */
-  async render(subtotal) {
+  async render(subtotal, earned) {
     const messageElement = this.querySelector('[data-gift-tiers-message]');
 
     if (!messageElement || !config) {
       return;
     }
 
-    const earned = earnedQuantity(subtotal);
-    const capReached = earned >= config.max;
+    /* The step only drives the sentence. When Shopify hands out fewer gifts than
+       the step suggests, its per-order cap has been reached, and promising another
+       one would be a lie, so the bar switches to its "all unlocked" wording. */
+    const expected = Math.floor(subtotal / config.step);
+    const capped = earned > 0 && earned < expected;
+    const towardNext = subtotal - earned * config.step;
 
-    /* The bar tracks the current step rather than the whole run. With a cap of 10
-       a full-run bar would sit near empty for every realistic cart, and would say
-       nothing about the gift actually within reach. */
-    const earnedValue = earned * config.step;
-    const towardNext = subtotal - earnedValue;
-
-    messageElement.innerHTML = capReached
+    messageElement.innerHTML = capped
       ? this.getAttribute('all-reached-message')
       : this.getAttribute('unreached-message')
-          .replace('@@remaining@@', `<span class="bold text-accent">${formatMoney(config.step - towardNext)}</span>`)
+          .replace('@@remaining@@', `<span class="bold text-accent">${formatMoney(Math.max(0, config.step - towardNext))}</span>`)
           .replace('@@reward@@', config.reward);
 
     await window.customElements.whenDefined('progress-bar');
@@ -283,7 +336,7 @@ class GiftTiersBar extends HTMLElement {
 
     if (progressBarElement) {
       progressBarElement.valueMax = config.step;
-      progressBarElement.valueNow = capReached ? config.step : towardNext;
+      progressBarElement.valueNow = capped ? config.step : Math.max(0, Math.min(config.step, towardNext));
     }
   }
 }
