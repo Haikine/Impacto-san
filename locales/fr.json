@@ -11,6 +11,12 @@
   "general": {
     "page": "Page {{ page }}",
     "home": "Accueil",
+    "countdown": {
+      "days": "Jours",
+      "hours": "Heures",
+      "minutes": "Minutes",
+      "seconds": "Secondes"
+    },
     "accessibility": {
       "skip_to_content": "Passer au contenu",
       "breadcrumb": "Fil d'Ariane",
@@ -89,6 +95,7 @@
       "added_to_cart": "Produit ajouté au panier !",
       "sold_out_badge": "En rupture",
       "coming_soon_badge": "Bientôt disponible",
+      "new_release_badge": "Nouveauté",
       "on_sale_badge": "Promo",
       "discount_badge_html": "Economisez {{ savings }}",
       "sku": "SKU:",

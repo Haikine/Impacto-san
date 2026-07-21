@@ -1,0 +1,81 @@
+{%- comment -%}
+----------------------------------------------------------------------------------------------------------------------
+WAITLIST FORM (custom vcollect)
+----------------------------------------------------------------------------------------------------------------------
+
+Replaces the buy buttons in two situations:
+  - "coming_soon": the release date is still in the future, the product was never on sale
+  - "restock": every variant is out of stock, the product was on sale and will come back
+
+Both cases collect the same thing, an email tied to the product, so they share one form. Only the wording changes:
+telling a shopper "don't miss the release" on a product they already know is sold out reads as a mistake.
+
+Uses the native {% form 'customer' %} tag rather than a third-party app: it creates the customer with marketing consent
+and applies a per-product tag, so the launch email is a Shopify Email campaign sent to a segment on that tag. Signups
+are unlimited and the first 10 000 emails per month are free, where the free tiers of back-in-stock apps cap out at
+10 to 50 alerts per month.
+
+********************************************
+Supported variables
+********************************************
+
+* product: the product the visitor is queuing for
+* mode: "coming_soon" (default) or "restock"
+* form_id: an optional explicit form ID
+{%- endcomment -%}
+
+{%- liquid
+  assign waitlist_form_id = form_id
+  if waitlist_form_id == blank
+    assign waitlist_form_id = 'waitlist-form-' | append: product.id | append: '-' | append: section.id
+  endif
+
+  assign waitlist_mode = mode | default: 'coming_soon'
+
+  assign release_date = product.metafields.vcollect.date_sortie.value
+  assign release_date_formatted = release_date | date: '%d/%m/%Y'
+
+  comment
+    One tag per product, whatever the mode: a shopper who queued before the release and one who queued after a
+    stockout both want the same email. Splitting them would mean two segments to merge before every campaign.
+  endcomment
+  assign waitlist_tag = 'liste-attente-' | append: product.handle
+
+  if waitlist_mode == 'restock'
+    assign intro_text = 'product.waitlist.intro_restock' | t
+    assign submit_label = 'product.waitlist.submit_restock' | t
+    assign success_text = 'product.waitlist.success_restock' | t
+  else
+    assign intro_text = 'product.waitlist.intro' | t
+    assign submit_label = 'product.waitlist.submit' | t
+    assign success_text = 'product.waitlist.success' | t
+  endif
+-%}
+
+<div class="waitlist v-stack gap-4">
+  {%- comment -%} The release date only means something before the launch. {%- endcomment -%}
+  {%- if release_date != blank and waitlist_mode != 'restock' -%}
+    <p class="text-sm text-subdued">
+      {{- 'product.waitlist.release_date' | t: date: release_date_formatted -}}
+    </p>
+  {%- endif -%}
+
+  {%- form 'customer', id: waitlist_form_id, class: 'waitlist__form v-stack gap-3' -%}
+    <input type="hidden" name="contact[tags]" value="{{ waitlist_tag | escape }}">
+
+    {%- if form.posted_successfully? -%}
+      <p class="waitlist__success text-sm">{{ success_text }}</p>
+    {%- else -%}
+      {{ form.errors | default_errors }}
+
+      <p class="text-sm">{{ intro_text }}</p>
+
+      {%- liquid
+        assign email_label = 'product.waitlist.email_label' | t
+        render 'input', type: 'email', label: email_label, name: 'contact[email]', value: form.email, required: true
+
+        render 'button', content: submit_label, type: 'submit', size: 'xl'
+      -%}
+    {%- endif -%}
+  {%- endform -%}
+</div>

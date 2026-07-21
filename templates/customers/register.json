@@ -14,7 +14,9 @@
       "blocks": {
         "fields": {
           "type": "fields",
-          "settings": {}
+          "settings": {
+            "show_email_consent": true
+          }
         }
       },
       "block_order": [

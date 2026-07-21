@@ -1,0 +1,425 @@
+{%- comment -%}
+----------------------------------------------------------------------------------------------------------------------
+COUNTDOWN BANNER (custom vcollect)
+----------------------------------------------------------------------------------------------------------------------
+
+Custom addition to the Impact theme. Not part of Maestrooo's base code, so it lives in its own section file and can be
+deleted without touching anything the theme ships.
+
+Built for the 30 ans Pokémon drop, but nothing here is specific to it: the deadline, the wording and the colors are all
+settings, so the same section serves the next launch.
+
+********************************************
+The banner works without JavaScript
+********************************************
+
+Liquid computes the remaining days, hours and minutes and prints them. assets/custom-countdown.js only takes over to
+keep them ticking. A shopper who never receives the script still sees how far away the drop is, which is why the numbers
+are rendered server side rather than left at zero.
+
+The deadline is emitted as a full ISO instant resolved in the shop timezone, so every visitor counts down to the same
+moment whatever their own timezone.
+
+********************************************
+It removes itself
+********************************************
+
+Once the deadline has passed the section disappears on its own if "masquer après la date" is on, so a launch banner
+never lingers on the homepage announcing an event that already happened.
+{%- endcomment -%}
+
+{%- liquid
+  assign target_timestamp = section.settings.target_date | date: '%s' | plus: 0
+  assign now_timestamp = 'now' | date: '%s' | plus: 0
+  assign remaining = target_timestamp | minus: now_timestamp
+
+  if remaining < 0
+    assign remaining = 0
+  endif
+
+  assign remaining_days = remaining | divided_by: 86400
+  assign remaining_hours = remaining | modulo: 86400 | divided_by: 3600
+  assign remaining_minutes = remaining | modulo: 3600 | divided_by: 60
+  assign remaining_seconds = remaining | modulo: 60
+  assign is_expired = false
+
+  if remaining == 0
+    assign is_expired = true
+  endif
+-%}
+
+{%- if is_expired and section.settings.hide_when_expired -%}
+  {%- comment -%} Nothing to announce any more. {%- endcomment -%}
+{%- else -%}
+  {%- unless section.settings.full_width -%}
+    {%- render 'section-spacing-collapsing' -%}
+  {%- endunless -%}
+
+  <script type="module" src="{{ 'custom-countdown.js' | asset_url }}"></script>
+
+  <style>
+    #shopify-section-{{ section.id }} {
+      {%- if section.settings.full_width -%}
+        --section-outer-spacing-block: 0;
+      {%- endif -%}
+
+      --content-over-media-overlay: {{ section.settings.overlay_color.rgb }} / {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+
+      {%- if section.settings.allow_transparent_header -%}
+        margin-block-start: calc(-1 * var(--header-height) * var(--section-is-first));
+      {%- endif -%}
+    }
+
+    {%- comment -%}
+      The theme applies --content-over-media-height to the image, not to the container, so a banner running on a
+      gradient alone would collapse to the height of its text. Mirroring it as a minimum keeps the hero the size the
+      merchant picked whether or not an image has been uploaded.
+    {%- endcomment -%}
+    #shopify-section-{{ section.id }} .content-over-media {
+      min-block-size: var(--content-over-media-height, auto);
+    }
+
+    #shopify-section-{{ section.id }} .countdown {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--spacing-4);
+      margin-block: var(--spacing-4);
+    }
+
+    #shopify-section-{{ section.id }} .countdown__unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 4.5rem;
+      padding: var(--spacing-2) var(--spacing-3);
+      border-radius: var(--rounded-sm);
+      background: rgb({{ section.settings.countdown_background.rgb }} / {{ section.settings.countdown_opacity | divided_by: 100.0 }});
+      color: {{ section.settings.countdown_text_color }};
+    }
+
+    #shopify-section-{{ section.id }} .countdown__value {
+      font-size: clamp(1.75rem, 5vw, 3rem);
+      font-weight: 700;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #shopify-section-{{ section.id }} .countdown__label {
+      font-size: var(--text-xs);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.75;
+    }
+  </style>
+
+  <div {% render 'section-properties' %} {% if section.settings.allow_transparent_header %}allow-transparent-header{% endif %}>
+    {%- capture class -%}content-over-media content-over-media--{{ section.settings.image_size }} {% if section.settings.full_width %}full-bleed{% else %}shadow-block rounded-lg{% endif %}{%- endcapture -%}
+
+    <image-banner reveal-on-scroll="true" {% render 'surface', class: class, background: section.settings.background, background_gradient: section.settings.background_gradient, text_color: section.settings.text_color %}>
+      {%- if section.settings.image != blank -%}
+        {%- capture image_class -%}{% if section.settings.mobile_image != blank %}hidden sm:block{% endif %}{%- endcapture -%}
+        {%- capture sizes -%}{% if section.settings.full_width %}100vw{% else %}(max-width: 740px) calc(100vw - 40px), (max-width: 999px) calc(100vw - 64px), min({{ settings.page_width }}px, 100vw - 96px){% endif %}{%- endcapture -%}
+
+        {{- section.settings.image | image_url: width: section.settings.image.width | image_tag: loading: 'eager', fetchpriority: 'high', sizes: sizes, widths: '400,600,800,1000,1200,1400,1600,1800,2000,2400,2800,3200', class: image_class -}}
+
+        {%- if section.settings.mobile_image != blank -%}
+          {{- section.settings.mobile_image | image_url: width: section.settings.mobile_image.width | image_tag: loading: 'eager', fetchpriority: 'high', sizes: sizes, widths: '400,600,800,1000,1200,1400,1600', class: 'sm:hidden' -}}
+        {%- endif -%}
+      {%- endif -%}
+
+      <div class="{{ section.settings.mobile_text_position }} {{ section.settings.desktop_text_position }}">
+        <div class="prose">
+          {%- if section.settings.subheading != blank -%}
+            <p class="bold">{{ section.settings.subheading | escape }}</p>
+          {%- endif -%}
+
+          {%- if section.settings.title != blank -%}
+            <p class="{{ section.settings.heading_tag }}" {% if settings.heading_apparition != 'none' %}reveal-on-scroll="true"{% endif %}>
+              {%- render 'styled-text', content: section.settings.title, apparition_effect: true -%}
+            </p>
+          {%- endif -%}
+
+          {%- if section.settings.content != blank -%}
+            <div>{{ section.settings.content }}</div>
+          {%- endif -%}
+
+          {%- if section.settings.show_countdown -%}
+            <countdown-timer class="countdown" target="{{ section.settings.target_date | date: '%Y-%m-%dT%H:%M:%S%z' }}" {% if is_expired %}expired{% endif %}>
+              <span class="countdown__unit">
+                <span class="countdown__value" data-countdown-days>{{ remaining_days }}</span>
+                <span class="countdown__label">{{ 'general.countdown.days' | t }}</span>
+              </span>
+              <span class="countdown__unit">
+                <span class="countdown__value" data-countdown-hours>{{ remaining_hours }}</span>
+                <span class="countdown__label">{{ 'general.countdown.hours' | t }}</span>
+              </span>
+              <span class="countdown__unit">
+                <span class="countdown__value" data-countdown-minutes>{{ remaining_minutes }}</span>
+                <span class="countdown__label">{{ 'general.countdown.minutes' | t }}</span>
+              </span>
+              <span class="countdown__unit">
+                <span class="countdown__value" data-countdown-seconds>{{ remaining_seconds }}</span>
+                <span class="countdown__label">{{ 'general.countdown.seconds' | t }}</span>
+              </span>
+            </countdown-timer>
+          {%- endif -%}
+
+          {%- if section.settings.button_text != blank -%}
+            {%- render 'button', content: section.settings.button_text, href: section.settings.button_url, size: 'lg', background: section.settings.button_background, text_color: section.settings.button_text_color -%}
+          {%- endif -%}
+        </div>
+      </div>
+    </image-banner>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Bannière compte à rebours",
+  "class": "shopify-section--image-with-text-overlay",
+  "tag": "section",
+  "disabled_on": {
+    "templates": ["password"],
+    "groups": ["header", "custom.overlay"]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Pleine largeur",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "allow_transparent_header",
+      "label": "Autoriser l'en-tête transparent",
+      "info": "Ne s'applique que si cette section est la première de la page.",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "image_size",
+      "label": "Hauteur",
+      "options": [
+        {
+          "value": "sm",
+          "label": "Petite"
+        },
+        {
+          "value": "md",
+          "label": "Moyenne"
+        },
+        {
+          "value": "lg",
+          "label": "Grande"
+        },
+        {
+          "value": "auto",
+          "label": "Automatique"
+        }
+      ],
+      "default": "md"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image (ordinateur)"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Image (mobile)"
+    },
+    {
+      "type": "header",
+      "content": "Compte à rebours"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_countdown",
+      "label": "Afficher le compte à rebours",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "target_date",
+      "label": "Date visée",
+      "info": "Au format AAAA-MM-JJ, par exemple 2026-09-16. Une heure peut être ajoutée : 2026-09-16 10:00.",
+      "default": "2026-09-16"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_when_expired",
+      "label": "Masquer la section une fois la date passée",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Contenu"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Sur-titre",
+      "default": "SORTIE MONDIALE"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre",
+      "default": "30 ANS POKÉMON"
+    },
+    {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "Taille du titre",
+      "options": [
+        {
+          "value": "h0",
+          "label": "Très grande"
+        },
+        {
+          "value": "h1",
+          "label": "Grande"
+        },
+        {
+          "value": "h2",
+          "label": "Moyenne"
+        }
+      ],
+      "default": "h0"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Texte"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Texte du bouton",
+      "default": "Découvrir la gamme"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Lien du bouton"
+    },
+    {
+      "type": "select",
+      "id": "mobile_text_position",
+      "label": "Position du texte (mobile)",
+      "options": [
+        {
+          "value": "place-self-center text-center",
+          "label": "Centre"
+        },
+        {
+          "value": "place-self-end-center text-center",
+          "label": "Bas"
+        }
+      ],
+      "default": "place-self-center text-center"
+    },
+    {
+      "type": "select",
+      "id": "desktop_text_position",
+      "label": "Position du texte (ordinateur)",
+      "options": [
+        {
+          "value": "sm:place-self-center sm:text-center",
+          "label": "Centre"
+        },
+        {
+          "value": "sm:place-self-center-start sm:text-start",
+          "label": "Gauche"
+        },
+        {
+          "value": "sm:place-self-end-center sm:text-center",
+          "label": "Bas"
+        }
+      ],
+      "default": "sm:place-self-center sm:text-center"
+    },
+    {
+      "type": "header",
+      "content": "Couleurs",
+      "info": "Le dégradé remplace la couleur unie quand il est renseigné."
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Fond",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color_background",
+      "id": "background_gradient",
+      "label": "Dégradé de fond",
+      "default": "linear-gradient(140deg, rgba(26, 26, 26, 1), rgba(0, 58, 112, 1) 100%)"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Texte",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Voile sur l'image",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Opacité du voile",
+      "default": 40
+    },
+    {
+      "type": "color",
+      "id": "countdown_background",
+      "label": "Fond des compteurs",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "countdown_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Opacité des compteurs",
+      "default": 15
+    },
+    {
+      "type": "color",
+      "id": "countdown_text_color",
+      "label": "Texte des compteurs",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_background",
+      "label": "Fond du bouton",
+      "default": "#ffcb05"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Texte du bouton",
+      "default": "#1a1a1a"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bannière compte à rebours"
+    }
+  ]
+}
+{% endschema %}

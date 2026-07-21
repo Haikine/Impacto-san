@@ -10,14 +10,29 @@ Supported variables
 ********************************************
 
 * product: the product to render the badges
-* types: the types of badge to output. Can be "custom", "sold_out" or "discount" (or a combination separated by comma). If nothing is set, all badges are outputted.
+* types: the types of badge to output. Can be "custom", "coming_soon", "sold_out" or "discount" (or a combination separated by comma). If nothing is set, all badges are outputted.
 * form_id: an optional form ID to use to update the badges when a given variant changes
 * block: an optional block to output theme editor attributes
 * class: an extra class added on the container
 {%- endcomment -%}
 
-{%- assign badge_types = types | default: 'custom, sold_out, discount' | split: ',' -%}
+{%- assign badge_types = types | default: 'custom, coming_soon, new_release, sold_out, discount' | split: ',' -%}
 {%- assign variant = product.selected_or_first_available_variant -%}
+
+{%- comment -%}
+Custom vcollect: an unreleased product has no stock yet, so Shopify reports it as unavailable and the theme would label
+it "En rupture". That wrongly reads as "we sold out" on a product that was never on sale. The coming soon badge replaces
+the sold out one rather than stacking with it.
+{%- endcomment -%}
+{%- capture is_coming_soon -%}{%- render 'coming-soon-check', product: product -%}{%- endcapture -%}
+{%- assign is_coming_soon = is_coming_soon | strip -%}
+
+{%- comment -%}
+Custom vcollect: same source of truth on the other side of the release date. A product stops being "Bientôt disponible"
+and becomes "Nouveauté" on its release day, then stops being new once the window closes, all without an edit.
+{%- endcomment -%}
+{%- capture is_new_release -%}{%- render 'new-release-check', product: product -%}{%- endcapture -%}
+{%- assign is_new_release = is_new_release | strip -%}
 
 {%- capture badges -%}
   {%- for badge_type in badge_types -%}
@@ -31,8 +46,18 @@ Supported variables
           <span class="badge badge--primary">{{ custom_badge }}</span>
         {%- endfor -%}
 
+      {%- when 'coming_soon' -%}
+        {%- if is_coming_soon == 'true' -%}
+          <span class="badge badge--primary">{{ 'product.general.coming_soon_badge' | t }}</span>
+        {%- endif -%}
+
+      {%- when 'new_release' -%}
+        {%- if is_new_release == 'true' -%}
+          <span class="badge badge--primary">{{ 'product.general.new_release_badge' | t }}</span>
+        {%- endif -%}
+
       {%- when 'sold_out' -%}
-        {%- if settings.show_sold_out_badge -%}
+        {%- if settings.show_sold_out_badge and is_coming_soon != 'true' -%}
           {%- if variant.available == false or form_id != blank -%}
             <sold-out-badge {% if variant.available %}hidden{% endif %} {% if form_id != blank %}form="{{ form_id }}"{% endif %} class="badge badge--sold-out">
               {{- 'product.general.sold_out_badge' | t -}}

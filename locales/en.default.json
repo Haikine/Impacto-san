@@ -11,6 +11,12 @@
   "general": {
     "page": "Page {{ page }}",
     "home": "Home",
+    "countdown": {
+      "days": "Days",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "seconds": "Seconds"
+    },
     "accessibility": {
       "skip_to_content": "Skip to content",
       "breadcrumb": "Breadcrumb",
@@ -89,6 +95,7 @@
       "added_to_cart": "Added to your cart!",
       "sold_out_badge": "Sold out",
       "coming_soon_badge": "Coming soon",
+      "new_release_badge": "New",
       "on_sale_badge": "On sale",
       "discount_badge_html": "Save {{ savings }}",
       "sku": "SKU:",

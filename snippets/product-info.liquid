@@ -38,7 +38,7 @@
         <div class="product-info__price">
           <div class="rating-with-text">
             {%- render 'price-list', variant: product.selected_or_first_available_variant, form_id: product_form_id, size: 'lg', block: block -%}
-            {%- render 'product-badges', types: 'sold_out, discount', product: product, form_id: product_form_id, class: 'product-info__badge-list' -%}
+            {%- render 'product-badges', types: 'coming_soon, sold_out, discount', product: product, form_id: product_form_id, class: 'product-info__badge-list' -%}
 
             {%- comment -%}If the next block is a rating block, then we add it as part of this one to have it inline{%- endcomment -%}
             {%- if next_block.type == 'rating' -%}
@@ -208,8 +208,32 @@
         {%- assign main_form_exists = true -%}
 
         {%- if request.page_type != 'password' -%}
+          {%- comment -%}
+          Custom vcollect: the buy buttons are swapped for the waitlist form in two cases.
+
+          1. Before the official release date, driven by vcollect.date_sortie, so the product starts selling on its
+             release day on its own.
+          2. When the product is sold out, to capture a restock alert instead of showing a dead "sold out" button.
+
+          The sold-out swap tests product.available, which is false only when NO variant can be bought. Testing the
+          selected variant instead would hide the buy buttons of a product that still has other variants in stock,
+          making it unsellable.
+          {%- endcomment -%}
+          {%- capture is_coming_soon -%}{%- render 'coming-soon-check', product: product -%}{%- endcapture -%}
+          {%- assign is_coming_soon = is_coming_soon | strip -%}
+          {%- assign is_sold_out = false -%}
+          {%- if is_coming_soon != 'true' and product.available == false -%}
+            {%- assign is_sold_out = true -%}
+          {%- endif -%}
+
           <div class="product-info__buy-buttons" {{ block.shopify_attributes }}>
-            {%- render 'buy-buttons', product: product, form_id: product_form_id, show_payment_button: block.settings.show_payment_button, show_gift_card_recipient: block.settings.show_gift_card_recipient, atc_button_background: block.settings.atc_button_background, atc_button_text_color: block.settings.atc_button_text_color, payment_button_background: block.settings.payment_button_background, payment_button_text_color: block.settings.payment_button_text_color -%}
+            {%- if is_coming_soon == 'true' -%}
+              {%- render 'waitlist-form', product: product, mode: 'coming_soon' -%}
+            {%- elsif is_sold_out -%}
+              {%- render 'waitlist-form', product: product, mode: 'restock' -%}
+            {%- else -%}
+              {%- render 'buy-buttons', product: product, form_id: product_form_id, show_payment_button: block.settings.show_payment_button, show_gift_card_recipient: block.settings.show_gift_card_recipient, atc_button_background: block.settings.atc_button_background, atc_button_text_color: block.settings.atc_button_text_color, payment_button_background: block.settings.payment_button_background, payment_button_text_color: block.settings.payment_button_text_color -%}
+            {%- endif -%}
           </div>
         {%- endif -%}
 

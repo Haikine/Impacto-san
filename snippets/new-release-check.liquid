@@ -1,0 +1,41 @@
+{%- comment -%}
+----------------------------------------------------------------------------------------------------------------------
+NEW RELEASE CHECK (custom vcollect)
+----------------------------------------------------------------------------------------------------------------------
+
+Outputs the string "true" when a product was released within the last N days, and nothing otherwise.
+
+Mirrors 'coming-soon-check' on purpose, and for the same reason: the "Nouveauté" badge and the "Dernières sorties"
+carousel must derive newness from the exact same rule. Duplicating the date comparison would let them drift apart and
+badge a product the carousel no longer lists.
+
+Driven by vcollect.date_sortie, so a product stops being new on its own once the window closes, without anyone editing
+it. A product whose release date is still in the future is NOT new: it is handled by 'coming-soon-check'.
+
+Usage:
+  {%- capture is_new_release -%}{%- render 'new-release-check', product: product, window_days: 30 -%}{%- endcapture -%}
+  {%- assign is_new_release = is_new_release | strip -%}
+
+********************************************
+Supported variables
+********************************************
+
+* product: the product to test
+* window_days: how many days a product stays "new" after its release date. Defaults to 30.
+{%- endcomment -%}
+
+{%- liquid
+  assign window_days = window_days | default: 30
+  assign release_date = product.metafields.vcollect.date_sortie.value
+
+  if release_date != blank
+    assign release_timestamp = release_date | date: '%s' | plus: 0
+    assign now_timestamp = 'now' | date: '%s' | plus: 0
+    assign window_seconds = window_days | times: 86400
+    assign window_start = now_timestamp | minus: window_seconds
+
+    if release_timestamp <= now_timestamp and release_timestamp > window_start
+      echo 'true'
+    endif
+  endif
+-%}
