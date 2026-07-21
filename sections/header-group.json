@@ -46,9 +46,9 @@
         "text_size": "text-base",
         "navigation_mode": "scrolling",
         "scrolling_speed": 20,
-        "background": "#ffcb05",
+        "background": "#0043b5",
         "background_gradient": "",
-        "text_color": "#1a1a1a"
+        "text_color": "#ffffff"
       }
     },
     "header": {
@@ -61,7 +61,7 @@
         "logo_mobile_max_width": 145,
         "menu": "main-menu",
         "highlight_menu_item": "30 ans Pokémon",
-        "highlight_menu_color": "#c8a24a",
+        "highlight_menu_color": "#3d85ff",
         "sidebar_menu": "",
         "secondary_menu": "",
         "menu_open_trigger": "hover",

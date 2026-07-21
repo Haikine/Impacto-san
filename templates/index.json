@@ -9,6 +9,37 @@
  */
 {
   "sections": {
+    "banner_m6": {
+      "type": "banner-30-ans",
+      "settings": {
+        "full_width": true,
+        "allow_transparent_header": true,
+        "image_size": "md",
+        "image": "shopify://shop_images/m6-japonais-bandeau.webp",
+        "mobile_image": "",
+        "show_countdown": true,
+        "target_date": "2026-07-31",
+        "hide_when_expired": true,
+        "subheading": "SORTIE LE 31 JUILLET 2026",
+        "title": "STORM EMERALDA M6",
+        "heading_tag": "h0",
+        "content": "<p>Le display japonais de l'extension Storm Emeralda : 30 boosters de 5 cartes, menés par Méga-Rayquaza ex.</p>",
+        "button_text": "Voir le display M6",
+        "button_url": "shopify://products/display-m6-storm-emeralda-japonais",
+        "mobile_text_position": "place-self-center text-center",
+        "desktop_text_position": "sm:place-self-center-start sm:text-start",
+        "background": "#0f2a24",
+        "background_gradient": "",
+        "text_color": "#ffffff",
+        "overlay_color": "#000000",
+        "overlay_opacity": 45,
+        "countdown_background": "#ffffff",
+        "countdown_opacity": 15,
+        "countdown_text_color": "#3d85ff",
+        "button_background": "#0043b5",
+        "button_text_color": "#ffffff"
+      }
+    },
     "banner_30_ans": {
       "type": "banner-30-ans",
       "settings": {
@@ -35,9 +66,9 @@
         "overlay_opacity": 40,
         "countdown_background": "#ffffff",
         "countdown_opacity": 15,
-        "countdown_text_color": "#ffcb05",
-        "button_background": "#ffcb05",
-        "button_text_color": "#1a1a1a"
+        "countdown_text_color": "#3d85ff",
+        "button_background": "#0043b5",
+        "button_text_color": "#ffffff"
       }
     },
     "collection_30_ans": {
@@ -59,7 +90,7 @@
         "background": "#1a1a1a",
         "background_gradient": "",
         "text_color": "#ffffff",
-        "heading_color": "#ffcb05",
+        "heading_color": "#3d85ff",
         "heading_gradient": "",
         "product_card_background": "#ffffff",
         "product_card_text_color": "#1a1a1a"
@@ -184,7 +215,7 @@
         "background": "#1a1a1a",
         "background_gradient": "",
         "text_color": "#ffffff",
-        "heading_color": "#ffcb05",
+        "heading_color": "#3d85ff",
         "heading_gradient": ""
       }
     },
@@ -197,9 +228,9 @@
         "text_style": "fill",
         "scrolling_mode": "auto",
         "scrolling_speed": 20,
-        "background": "#ffcb05",
+        "background": "#0043b5",
         "background_gradient": "",
-        "text_color": "#1a1a1a",
+        "text_color": "#ffffff",
         "text_gradient": ""
       }
     },
@@ -263,8 +294,8 @@
             "mobile_icon_width": 32,
             "icon_width": 40,
             "icon_background_type": "circle",
-            "icon_background": "#ffcb05",
-            "icon_color": "#1a1a1a",
+            "icon_background": "#0043b5",
+            "icon_color": "#ffffff",
             "title": "Expédition sous 24h",
             "content": "<p>Chronopost en point relais ou Colissimo à domicile.</p>"
           }
@@ -276,8 +307,8 @@
             "mobile_icon_width": 32,
             "icon_width": 40,
             "icon_background_type": "circle",
-            "icon_background": "#ffcb05",
-            "icon_color": "#1a1a1a",
+            "icon_background": "#0043b5",
+            "icon_color": "#ffffff",
             "title": "Aucun frais de douane",
             "content": "<p>Tous nos envois partent de France, Europe et DOM-TOM compris.</p>"
           }
@@ -289,8 +320,8 @@
             "mobile_icon_width": 32,
             "icon_width": 40,
             "icon_background_type": "circle",
-            "icon_background": "#ffcb05",
-            "icon_color": "#1a1a1a",
+            "icon_background": "#0043b5",
+            "icon_color": "#ffffff",
             "title": "Produits scellés officiels",
             "content": "<p>100 % d'articles Pokémon authentiques.</p>"
           }
@@ -302,8 +333,8 @@
             "mobile_icon_width": 32,
             "icon_width": 40,
             "icon_background_type": "circle",
-            "icon_background": "#ffcb05",
-            "icon_color": "#1a1a1a",
+            "icon_background": "#0043b5",
+            "icon_color": "#ffffff",
             "title": "Service client 7j/7",
             "content": "<p>Réponse en 24h en moyenne.</p>"
           }
@@ -349,8 +380,8 @@
             "background_gradient": "",
             "text_color": "#ffffff",
             "text_gradient": "",
-            "button_background": "#ffcb05",
-            "button_text_color": "#1a1a1a"
+            "button_background": "#0043b5",
+            "button_text_color": "#ffffff"
           }
         }
       },
@@ -455,7 +486,7 @@
         "impact_text_size_ratio": 1,
         "background": "#1a1a1a",
         "background_gradient": "",
-        "heading_text_color": "#ffcb05",
+        "heading_text_color": "#3d85ff",
         "heading_gradient": "",
         "text_color": "#ffffff",
         "button_background": "",
@@ -554,12 +585,13 @@
         "background": "#1a1a1a",
         "background_gradient": "",
         "text_color": "#f7f9f9",
-        "button_background": "#ffcb05",
-        "button_text_color": "#1a1a1a"
+        "button_background": "#0043b5",
+        "button_text_color": "#ffffff"
       }
     }
   },
   "order": [
+    "banner_m6",
     "banner_30_ans",
     "new_releases",
     "featured-collection",

@@ -1,5 +1,19 @@
 {%- capture product_form_id -%}product-form-{{ product.id }}-{{ section.id }}{%- endcapture -%}
 
+{%- comment -%}
+Custom vcollect: both states are resolved once for the whole block loop because the inventory line and the buy buttons
+each depend on them. Capturing inside every branch would run the same date comparison three times and let one branch be
+updated without the others.
+
+The two are not the same question. "Coming soon" is only about the release date and decides whether the stock line is
+shown at all. "Pre-order" additionally requires stock and the merchant flag, and decides whether the product can be
+bought. A product can be coming soon without being pre-orderable, which is exactly the waitlist case.
+{%- endcomment -%}
+{%- capture is_coming_soon -%}{%- render 'coming-soon-check', product: product -%}{%- endcapture -%}
+{%- assign is_coming_soon = is_coming_soon | strip -%}
+{%- capture is_pre_order -%}{%- render 'pre-order-check', product: product -%}{%- endcapture -%}
+{%- assign is_pre_order = is_pre_order | strip -%}
+
 <safe-sticky class="product-info">
   {%- for block in section.blocks -%}
     {%- assign previous_block_index = forloop.index0 | minus: 1 -%}
@@ -200,38 +214,67 @@
         {%- endif -%}
 
       {%- when 'inventory' -%}
-        <div class="product-info__inventory {{ block.shopify_attributes }}">
-          {%- render 'inventory', product: product, low_threshold: block.settings.low_inventory_threshold, form_id: product_form_id -%}
-        </div>
+        {%- comment -%}
+        Custom vcollect: the inventory line is dropped on any unreleased product, whichever of the two modes it is in.
+
+        On a pre-order, "En stock" contradicts the shipping date shown above the button and would have shoppers
+        expecting the parcel this week. On a product left on the waitlist, it is worse: the page says "join the
+        waitlist" while the line right above announces stock, which reads as the shop refusing to sell what it has.
+
+        Gated on the release date rather than on the pre-order flag so that flipping a product between the two modes
+        never brings the line back.
+        {%- endcomment -%}
+        {%- unless is_coming_soon == 'true' -%}
+          <div class="product-info__inventory {{ block.shopify_attributes }}">
+            {%- render 'inventory', product: product, low_threshold: block.settings.low_inventory_threshold, form_id: product_form_id -%}
+          </div>
+        {%- endunless -%}
 
       {%- when 'buy_buttons' -%}
-        {%- assign main_form_exists = true -%}
-
+        {%- comment -%}
+        Custom vcollect: this used to be set here unconditionally, which was wrong from the moment the waitlist could
+        replace the buy buttons. main_form_exists suppresses Impact's fallback form at the bottom of this snippet, so
+        on a product showing the waitlist NO product form was rendered at all, while the variant picker, the price, the
+        SKU and the inventory line all bind to it by id. Measured on the QA theme: 8 elements pointing at a form that
+        did not exist. It is now set only where the form is really rendered.
+        {%- endcomment -%}
         {%- if request.page_type != 'password' -%}
           {%- comment -%}
-          Custom vcollect: the buy buttons are swapped for the waitlist form in two cases.
+          Custom vcollect: what sits in the buy buttons slot depends on the release date and on the stock.
 
-          1. Before the official release date, driven by vcollect.date_sortie, so the product starts selling on its
-             release day on its own.
-          2. When the product is sold out, to capture a restock alert instead of showing a dead "sold out" button.
+          1. Release date in the future WITH stock: the buy buttons stay, relabelled as a pre-order and topped with the
+             shipping date, so a shopper can secure a unit before the launch.
+          2. Release date in the future WITHOUT stock: nothing to sell yet, the waitlist form collects an email.
+          3. Released but sold out: the waitlist form captures a restock alert instead of a dead "sold out" button.
 
-          The sold-out swap tests product.available, which is false only when NO variant can be bought. Testing the
+          Both stock tests go through product.available, which is false only when NO variant can be bought. Testing the
           selected variant instead would hide the buy buttons of a product that still has other variants in stock,
           making it unsellable.
           {%- endcomment -%}
-          {%- capture is_coming_soon -%}{%- render 'coming-soon-check', product: product -%}{%- endcapture -%}
-          {%- assign is_coming_soon = is_coming_soon | strip -%}
           {%- assign is_sold_out = false -%}
           {%- if is_coming_soon != 'true' and product.available == false -%}
             {%- assign is_sold_out = true -%}
           {%- endif -%}
 
-          <div class="product-info__buy-buttons" {{ block.shopify_attributes }}>
-            {%- if is_coming_soon == 'true' -%}
+          <div class="product-info__buy-buttons v-stack gap-4" {{ block.shopify_attributes }}>
+            {%- if is_pre_order == 'true' -%}
+              {%- comment -%}
+              The shipping date is the whole point of the notice: without it a pre-order button reads like a normal
+              purchase and the shopper expects the parcel this week.
+              {%- endcomment -%}
+              {%- assign release_date_formatted = product.metafields.vcollect.date_sortie.value | date: '%d/%m/%Y' -%}
+              <p class="text-sm text-subdued">
+                {{- 'product.general.pre_order_note' | t: date: release_date_formatted -}}
+              </p>
+
+              {%- assign main_form_exists = true -%}
+              {%- render 'buy-buttons', product: product, form_id: product_form_id, pre_order: true, show_payment_button: block.settings.show_payment_button, show_gift_card_recipient: block.settings.show_gift_card_recipient, atc_button_background: block.settings.atc_button_background, atc_button_text_color: block.settings.atc_button_text_color, payment_button_background: block.settings.payment_button_background, payment_button_text_color: block.settings.payment_button_text_color -%}
+            {%- elsif is_coming_soon == 'true' -%}
               {%- render 'waitlist-form', product: product, mode: 'coming_soon' -%}
             {%- elsif is_sold_out -%}
               {%- render 'waitlist-form', product: product, mode: 'restock' -%}
             {%- else -%}
+              {%- assign main_form_exists = true -%}
               {%- render 'buy-buttons', product: product, form_id: product_form_id, show_payment_button: block.settings.show_payment_button, show_gift_card_recipient: block.settings.show_gift_card_recipient, atc_button_background: block.settings.atc_button_background, atc_button_text_color: block.settings.atc_button_text_color, payment_button_background: block.settings.payment_button_background, payment_button_text_color: block.settings.payment_button_text_color -%}
             {%- endif -%}
           </div>
@@ -279,7 +322,15 @@
         in the main-product schema and the `snippets/custom-*.liquid` files.
       {%- endcomment -%}
       {%- when 'custom_inventory_bar' -%}
-        {%- render 'custom-inventory-bar', product: product, form_id: product_form_id, block: block -%}
+        {%- comment -%}
+        Custom vcollect: same rule as the native inventory block above, and the one that actually matters here since
+        this is the stock display the product template uses. A quantity gauge on an unreleased product announces goods
+        the shop is not shipping yet: next to a pre-order button it contradicts the shipping date, and next to a
+        waitlist form it says the shop is sitting on stock it refuses to sell.
+        {%- endcomment -%}
+        {%- unless is_coming_soon == 'true' -%}
+          {%- render 'custom-inventory-bar', product: product, form_id: product_form_id, block: block -%}
+        {%- endunless -%}
 
       {%- when 'custom_payment_icons' -%}
         {%- render 'custom-payment-icons', block: block -%}

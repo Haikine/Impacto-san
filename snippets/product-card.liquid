@@ -83,13 +83,55 @@ Supported variables
         {%- endif -%}
       </a>
 
-      {%- if show_quick_buy and product.available -%}
+      {%- comment -%}
+      Custom vcollect: the quick buy is the shortest path into the cart and it never opens the product page, so the
+      release date has to be enforced here too. Impact only tests product.available, which is why stock on an
+      unreleased product used to make it buyable from a collection page while its own page showed a waitlist.
+
+      Two outcomes, not one. Pre-orders open: the button stays and says "Pré-commander". Pre-orders closed: no button
+      at all, the card keeps its "Bientôt disponible" badge and the shopper goes to the page to leave an email.
+      {%- endcomment -%}
+      {%- capture is_coming_soon -%}{%- render 'coming-soon-check', product: product -%}{%- endcapture -%}
+      {%- assign is_coming_soon = is_coming_soon | strip -%}
+      {%- capture is_pre_order -%}{%- render 'pre-order-check', product: product -%}{%- endcapture -%}
+      {%- assign is_pre_order = is_pre_order | strip -%}
+
+      {%- assign allow_quick_buy = true -%}
+      {%- if is_coming_soon == 'true' and is_pre_order != 'true' -%}
+        {%- assign allow_quick_buy = false -%}
+      {%- endif -%}
+
+      {%- if show_quick_buy and product.available and allow_quick_buy -%}
         <div class="product-card__quick-buy">
-          {%- assign quick_add_label = 'product.general.quick_add' | t -%}
+          {%- comment -%}
+          The label also feeds the aria-label of the mobile icon-only button, so screen readers announce the pre-order
+          too.
+          {%- endcomment -%}
+          {%- if is_pre_order == 'true' -%}
+            {%- assign quick_add_label = 'product.general.pre_order_button' | t -%}
+          {%- else -%}
+            {%- assign quick_add_label = 'product.general.quick_add' | t -%}
+          {%- endif -%}
 
           {%- if product.variants.size == 1 and product.selling_plan_groups.size == 0 -%}
             {%- form 'product', product, is: 'product-form' -%}
               <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+
+              {%- comment -%}
+              Custom vcollect: this form adds to the cart WITHOUT going through 'buy-buttons', so the pre-order line
+              item property has to be repeated here. Without it a single-variant pre-order added straight from a
+              collection page reaches the checkout with nothing saying it ships later, which is exactly the case that
+              lets a shopper pay for an unreleased product believing it ships now.
+
+              Products with several variants take the other branch, open the quick buy drawer and go through
+              'buy-buttons', which carries the property already.
+              {%- endcomment -%}
+              {%- if is_pre_order == 'true' -%}
+                {%- assign release_date_formatted = product.metafields.vcollect.date_sortie.value | date: '%d/%m/%Y' -%}
+                {%- assign pre_order_property_name = 'product.general.pre_order_property_name' | t -%}
+                {%- assign pre_order_property_value = 'product.general.pre_order_property_value' | t: date: release_date_formatted -%}
+                <input type="hidden" name="properties[{{ pre_order_property_name | escape }}]" value="{{ pre_order_property_value | escape }}">
+              {%- endif -%}
 
               <div class="pointer-fine:hidden">
                 <button type="submit" is="custom-button" class="product-card__mobile-quick-buy-button" aria-label="{{ quick_add_label | escape }}">

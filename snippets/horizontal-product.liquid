@@ -43,9 +43,33 @@ Supported variables
 
     {%- if show_add_to_cart -%}
       <div class="horizontal-product__cta">
-        {%- if product.available -%}
+        {%- comment -%}
+        Custom vcollect: this tile is a third way into the cart, used by the complementary products on a product page,
+        the recommendations in the cart drawer and the "shop the look" section. It never goes through 'buy-buttons',
+        so an unreleased product with stock would be offered here as an ordinary "+ Ajouter" and reach the checkout
+        with nothing saying it ships later.
+
+        A product left on the waitlist falls through to the disabled branch below, relabelled: showing "En rupture" on
+        a product that has stock and was never on sale would be a plain lie.
+        {%- endcomment -%}
+        {%- capture is_coming_soon -%}{%- render 'coming-soon-check', product: product -%}{%- endcapture -%}
+        {%- assign is_coming_soon = is_coming_soon | strip -%}
+        {%- capture is_pre_order -%}{%- render 'pre-order-check', product: product -%}{%- endcapture -%}
+        {%- assign is_pre_order = is_pre_order | strip -%}
+
+        {%- assign allow_add_to_cart = product.available -%}
+        {%- if is_coming_soon == 'true' and is_pre_order != 'true' -%}
+          {%- assign allow_add_to_cart = false -%}
+        {%- endif -%}
+
+        {%- if allow_add_to_cart -%}
           {%- capture unique_id -%}{{ section.id }}-{{ block.id }}-{{ product.id }}{%- endcapture -%}
-          {%- capture button_content -%}{{ 'product.general.add_to_cart_short' | t }}{%- endcapture -%}
+
+          {%- if is_pre_order == 'true' -%}
+            {%- capture button_content -%}{{ 'product.general.pre_order_button' | t }}{%- endcapture -%}
+          {%- else -%}
+            {%- capture button_content -%}{{ 'product.general.add_to_cart_short' | t }}{%- endcapture -%}
+          {%- endif -%}
 
           {%- if product.variants.size == 1 and product.selling_plan_groups.size == 0 -%}
             {%- capture product_form_id -%}complementary-product-{{ unique_id }}{%- endcapture -%}
@@ -53,6 +77,14 @@ Supported variables
             {%- form 'product', product, id: product_form_id, is: 'product-form' -%}
               <input type="hidden" name="quantity" value="1">
               <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+
+              {%- if is_pre_order == 'true' -%}
+                {%- assign release_date_formatted = product.metafields.vcollect.date_sortie.value | date: '%d/%m/%Y' -%}
+                {%- assign pre_order_property_name = 'product.general.pre_order_property_name' | t -%}
+                {%- assign pre_order_property_value = 'product.general.pre_order_property_value' | t: date: release_date_formatted -%}
+                <input type="hidden" name="properties[{{ pre_order_property_name | escape }}]" value="{{ pre_order_property_value | escape }}">
+              {%- endif -%}
+
               {%- render 'button', content: button_content, type: 'submit', size: 'sm', subdued: true -%}
             {%- endform -%}
           {%- else -%}
@@ -65,7 +97,11 @@ Supported variables
             </quick-buy-drawer>
           {%- endif -%}
         {%- else -%}
-          {%- capture button_content -%}{{ 'product.general.sold_out_button' | t }}{%- endcapture -%}
+          {%- if is_coming_soon == 'true' -%}
+            {%- capture button_content -%}{{ 'product.general.coming_soon_badge' | t }}{%- endcapture -%}
+          {%- else -%}
+            {%- capture button_content -%}{{ 'product.general.sold_out_button' | t }}{%- endcapture -%}
+          {%- endif -%}
           {%- render 'button', content: button_content, size: 'sm', disabled: true, subdued: true -%}
         {%- endif -%}
       </div>

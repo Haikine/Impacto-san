@@ -28,6 +28,14 @@ the sold out one rather than stacking with it.
 {%- assign is_coming_soon = is_coming_soon | strip -%}
 
 {%- comment -%}
+Custom vcollect: an unreleased product that already has stock can be bought right away as a pre-order, so labelling it
+"Bientôt disponible" would send the shopper away from a product that is on sale. The badge follows the same rule as the
+buy buttons (see 'pre-order-check') so the two can never disagree.
+{%- endcomment -%}
+{%- capture is_pre_order -%}{%- render 'pre-order-check', product: product -%}{%- endcapture -%}
+{%- assign is_pre_order = is_pre_order | strip -%}
+
+{%- comment -%}
 Custom vcollect: same source of truth on the other side of the release date. A product stops being "Bientôt disponible"
 and becomes "Nouveauté" on its release day, then stops being new once the window closes, all without an edit.
 {%- endcomment -%}
@@ -47,7 +55,9 @@ and becomes "Nouveauté" on its release day, then stops being new once the windo
         {%- endfor -%}
 
       {%- when 'coming_soon' -%}
-        {%- if is_coming_soon == 'true' -%}
+        {%- if is_pre_order == 'true' -%}
+          <span class="badge badge--primary">{{ 'product.general.pre_order_badge' | t }}</span>
+        {%- elsif is_coming_soon == 'true' -%}
           <span class="badge badge--primary">{{ 'product.general.coming_soon_badge' | t }}</span>
         {%- endif -%}
 

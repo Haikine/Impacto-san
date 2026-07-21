@@ -1,0 +1,52 @@
+{%- comment -%}
+----------------------------------------------------------------------------------------------------------------------
+PRE-ORDER CHECK (custom vcollect)
+----------------------------------------------------------------------------------------------------------------------
+
+Outputs the string "true" when a product can be pre-ordered, and nothing otherwise.
+
+Pre-order is the intersection of three conditions:
+  1. the official release date is still in the future (vcollect.date_sortie)
+  2. at least one variant can be bought
+  3. the merchant opened pre-orders on that product (vcollect.precommande)
+
+Condition 3 is what lets the same unreleased product be handled two ways. With pre-orders open, stock is sold right
+away and shipped on release day. With pre-orders closed, stock can sit in the warehouse while the page keeps
+collecting emails (see 'waitlist-form'), which is what a merchant wants when the allocation is not confirmed yet.
+
+An unset vcollect.precommande reads as "closed" on purpose. The safe default is the one that cannot take money for a
+product nobody promised to ship: opening a pre-order has to be a deliberate act, never a side effect of receiving
+stock.
+
+Built on top of 'coming-soon-check' rather than repeating the date comparison, so the release date keeps a single
+source of truth. Tests product.available, which is true as soon as ONE variant is buyable: testing the selected
+variant would drop a product out of pre-order just because the shopper is looking at a sold-out size.
+
+Usage:
+  {%- capture is_pre_order -%}{%- render 'pre-order-check', product: product -%}{%- endcapture -%}
+  {%- assign is_pre_order = is_pre_order | strip -%}
+
+********************************************
+Supported variables
+********************************************
+
+* product: the product to test
+{%- endcomment -%}
+
+{%- capture is_coming_soon -%}{%- render 'coming-soon-check', product: product -%}{%- endcapture -%}
+{%- assign is_coming_soon = is_coming_soon | strip -%}
+
+{%- comment -%}
+Compared against true AND against 'true' because a boolean metafield reads back as a real boolean in Liquid while the
+same value read through other paths is a string. Testing `== blank` instead would be wrong twice over: in Liquid,
+false and nil are both blank, so an explicitly closed pre-order and an unset one would be indistinguishable from an
+empty string, and the test would silently pass on a value of false.
+{%- endcomment -%}
+{%- assign pre_order_opened = false -%}
+{%- if product.metafields.vcollect.precommande.value == true or product.metafields.vcollect.precommande.value == 'true' -%}
+  {%- assign pre_order_opened = true -%}
+{%- endif -%}
+
+{%- if is_coming_soon == 'true' and product.available and pre_order_opened -%}
+  {{- 'true' -}}
+{%- endif -%}

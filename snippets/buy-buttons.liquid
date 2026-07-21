@@ -13,6 +13,8 @@ Supported variables
 * show_payment_button: if we show or not the dynamic checkout button
 * show_gift_card_recipient: for gift card products, an optional message/email to be sent to the recipient
 * button_size: the size of the button (default to xl if none is passed)
+* pre_order: custom vcollect, forces the pre-order label even when the product does not use the pre-order template.
+  Accepts either the boolean true or the string "true" returned by 'pre-order-check'
 * atc_button_background: the background of the ATC button
 * atc_button_text_color: the text color of the ATC button
 * payment_button_background: the custom dynamic checkout button background
@@ -22,14 +24,85 @@ Supported variables
 
 {%- assign variant_picker_block = section.blocks | where: 'type', 'variant_picker' | first -%}
 
+{%- comment -%}
+Custom vcollect: Impact decides "pre-order" from the template suffix alone, which forces someone to move a product to
+another template on its release day and back again. Here pre-order is derived from the release date (see
+'pre-order-check'), so the caller passes it in.
+
+The flag is folded into the template attribute rather than only into the Liquid label, because the buy-buttons web
+component re-renders the label on every variant change and reads that attribute to choose between "Pré-commander" and
+"Ajouter au panier". Setting only the Liquid label would make the button revert to "Ajouter au panier" as soon as the
+shopper picks another variant. The component tests it with .includes('pre-order'), so appending is enough.
+
+pre_order is matched against true AND against the string 'true' on purpose. Callers get the state from
+'pre-order-check', which is a snippet and therefore returns a captured string, and in Liquid an EMPTY string is truthy:
+a bare `if pre_order` would turn every product into a pre-order at any call site that forwards the capture directly.
+{%- endcomment -%}
+{%- liquid
+  assign is_pre_order = false
+  if pre_order == true or pre_order == 'true'
+    assign is_pre_order = true
+  endif
+
+  assign buy_buttons_template = product.template_suffix
+
+  if is_pre_order
+    unless buy_buttons_template contains 'pre-order'
+      assign buy_buttons_template = buy_buttons_template | append: ' pre-order'
+    endunless
+  endif
+
+  comment
+    A product put on Impact's native pre-order template counts as a pre-order too, otherwise it would get the
+    "Pré-commander" label but keep the express checkout button and reach the cart with no mention of a later shipment,
+    which is precisely the gap this snippet exists to close. One state, whichever way it was declared.
+  endcomment
+  if buy_buttons_template contains 'pre-order'
+    assign is_pre_order = true
+  endif
+
+  assign release_date_formatted = product.metafields.vcollect.date_sortie.value | date: '%d/%m/%Y'
+-%}
+
+{%- comment -%}
+Custom vcollect: the dynamic checkout button ("Acheter maintenant") is dropped on a pre-order. It sends the shopper
+straight to payment, skipping the cart, which is the one place where the shipping date is repeated before paying. On a
+product that ships weeks later, taking the money without that step invites chargebacks.
+
+Forced here rather than at each call site so the product page and the quick buy drawer cannot disagree.
+{%- endcomment -%}
+{%- if is_pre_order -%}
+  {%- assign show_payment_button = false -%}
+{%- endif -%}
+
 {%- form 'product', product, is: 'product-form', id: form_id -%}
   <input type="hidden" {% if variant_picker_block != blank %}disabled{% endif %} name="id" value="{{ product.selected_or_first_available_variant.id }}">
+
+  {%- comment -%}
+  Custom vcollect: a line item property carries the pre-order status into the cart, the checkout, the confirmation
+  email and the admin order. Nothing else does: the "Pré-commander" label lives on the product page only, so without
+  this the shopper pays on a checkout that looks like any other and expects a normal delivery.
+
+  A line item property is the native way to do this, no app involved. The name has no leading underscore on purpose,
+  that prefix is what hides a property from the shopper (see 'line-item'), and here it must stay visible.
+
+  The date is written into the value at add-to-cart time rather than read back later, so the order keeps the date that
+  was promised even if the release is pushed back afterwards.
+
+  Guarded on the date being present as well: a product sold as a pre-order through the native template may carry no
+  release date, and a property reading "Expédition à partir du" with nothing after it is worse than no property.
+  {%- endcomment -%}
+  {%- if is_pre_order and release_date_formatted != blank -%}
+    {%- assign pre_order_property_name = 'product.general.pre_order_property_name' | t -%}
+    {%- assign pre_order_property_value = 'product.general.pre_order_property_value' | t: date: release_date_formatted -%}
+    <input type="hidden" name="properties[{{ pre_order_property_name | escape }}]" value="{{ pre_order_property_value | escape }}">
+  {%- endif -%}
 
   {%- assign button_disabled = false -%}
   {%- assign button_size = button_size | default: 'xl' -%}
 
   {%- if product.selected_or_first_available_variant.available -%}
-    {%- if product.template_suffix contains 'pre-order' -%}
+    {%- if is_pre_order -%}
       {%- capture button_content -%}{{ 'product.general.pre_order_button' | t }}{%- endcapture -%}
     {%- else -%}
       {%- capture button_content -%}{{ 'product.general.add_to_cart_button' | t }}{%- endcapture -%}
@@ -62,7 +135,7 @@ Supported variables
       </gift-card-recipient>
     {%- endif -%}
 
-    <buy-buttons class="buy-buttons {% if show_payment_button %}buy-buttons--multiple{% endif %}" template="{{ product.template_suffix | escape }}" form="{{ form_id }}">
+    <buy-buttons class="buy-buttons {% if show_payment_button %}buy-buttons--multiple{% endif %}" template="{{ buy_buttons_template | escape }}" form="{{ form_id }}">
       {%- render 'button', content: button_content, type: 'submit', size: button_size, disabled: button_disabled, secondary: show_payment_button, subdued: button_disabled, background: atc_button_background, text_color: atc_button_text_color -%}
 
       {%- if show_payment_button -%}

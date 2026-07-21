@@ -254,7 +254,37 @@ quick buy information in a template, that will be extracted in JS, but ensure it
           {%- render 'variant-picker', product: product, form_id: product_form_id, update_url: false, hide_sold_out_variants: block.settings.hide_sold_out_variants, hide_size_chart: true, force_dropdown_as_block: true, block: block -%}
 
         {%- when 'buy_buttons' -%}
-          {%- render 'buy-buttons', product: product, form_id: product_form_id, show_payment_button: block.settings.show_payment_button, button_size: 'lg' -%}
+          {%- comment -%}
+          Custom vcollect: the quick buy drawer renders the buy buttons directly instead of going through
+          'product-info', so the pre-order state has to be resolved again here. Without it the drawer opened from a
+          collection page would say "Ajouter au panier" on a product the page itself badges as a pre-order.
+
+          The drawer is only reachable on a product with stock (see 'product-card'), so there is no waitlist case to
+          handle: an unreleased product without stock never shows a quick buy button.
+          {%- endcomment -%}
+          {%- capture is_coming_soon -%}{%- render 'coming-soon-check', product: product -%}{%- endcapture -%}
+          {%- assign is_coming_soon = is_coming_soon | strip -%}
+          {%- capture is_pre_order -%}{%- render 'pre-order-check', product: product -%}{%- endcapture -%}
+          {%- assign is_pre_order = is_pre_order | strip -%}
+
+          {%- if is_pre_order == 'true' -%}
+            {%- assign release_date_formatted = product.metafields.vcollect.date_sortie.value | date: '%d/%m/%Y' -%}
+            <p class="text-sm text-subdued">
+              {{- 'product.general.pre_order_note' | t: date: release_date_formatted -}}
+            </p>
+
+            {%- render 'buy-buttons', product: product, form_id: product_form_id, pre_order: true, show_payment_button: block.settings.show_payment_button, button_size: 'lg' -%}
+          {%- elsif is_coming_soon == 'true' -%}
+            {%- comment -%}
+            Waitlist mode: no buy button in the drawer either. This branch should be unreachable, product cards hide
+            their quick buy in that state, but the drawer pulls this template over the network from a page anyone can
+            request, so it must not be the one place that still hands out a working add to cart.
+            {%- endcomment -%}
+            <p class="text-sm text-subdued">{{ 'product.waitlist.intro' | t }}</p>
+            <a href="{{ product.url }}" class="button">{{ 'product.general.view_product' | t }}</a>
+          {%- else -%}
+            {%- render 'buy-buttons', product: product, form_id: product_form_id, show_payment_button: block.settings.show_payment_button, button_size: 'lg' -%}
+          {%- endif -%}
       {%- endcase -%}
     {%- endfor -%}
   </div>
