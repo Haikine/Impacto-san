@@ -168,6 +168,21 @@ Supported variables
                         {%- endif -%}
                       {%- endfor -%}
                     {%- endif -%}
+
+                    {%- comment -%}
+                    Custom vcollect: on touch devices the theme forces click-to-open, so tapping a top-level entry can
+                    only reveal its panel. Its own page then has no way in. This adds it back as the last row of the
+                    panel, which is where a thumb naturally ends up after scanning the list.
+
+                    Skipped when the entry points at "#", the convention for a heading that has no page behind it.
+                    {%- endcomment -%}
+                    {%- if link.url != '#' and link.url != blank -%}
+                      <li class="{% if is_mega_menu %}sm:h5{% else %}sm:h4{% endif %} h3">
+                        <a class="group block w-full" href="{{ link.url }}">
+                          <span><span class="reversed-link">{{- 'header.general.view_all' | t: title: link.title -}}</span></span>
+                        </a>
+                      </li>
+                    {%- endif -%}
                   </ul>
 
                   {%- unless is_mega_menu -%}
