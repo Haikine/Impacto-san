@@ -1,0 +1,153 @@
+/**
+ * ----------------------------------------------------------------------------
+ * VCOLLECT OVERRIDES
+ * ----------------------------------------------------------------------------
+ * Custom additions to the Impact theme. Not part of Maestrooo's base code, so
+ * they live in their own stylesheet loaded after theme.css and can be removed
+ * without touching a single theme file.
+ *
+ * Everything here is desktop-first-safe: each rule is either harmless on small
+ * screens or wrapped in a media query, because the theme's own layout already
+ * does the right thing on mobile.
+ */
+
+/* ---------------------------------------------------------------------------
+ * Carousels: fade the overflowing edges
+ * ---------------------------------------------------------------------------
+ * A horizontal carousel cuts the last card mid-image at the edge of the
+ * viewport, which reads as a rendering bug rather than as "there is more to
+ * see". Fading both ends turns the cut into an intentional frame and hints at
+ * the scroll.
+ *
+ * Scoped to .is-scrollable, the class the theme only adds when there are more
+ * products than fit on one row. A carousel that already shows everything keeps
+ * its cards crisp to the edge instead of fading them for no reason.
+ *
+ * A mask is used rather than gradient overlays because the sections alternate
+ * between white, light grey and near-black backgrounds: a mask fades to
+ * whatever is behind, an overlay would need to know the colour.
+ */
+.scroll-area.is-scrollable {
+  --carousel-fade: 40px;
+
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 var(--carousel-fade),
+    #000 calc(100% - var(--carousel-fade)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 var(--carousel-fade),
+    #000 calc(100% - var(--carousel-fade)),
+    transparent 100%
+  );
+}
+
+@media screen and (max-width: 699px) {
+  .scroll-area.is-scrollable {
+    --carousel-fade: 20px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Carousels: tighter gutter between the mobile tiles
+ * ---------------------------------------------------------------------------
+ * The sections now lay out three tiles across a phone instead of one and a
+ * quarter. The theme's 20px column gap was sized for a tile taking most of the
+ * screen; against a 140px tile it eats a tenth of the row and the products stop
+ * reading as one family. 12px keeps them grouped without touching.
+ *
+ * Set on .product-list rather than :root: a custom property declared on the
+ * element itself always wins over the inherited one, so the section's own
+ * `--product-list-gap` shorthand picks this up with no specificity fight.
+ *
+ * The .scroll-area ancestor keeps this away from the collection page, whose
+ * grid is not wrapped in one. A stacked product-list is untouched for a
+ * different reason: for it the theme writes an 8px column gap literally into
+ * the shorthand instead of going through this variable.
+ */
+@media screen and (max-width: 699px) {
+  .scroll-area .product-list {
+    --product-list-column-gap: var(--spacing-3);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Carousels: stop the scroll on a whole tile
+ * ---------------------------------------------------------------------------
+ * The theme puts `scroll-snap-type: x mandatory` on every .scroll-area but
+ * never gives the product cards a snap point, so the declaration does nothing
+ * and a flick leaves a tile cut in half at the edge. Naming the start of each
+ * card as the snap point is all that was missing.
+ *
+ * `.bleed` already declares the matching `scroll-padding-inline`, so a snapped
+ * tile lands on the page gutter and not under it.
+ *
+ * No `scroll-snap-stop: always`: the shopper should still be able to fling past
+ * several products in one gesture, the carousels hold up to fifty of them.
+ *
+ * Phones only. From 700px the row shows a full set of products and there is
+ * nothing left to snap to, which is how the theme treats its own carousels
+ * (see .testimonial and .collection-card, both released from snapping once the
+ * viewport is wide enough).
+ */
+@media screen and (max-width: 699px) {
+  .scroll-area.is-scrollable .product-list > * {
+    scroll-snap-align: start;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Product cards: corners that match the rest of the site
+ * ---------------------------------------------------------------------------
+ * The theme derives every radius from one setting, currently 24px. Blocks get
+ * the full 24px and buttons are pills, but product cards are on `--rounded-sm`,
+ * a quarter of it, so they were the only sharp-cornered element on the page.
+ *
+ * `--rounded` is half the setting, 12px. Redefining the token on the card
+ * rather than writing a border-radius means the image inherits it too: the
+ * theme rounds the top corners of `.product-card__image` from the same token,
+ * and a card and its photo disagreeing on their corners is exactly the kind of
+ * detail that makes a page look unfinished.
+ *
+ * Not the full 24px: on a 140px mobile tile that curve starts biting into the
+ * product photo.
+ */
+.product-card {
+  --rounded-sm: var(--rounded);
+}
+
+/* ---------------------------------------------------------------------------
+ * Product page: keep the gallery alongside the description
+ * ---------------------------------------------------------------------------
+ * With the carousel gallery layout the media column is about one screen tall
+ * while the info column runs long: title, price, buy buttons, description,
+ * characteristics table, FAQ. Past the first scroll the shopper reads about a
+ * product they can no longer see.
+ *
+ * .product is a grid with align-items: start, so a sticky child stays put
+ * without stretching the row. The offset matches the theme's own sticky
+ * elements (cart recap, collection filters) so a sticky header never covers it.
+ *
+ * The wrapper is the theme's <safe-sticky>, added in sections/main-product.liquid.
+ * It reads its own computed position and, when the element is taller than the
+ * viewport, lets it scroll to its end before pinning. Plain sticky would pin the
+ * top and put the bottom of the image out of reach on a short laptop screen.
+ * A custom element defaults to display: inline, hence the explicit block.
+ *
+ * Only from 1000px: below that the theme stacks the two columns, and a sticky
+ * gallery would eat the screen.
+ */
+.product-gallery-sticky {
+  display: block;
+}
+
+@media screen and (min-width: 1000px) {
+  .product > .product-gallery-sticky {
+    position: sticky;
+    top: calc(var(--sticky-area-height) + 20px);
+  }
+}
