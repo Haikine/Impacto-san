@@ -36,6 +36,13 @@ or change the format of some info
           "@type": "Offer",
           "name": {% if product.has_only_default_variant %}{{ product.title | json }}{% else %}{{ variant.title | json }}{% endif %},
           "availability": {%- if variant.available -%}"https://schema.org/InStock"{%- elsif variant.incoming -%}"https://schema.org/BackOrder"{% else %}"https://schema.org/OutOfStock"{%- endif -%},
+          {%- comment -%}
+            Custom (not Impact): itemCondition is required by Google for merchant
+            listings. The whole catalogue is sealed and new (vcollect.etat_boite =
+            "Neuf" on 100% of products, référentiel du 20/07/2026), so the value is
+            read from the metafield and only falls back to New when it is absent.
+          {%- endcomment -%}
+          "itemCondition": {%- if product.metafields.vcollect.etat_boite.value == 'Abîmé' or product.metafields.vcollect.etat_boite.value == 'Choc' -%}"https://schema.org/UsedCondition"{%- else -%}"https://schema.org/NewCondition"{%- endif -%},
           "price": {{ variant.price | divided_by: 100.0 | json }},
           "priceCurrency": {{ cart.currency.iso_code | json }},
           "priceValidUntil": "{{ 'now' | date: '%s' | plus: days_product_price_valid_until | date: '%Y-%m-%d' }}",
@@ -70,7 +77,15 @@ or change the format of some info
     "description": {{ product.description | strip_html | json }},
     "category": {{ product.type | json }},
     "url": "{{ shop.url }}{{ product.url }}",
-    "sku": {{ product.selected_or_first_available_variant.sku | json }},
+    {%- comment -%}
+      Impact core override: Impact emitted this sku unconditionally, so a product
+      without one rendered `"sku": null`, which invalidates the whole Product block
+      for Google. No variant in the catalogue carries a sku today (audit 21/07/2026),
+      so this was firing on 138 product pages out of 138.
+    {%- endcomment -%}
+    {%- if product.selected_or_first_available_variant.sku != blank -%}
+      "sku": {{ product.selected_or_first_available_variant.sku | json }},
+    {%- endif -%}
     {%- if product.selected_or_first_available_variant.barcode != blank -%}
       {%- if is_valid_global_gtin_length -%}
         "gtin": {{ product.selected_or_first_available_variant.barcode | json }},
@@ -78,22 +93,57 @@ or change the format of some info
         "mpn": {{ product.selected_or_first_available_variant.barcode | json }},
       {%- endif -%}
     {%- endif -%}
-    {%- if product.selected_or_first_available_variant.weight -%}
+    {%- comment -%}
+      Impact core override: 0 is truthy in Liquid, so an unweighed product emitted
+      "value": 0.0. Every product of the catalogue is unweighed today, so the block
+      was pure noise. Compare against 0 instead of testing truthiness.
+    {%- endcomment -%}
+    {%- if product.selected_or_first_available_variant.weight > 0 -%}
       "weight": {
         "@type": "QuantitativeValue",
         "unitCode": {{ product.selected_or_first_available_variant.weight_unit | json }},
         "value": {{ product.selected_or_first_available_variant.weight_in_unit | json }}
       },
     {%- endif -%}
-    "image": {
-      "@type": "ImageObject",
-      "url": "https:{{ page_image | image_url: width: 1024 }}",
-      "image": "https:{{ page_image | image_url: width: 1024 }}",
-      "name": {{ page_image.alt | json }},
-      "width": "1024",
-      "height": "1024"
-    }
+    {%- comment -%}
+      Impact core override: Impact sent a single ImageObject built from page_image,
+      with hardcoded 1024x1024 dimensions that are wrong whenever the source image
+      is not square. Google asks for the product images as a list of URLs, and uses
+      several of them when they are offered, so send the whole gallery.
+    {%- endcomment -%}
+    "image": [
+      {%- for media in product.media limit: 6 -%}
+        {%- if media.media_type == 'image' -%}
+          {{ media | image_url: width: 1600 | prepend: 'https:' | json }},
+        {%- endif -%}
+      {%- endfor -%}
+      {{ page_image | image_url: width: 1600 | prepend: 'https:' | json }}
+    ]
   {%- endcapture -%}
+{%- elsif request.page_type == 'collection' -%}
+  {%- comment -%}
+    Custom (not Impact): Impact ships no ItemList at all, so the 41 collection pages
+    told Google nothing about what they list. ItemList is what makes a category page
+    eligible for the carousel treatment. Capped at the first 24 products, which is
+    the default page size, so page 2 lists its own products rather than repeating.
+  {%- endcomment -%}
+  {%- if collection.products_count > 0 -%}
+    {%- capture main_entity_microdata -%}
+      "@type": "ItemList",
+      "name": {{ collection.title | json }},
+      "numberOfItems": {{ collection.products_count | json }},
+      "itemListElement": [
+        {%- for product in collection.products limit: 24 -%}
+          {
+            "@type": "ListItem",
+            "position": {{ forloop.index }},
+            "name": {{ product.title | json }},
+            "url": {{ shop.url | append: product.url | json }}
+          }{%- unless forloop.last -%},{%- endunless -%}
+        {%- endfor -%}
+      ]
+    {%- endcapture -%}
+  {%- endif -%}
 {%- elsif request.page_type == 'article' -%}
   {%- capture main_entity_microdata -%}
     "@type": "BlogPosting",
@@ -137,72 +187,14 @@ or change the format of some info
   {%- endcapture -%}
 {%- endif -%}
 
-{%- capture breadcrumb_entity_microdata -%}
-  "@type": "BreadcrumbList",
-  "itemListElement": [{
-      "@type": "ListItem",
-      "position": 1,
-      "name": {{ 'general.home' | t | json }},
-      "item": "{{ shop.url }}"
-    }
+{%- comment -%}
+Impact core override: the BreadcrumbList that used to be built here was removed. It is now emitted by
+snippets/breadcrumb.liquid, which also renders the visible trail, so the two can never state different paths. That
+version adds the parent category read from the main menu, which this one had no way to know, and it fixed an error
+where an article listed the blog title twice instead of the article title.
 
-    {%- if request.page_type == 'product' -%}
-      {%- if collection -%}
-        ,{
-          "@type": "ListItem",
-          "position": 2,
-          "name": {{ collection.title | json }},
-          "item": "{{ shop.url }}{{ collection.url }}"
-        }, {
-          "@type": "ListItem",
-          "position": 3,
-          "name": {{ product.title | json }},
-          "item": "{{ shop.url }}{{ product.url }}"
-        }
-      {%- else -%}
-        ,{
-          "@type": "ListItem",
-          "position": 2,
-          "name": {{ product.title | json }},
-          "item": "{{ shop.url }}{{ product.url }}"
-        }
-      {%- endif -%}
-    {%- elsif request.page_type == 'collection' -%}
-        ,{
-          "@type": "ListItem",
-          "position": 2,
-          "name": {{ collection.title | json }},
-          "item": "{{ shop.url }}{{ collection.url }}"
-        }
-    {%- elsif request.page_type == 'blog' -%}
-        ,{
-          "@type": "ListItem",
-          "position": 2,
-          "name": {{ blog.title | json }},
-          "item": "{{ shop.url }}{{ blog.url }}"
-        }
-    {%- elsif request.page_type == 'article' -%}
-        ,{
-          "@type": "ListItem",
-          "position": 2,
-          "name": {{ blog.title | json }},
-          "item": "{{ shop.url }}{{ blog.url }}"
-        }, {
-          "@type": "ListItem",
-          "position": 3,
-          "name": {{ blog.title | json }},
-          "item": "{{ shop.url }}{{ article.url }}"
-        }
-    {%- elsif request.page_type == 'page' -%}
-       ,{
-          "@type": "ListItem",
-          "position": 2,
-          "name": {{ page.title | json }},
-          "item": "{{ shop.url }}{{ page.url }}"
-        }
-    {%- endif -%}
-  ]
-{%- endcapture -%}
+If an Impact update brings this block back, delete it again: two BreadcrumbList on the same page compete.
+{%- endcomment -%}
 
 {% if main_entity_microdata != blank %}
   <script type="application/ld+json">
@@ -213,14 +205,6 @@ or change the format of some info
   </script>
 {% endif %}
 
-{% if breadcrumb_entity_microdata != blank %}
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    {{ breadcrumb_entity_microdata }}
-  }
-  </script>
-{% endif %}
 
 {%- if request.page_type == 'index' -%}
   {%- assign potential_action_target = request.origin | append: routes.search_url | append: "?q={search_term_string}" -%}

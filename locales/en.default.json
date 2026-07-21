@@ -1,9 +1,19 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "general": {
     "page": "Page {{ page }}",
     "home": "Home",
     "accessibility": {
       "skip_to_content": "Skip to content",
+      "breadcrumb": "Breadcrumb",
       "pagination": "Pagination navigation",
       "go_to_page": "Go to page {{ index }}",
       "go_to_item": "Go to item {{ index }}",
@@ -62,7 +72,8 @@
       "open_menu": "Open navigation menu",
       "open_search": "Open search",
       "open_account": "Open account page",
-      "open_cart": "Open cart"
+      "open_cart": "Open cart",
+      "view_all": "View all: {{ title }}"
     }
   },
   "product": {
@@ -77,6 +88,7 @@
       "unavailable_button": "Unavailable",
       "added_to_cart": "Added to your cart!",
       "sold_out_badge": "Sold out",
+      "coming_soon_badge": "Coming soon",
       "on_sale_badge": "On sale",
       "discount_badge_html": "Save {{ savings }}",
       "sku": "SKU:",
@@ -90,6 +102,16 @@
         "one": "{{ count }} color available",
         "other": "{{ count }} colors available"
       }
+    },
+    "waitlist": {
+      "intro": "Join the waitlist so you don't miss the release.",
+      "intro_restock": "This product is sold out. Leave your email and we'll tell you first when it's back.",
+      "release_date": "Official release on {{ date }}",
+      "email_label": "Your email address",
+      "submit": "Join the waitlist",
+      "submit_restock": "Notify me when it's back",
+      "success": "You're on the list! We'll email you as soon as it goes on sale.",
+      "success_restock": "You're on the list! We'll email you as soon as it's back in stock."
     },
     "gallery": {
       "close": "Close gallery",
@@ -325,6 +347,10 @@
     "free_shipping_bar": {
       "limit_unreached_html": "Spend {{ remaining_amount }} more and get free shipping!",
       "limit_reached_html": "You are eligible for free shipping."
+    },
+    "gift_tiers": {
+      "limit_unreached_html": "Add {{ remaining_amount }} to receive your {{ reward }}.",
+      "all_reached_html": "All your gifts are unlocked!"
     },
     "shipping_estimator": {
       "estimate_shipping": "Estimate shipping",

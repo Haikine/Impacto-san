@@ -13,6 +13,7 @@
     "home": "Accueil",
     "accessibility": {
       "skip_to_content": "Passer au contenu",
+      "breadcrumb": "Fil d'Ariane",
       "pagination": "Pagination",
       "go_to_page": "Aller à la page {{ index }}",
       "go_to_item": "Aller à l'élément {{ index }}",
@@ -71,7 +72,8 @@
       "open_menu": "Ouvrir la navigation",
       "open_search": "Ouvrir la recherche",
       "open_account": "Ouvrir le compte utilisation",
-      "open_cart": "Voir le panier"
+      "open_cart": "Voir le panier",
+      "view_all": "Voir tout : {{ title }}"
     }
   },
   "product": {
@@ -103,10 +105,13 @@
     },
     "waitlist": {
       "intro": "Rejoins la liste d'attente pour ne pas manquer la mise en vente.",
+      "intro_restock": "Ce produit est épuisé. Laisse ton e-mail et tu seras prévenu en priorité de son retour.",
       "release_date": "Sortie officielle le {{ date }}",
       "email_label": "Ton adresse e-mail",
       "submit": "Rejoindre la liste d'attente",
-      "success": "C'est noté ! Tu seras prévenu par e-mail dès la mise en vente."
+      "submit_restock": "Me prévenir du retour en stock",
+      "success": "C'est noté ! Tu seras prévenu par e-mail dès la mise en vente.",
+      "success_restock": "C'est noté ! Tu seras prévenu par e-mail dès le retour en stock."
     },
     "gallery": {
       "close": "Fermer la galerie",

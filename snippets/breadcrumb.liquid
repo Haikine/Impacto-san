@@ -1,0 +1,237 @@
+{%- comment -%}
+----------------------------------------------------------------------------------------------------------------------
+BREADCRUMB
+----------------------------------------------------------------------------------------------------------------------
+
+Custom addition to the Impact theme, not part of Maestrooo's base code. Rendered once from layout/theme.liquid so every
+page gets the same trail, instead of editing each main-* section and fighting them on the next theme update.
+
+********************************************
+Where the hierarchy comes from
+********************************************
+
+Shopify collections are a flat list, there is no parent/child relation to read. The only place the catalogue is
+organised in levels is the navigation menu, so the parent level is looked up in the main menu: a collection that appears
+as a sub-item of "Boosters et packs" gets that entry inserted before it.
+
+Consequence to keep in mind: re-organising the main menu re-organises the breadcrumb. That is intended, it keeps a
+single place to maintain. A collection absent from the menu simply has no parent level, which is the previous behaviour.
+
+The menu handle is hardcoded to 'main-menu' because the header reads its menu from a section setting, which a layout
+snippet cannot access. Verified in sections/header-group.json: the header is set to "main-menu".
+
+********************************************
+Structured data
+********************************************
+
+This snippet emits the BreadcrumbList JSON-LD itself, from the exact same variables it renders, so what a shopper reads
+and what Google indexes can never drift. The BreadcrumbList that Impact used to emit in snippets/microdata-schema.liquid
+was removed for that reason: two BreadcrumbList on one page compete, and that one ignored the parent level.
+
+********************************************
+Placement note
+********************************************
+
+This renders before the first section inside <main>, so `[role="main"] .shopify-section:first-child` no longer matches
+and `--section-is-first` stays 0. That variable is read only by the transparent-header rules (theme.css line 842 and the
+`allow_transparent_header` blocks in collection-banner, image-with-text-overlay, main-article, main-blog, slideshow and
+video). `allow_transparent_header` is false on every template of this store, verified on 21/07/2026, so nothing changes
+today. If a first section is ever switched to a transparent header, hide the breadcrumb on that page, otherwise the
+section is pulled up by the header height and covers it.
+{%- endcomment -%}
+
+{%- liquid
+  assign show_breadcrumb = true
+
+  case request.page_type
+    when 'index', 'password', 'captcha', 'gift_card'
+      assign show_breadcrumb = false
+  endcase
+
+  case request.page_type
+    when 'product'
+      assign current_title = product.title
+    when 'collection'
+      assign current_title = collection.title
+    when 'blog'
+      assign current_title = blog.title
+    when 'article'
+      assign current_title = article.title
+    when 'page'
+      assign current_title = page.title
+    when 'cart'
+      assign current_title = 'cart.general.title' | t
+    when 'search'
+      assign current_title = 'search.general.title' | t
+    when '404'
+      assign current_title = '404.general.title' | t
+    else
+      assign current_title = page_title
+  endcase
+
+  comment
+    The collection that leads to the current page: itself on a collection page, the one the shopper came from on a
+    product page. On a product reached from a search or a direct link it stays empty, and the trail is Home > product.
+  endcomment
+
+  assign trail_collection = null
+
+  if request.page_type == 'collection' or request.page_type == 'product'
+    if collection.url != blank and collection.handle != 'all'
+      assign trail_collection = collection
+    endif
+  endif
+
+  assign parent_title = ''
+  assign parent_url = ''
+
+  if trail_collection != null
+    for top_link in linklists['main-menu'].links
+      if top_link.url == trail_collection.url
+        break
+      endif
+
+      for child_link in top_link.links
+        if child_link.url == trail_collection.url
+          assign parent_title = top_link.title
+          assign parent_url = top_link.url
+          break
+        endif
+      endfor
+
+      if parent_title != ''
+        break
+      endif
+    endfor
+  endif
+-%}
+
+{%- if show_breadcrumb and current_title != blank -%}
+  <style>
+    .breadcrumb {
+      padding-block: var(--spacing-4);
+    }
+
+    .breadcrumb__list {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--spacing-2);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .breadcrumb__item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      min-width: 0;
+    }
+
+    .breadcrumb__link {
+      color: rgb(var(--text-color) / 0.7);
+      text-decoration: none;
+      transition: color 0.2s ease-in-out;
+    }
+
+    .breadcrumb__link:hover {
+      color: rgb(var(--text-color));
+    }
+
+    .breadcrumb__separator {
+      color: rgb(var(--text-color) / 0.4);
+      flex: none;
+    }
+
+    /* Long product titles must fold instead of pushing the trail out of the container */
+    .breadcrumb__current {
+      color: rgb(var(--text-color));
+      overflow-wrap: anywhere;
+    }
+  </style>
+
+  <nav class="breadcrumb container" aria-label="{{ 'general.accessibility.breadcrumb' | t }}">
+    <ol class="breadcrumb__list text-sm">
+      <li class="breadcrumb__item">
+        <a class="breadcrumb__link" href="{{ routes.root_url }}">{{ 'general.home' | t }}</a>
+        {%- render 'icon', icon: 'chevron-right-small', class: 'breadcrumb__separator', direction_aware: true -%}
+      </li>
+
+      {%- if parent_url != '' -%}
+        <li class="breadcrumb__item">
+          <a class="breadcrumb__link" href="{{ parent_url }}">{{ parent_title }}</a>
+          {%- render 'icon', icon: 'chevron-right-small', class: 'breadcrumb__separator', direction_aware: true -%}
+        </li>
+      {%- endif -%}
+
+      {%- if request.page_type == 'product' and trail_collection != null -%}
+        <li class="breadcrumb__item">
+          <a class="breadcrumb__link" href="{{ trail_collection.url }}">{{ trail_collection.title }}</a>
+          {%- render 'icon', icon: 'chevron-right-small', class: 'breadcrumb__separator', direction_aware: true -%}
+        </li>
+      {%- elsif request.page_type == 'article' -%}
+        <li class="breadcrumb__item">
+          <a class="breadcrumb__link" href="{{ blog.url }}">{{ blog.title }}</a>
+          {%- render 'icon', icon: 'chevron-right-small', class: 'breadcrumb__separator', direction_aware: true -%}
+        </li>
+      {%- endif -%}
+
+      <li class="breadcrumb__item">
+        <span class="breadcrumb__current" aria-current="page">{{ current_title }}</span>
+      </li>
+    </ol>
+  </nav>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {%- assign position = 1 -%}
+        {
+          "@type": "ListItem",
+          "position": {{ position }},
+          "name": {{ 'general.home' | t | json }},
+          "item": "{{ shop.url }}"
+        }
+
+        {%- if parent_url != '' -%}
+          {%- assign position = position | plus: 1 -%}
+          ,{
+            "@type": "ListItem",
+            "position": {{ position }},
+            "name": {{ parent_title | json }},
+            "item": "{{ shop.url }}{{ parent_url }}"
+          }
+        {%- endif -%}
+
+        {%- if request.page_type == 'product' and trail_collection != null -%}
+          {%- assign position = position | plus: 1 -%}
+          ,{
+            "@type": "ListItem",
+            "position": {{ position }},
+            "name": {{ trail_collection.title | json }},
+            "item": "{{ shop.url }}{{ trail_collection.url }}"
+          }
+        {%- elsif request.page_type == 'article' -%}
+          {%- assign position = position | plus: 1 -%}
+          ,{
+            "@type": "ListItem",
+            "position": {{ position }},
+            "name": {{ blog.title | json }},
+            "item": "{{ shop.url }}{{ blog.url }}"
+          }
+        {%- endif -%}
+
+        {%- assign position = position | plus: 1 -%}
+        ,{
+          "@type": "ListItem",
+          "position": {{ position }},
+          "name": {{ current_title | json }},
+          "item": {{ canonical_url | json }}
+        }
+      ]
+    }
+  </script>
+{%- endif -%}
