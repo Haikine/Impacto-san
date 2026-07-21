@@ -1,0 +1,323 @@
+{%- comment -%}
+----------------------------------------------------------------------------------------------------------------------
+NEW RELEASES (custom vcollect)
+----------------------------------------------------------------------------------------------------------------------
+
+Custom addition to the Impact theme. Not part of Maestrooo's base code, so it lives in its own section file and can be
+deleted without touching anything the theme ships.
+
+Shows the products whose official release date (vcollect.date_sortie) is the most recent, newest first. Shopify cannot
+express "released in the last 30 days" as a collection rule, and the store's own "date added" is useless here: the whole
+catalogue was imported on the same day, so every product looks equally new to Shopify. The release date is the only
+field that says when a product actually came out, hence the sorting in Liquid.
+
+********************************************
+Why it never shows an empty carousel
+********************************************
+
+`fill_with_recent` decides what happens when nothing was released inside the window. Left on, the section falls back to
+the most recent past releases, so the homepage always has something to show. Turned off, the section is strict and can
+render nothing at all.
+
+The sort is descending, so the in-window products are always the first entries: no second pass is needed to prefer them.
+
+********************************************
+The 50 product ceiling
+********************************************
+
+A Liquid for loop stops at 50 iterations and `collection.products` only ever hands over 50 products per page, so this
+section inspects the first 50 products of the source collection and no more. Sort the source collection on "date added,
+newest first" in the admin and a fresh release is always inside that window.
+
+Products whose release date is still ahead of us are skipped on purpose: they already carry the "Bientôt disponible"
+badge and their own waitlist form (see 'coming-soon-check').
+{%- endcomment -%}
+
+{%- render 'section-spacing-collapsing' -%}
+
+<style>
+  {%- assign section_background = section.settings.background | default: settings.background -%}
+  {%- assign card_background = section.settings.product_card_background | default: settings.product_card_background -%}
+  {%- assign card_blends = false -%}
+
+  {%- unless section_background != 'rgba(0,0,0,0)' and card_background != 'rgba(0,0,0,0)' and section_background != card_background -%}
+    {%- assign card_blends = true -%}
+  {%- endunless -%}
+
+  #shopify-section-{{ section.id }} .product-list {
+    --product-list-gap: {% if section.settings.stack_products and section.settings.products_per_row_mobile == '2' %}{% if card_blends %}var(--product-list-row-gap){% endif %} var(--spacing-2){% else %}var(--product-list-row-gap) var(--product-list-column-gap){% endif %};
+    --product-list-items-per-row: {{ section.settings.products_per_row_mobile | times: 1 }};
+    --product-list-carousel-item-width: 74vw;
+    --product-list-grid: {% if section.settings.stack_products %}auto / repeat(var(--product-list-items-per-row), minmax(0, 1fr)){% else %}auto / auto-flow var(--product-list-carousel-item-width){% endif %};
+  }
+
+  @media screen and (min-width: 700px) {
+    #shopify-section-{{ section.id }} .product-list {
+      --product-list-gap: var(--product-list-row-gap) var(--product-list-column-gap);
+      --product-list-items-per-row: 2;
+      --product-list-carousel-item-width: 36vw;
+    }
+  }
+
+  @media screen and (min-width: 1000px) {
+    #shopify-section-{{ section.id }} .product-list {
+      --product-list-items-per-row: {{ section.settings.products_per_row_desktop }};
+      --product-list-carousel-item-width: calc(var(--container-inner-width) / {{ section.settings.products_per_row_desktop }} - (var(--product-list-column-gap) / {{ section.settings.products_per_row_desktop }} * {{ section.settings.products_per_row_desktop | minus: 1 }}));
+    }
+  }
+</style>
+
+<div {% render 'section-properties' %}>
+  <div class="section-stack">
+    {%- assign link_url = section.settings.link_url | default: section.settings.collection.url -%}
+    {%- render 'section-header', subheading: section.settings.subheading, heading: section.settings.title, heading_color: section.settings.heading_color, heading_gradient: section.settings.heading_gradient, content: section.settings.content, link_text: section.settings.link_text, link_url: link_url -%}
+
+    <div class="{% if section.settings.show_progress_bar %}scrollable-with-controls{% else %}floating-controls-container{% endif %}">
+      {%- assign scroll_area_id = 'scroll-area-' | append: section.id -%}
+
+      {%- paginate section.settings.collection.products by 50 -%}
+        {%- liquid
+          assign now_timestamp = 'now' | date: '%s' | plus: 0
+          assign window_seconds = section.settings.window_days | times: 86400
+          assign window_start = now_timestamp | minus: window_seconds
+          assign entries = ''
+
+          # One entry per released product, "<unix timestamp>-<position in the collection>". Unix timestamps are 10
+          # digits long for every date between 2001 and 2286, so sorting these strings alphabetically sorts them
+          # chronologically, which is the only way to order products by a metafield in Liquid.
+          for product in section.settings.collection.products
+            assign release_date = product.metafields.vcollect.date_sortie.value
+
+            if release_date != blank
+              assign release_timestamp = release_date | date: '%s' | plus: 0
+
+              if release_timestamp <= now_timestamp
+                assign entries = entries | append: release_timestamp | append: '-' | append: forloop.index0 | append: ','
+              endif
+            endif
+          endfor
+
+          assign sorted_entries = entries | split: ',' | sort | reverse
+          assign selected = ''
+
+          for entry in sorted_entries limit: section.settings.products_count
+            assign entry_timestamp = entry | split: '-' | first | plus: 0
+
+            if section.settings.fill_with_recent or entry_timestamp > window_start
+              assign selected = selected | append: entry | append: ','
+            endif
+          endfor
+
+          assign selected_entries = selected | split: ','
+          assign rendered_count = selected_entries.size
+        -%}
+
+        <scroll-carousel selector="product-card" id="{{ scroll_area_id }}" class="scroll-area bleed {% if rendered_count > section.settings.products_per_row_desktop %}is-scrollable{% endif %}">
+          <reveal-items selector=".product-list > *">
+            <product-list class="product-list">
+              {%- for entry in selected_entries -%}
+                {%- assign target_index = entry | split: '-' | last | plus: 0 -%}
+
+                {%- for product in section.settings.collection.products -%}
+                  {%- if forloop.index0 == target_index -%}
+                    {%- render 'product-card', product: product, stacked: section.settings.stack_products, background: section.settings.product_card_background, text_color: section.settings.product_card_text_color, show_badges: true -%}
+                    {%- break -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- else -%}
+                {%- for i in (1..section.settings.products_count) -%}
+                  {%- capture placeholder_image -%}product-{% cycle '1', '2', '3', '4', '5', '6' %}{%- endcapture -%}
+                  {%- render 'product-card-placeholder', stacked: section.settings.stack_products, placeholder_image: placeholder_image, background: section.settings.product_card_background, text_color: section.settings.product_card_text_color, text_alignment: settings.product_info_alignment -%}
+                {%- endfor -%}
+              {%- endfor -%}
+            </product-list>
+          </reveal-items>
+        </scroll-carousel>
+
+        {%- if section.settings.stack_products == false -%}
+          {%- if section.settings.show_progress_bar -%}
+            {%- assign visible_count = rendered_count | at_least: 1 -%}
+            {%- assign default_progress = section.settings.products_per_row_desktop | times: 1.0 | divided_by: visible_count -%}
+            {%- render 'scrollbar', observes: scroll_area_id, default_progress: default_progress, show_buttons: true -%}
+          {%- else -%}
+            <button is="prev-button" class="circle-button circle-button--lg circle-button--fill border group" aria-controls="{{ scroll_area_id }}" disabled>
+              <span class="sr-only">{{ 'general.accessibility.previous' | t }}</span>
+              <span class="animated-arrow animated-arrow--reverse"></span>
+            </button>
+
+            <button is="next-button" class="circle-button circle-button--lg circle-button--fill border group" aria-controls="{{ scroll_area_id }}">
+              <span class="sr-only">{{ 'general.accessibility.next' | t }}</span>
+              <span class="animated-arrow"></span>
+            </button>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endpaginate -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Dernières sorties",
+  "class": "shopify-section--featured-collection",
+  "tag": "section",
+  "disabled_on": {
+    "templates": ["password"],
+    "groups": ["header", "custom.overlay"]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Affiche automatiquement les produits dont la date de sortie officielle est la plus récente. Seuls les 50 premiers produits de la collection source sont examinés : triez-la sur « Date d'ajout, du plus récent au plus ancien »."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection source"
+    },
+    {
+      "type": "range",
+      "id": "window_days",
+      "min": 7,
+      "max": 100,
+      "step": 1,
+      "unit": "j",
+      "label": "Fenêtre de sortie",
+      "info": "Un produit est considéré comme une nouveauté pendant ce nombre de jours après sa date de sortie officielle.",
+      "default": 30
+    },
+    {
+      "type": "checkbox",
+      "id": "fill_with_recent",
+      "label": "Compléter avec les sorties les plus récentes",
+      "info": "Évite un carrousel vide quand rien n'est sorti pendant la fenêtre.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Pleine largeur",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "stack_products",
+      "label": "Empiler les produits",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_progress_bar",
+      "label": "Afficher la barre de progression",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "products_count",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "label": "Produits à afficher",
+      "default": 8
+    },
+    {
+      "type": "select",
+      "id": "products_per_row_mobile",
+      "label": "Produits par ligne (mobile)",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "range",
+      "id": "products_per_row_desktop",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "label": "Produits par ligne (ordinateur)",
+      "default": 4
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Sur-titre"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre",
+      "default": "DERNIÈRES SORTIES"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Texte"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Lien",
+      "info": "Par défaut, la collection source."
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "Texte du lien",
+      "default": "Voir tout"
+    },
+    {
+      "type": "header",
+      "content": "Couleurs",
+      "info": "Le dégradé remplace la couleur unie quand il est renseigné."
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Fond"
+    },
+    {
+      "type": "color_background",
+      "id": "background_gradient",
+      "label": "Dégradé de fond"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Texte"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Couleur du titre"
+    },
+    {
+      "type": "color_background",
+      "id": "heading_gradient",
+      "label": "Dégradé du titre"
+    },
+    {
+      "type": "color",
+      "id": "product_card_background",
+      "label": "Fond des fiches produit"
+    },
+    {
+      "type": "color",
+      "id": "product_card_text_color",
+      "label": "Texte des fiches produit"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Dernières sorties"
+    }
+  ]
+}
+{% endschema %}
