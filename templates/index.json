@@ -15,6 +15,8 @@
         "full_width": true,
         "allow_transparent_header": true,
         "image_size": "md",
+        "image": "shopify://shop_images/bandeau-30-ans-desktop.jpg",
+        "mobile_image": "shopify://shop_images/bandeau-30-ans-mobile.jpg",
         "show_countdown": true,
         "target_date": "2026-09-16",
         "hide_when_expired": true,
