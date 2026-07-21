@@ -62,6 +62,21 @@
   </div>
 {%- endcapture -%}
 
+{%- comment -%}
+  Impact core fix (21/07/2026), à reporter lors d'une mise à jour du thème.
+
+  Le </div> fermant le conteneur ci-dessous était placé À L'INTÉRIEUR de la
+  branche `if`. Quand aucune image n'est configurée, la branche `else` sortait
+  donc du HTML avec un <div> jamais fermé.
+
+  Mesuré sur la production avant correction : la page d'accueil servait 264
+  balises <div> pour 263 </div>. L'accueil (templates/index.json) et le modèle
+  de précommande (templates/product.pre-order.json) utilisent tous deux cette
+  section sans image, donc la branche fautive.
+
+  Le </div> est simplement remonté après le endif, où il ferme le conteneur
+  quelle que soit la branche empruntée.
+{%- endcomment -%}
 <div {% render 'section-properties' %}>
   {%- if section.settings.image != blank -%}
     <div class="newsletter">
@@ -72,10 +87,10 @@
         {{- newsletter_content -}}
       </div>
     </div>
-  </div>
-{%- else -%}
-  {{- newsletter_content -}}
-{%- endif -%}
+  {%- else -%}
+    {{- newsletter_content -}}
+  {%- endif -%}
+</div>
 
 {% schema %}
 {
