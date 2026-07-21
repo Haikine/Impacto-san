@@ -7,6 +7,14 @@ or change the format of some info
 {%- if request.page_type == 'product' -%}
   {%- assign days_product_price_valid_until = 10 | times: 86400 -%}
 
+  {%- comment -%}
+    Compared downcased on purpose: shop.name is "Vcollect" while the own-brand
+    products carry the vendor "VCOLLECT" (verified on the Admin API, 21/07/2026).
+    A strict comparison silently never matches.
+  {%- endcomment -%}
+  {%- assign house_brand = shop.name | downcase -%}
+  {%- assign product_brand = product.vendor | downcase -%}
+
   {%- capture main_entity_microdata -%}
     {%- assign is_valid_global_gtin_length = false -%}
 
@@ -58,12 +66,28 @@ or change the format of some info
           {%- if variant.sku != blank -%}
             "sku": {{ variant.sku | json }},
           {%- endif -%}
+          {%- comment -%}
+            Custom (not Impact): Impact only ever derived gtin and mpn from the
+            barcode, so a variant with no barcode carried no identifier at all.
+            Google asks for brand + mpn on products that legitimately have no
+            manufacturer GTIN, which is the case of the VCOLLECT own-brand
+            accessories: 14 fiches, 0 barcode, 11 with a house sku (Admin API,
+            21/07/2026). brand is already emitted below from product.vendor, so
+            the sku is the missing half of the pair.
+
+            Falling back to the sku is only correct because VCOLLECT is itself
+            the brand on these products, which makes its part number the
+            manufacturer part number. Never do this for resold goods: there the
+            mpn belongs to the real manufacturer and the sku is internal.
+          {%- endcomment -%}
           {%- if variant.barcode != blank -%}
             {%- if is_valid_gtin_length -%}
               "gtin": {{ variant.barcode | json }},
             {%- else -%}
               "mpn": {{ variant.barcode | json }},
             {%- endif -%}
+          {%- elsif variant.sku != blank and product_brand == house_brand -%}
+            "mpn": {{ variant.sku | json }},
           {%- endif -%}
           "url": "{{ shop.url }}{{ product.url }}?variant={{ variant.id }}"
         }{% unless forloop.last %},{% endunless %}
@@ -89,18 +113,25 @@ or change the format of some info
     {%- comment -%}
       Impact core override: Impact emitted this sku unconditionally, so a product
       without one rendered `"sku": null`, which invalidates the whole Product block
-      for Google. No variant in the catalogue carries a sku today (audit 21/07/2026),
-      so this was firing on 138 product pages out of 138.
+      for Google. It was firing on 138 product pages out of 138 when the fix landed.
+      Since then house skus have been created: 25 pages sampled on production on
+      21/07/2026 showed 20 with no sku key at all and 5 carrying a real value.
     {%- endcomment -%}
     {%- if product.selected_or_first_available_variant.sku != blank -%}
       "sku": {{ product.selected_or_first_available_variant.sku | json }},
     {%- endif -%}
+    {%- comment -%}
+      Same brand + mpn fallback as on the Offer above, kept in sync so the
+      product-level identifier never contradicts the offer-level one.
+    {%- endcomment -%}
     {%- if product.selected_or_first_available_variant.barcode != blank -%}
       {%- if is_valid_global_gtin_length -%}
         "gtin": {{ product.selected_or_first_available_variant.barcode | json }},
       {%- else -%}
         "mpn": {{ product.selected_or_first_available_variant.barcode | json }},
       {%- endif -%}
+    {%- elsif product.selected_or_first_available_variant.sku != blank and product_brand == house_brand -%}
+      "mpn": {{ product.selected_or_first_available_variant.sku | json }},
     {%- endif -%}
     {%- comment -%}
       Impact core override: 0 is truthy in Liquid, so an unweighed product emitted
@@ -119,14 +150,24 @@ or change the format of some info
       with hardcoded 1024x1024 dimensions that are wrong whenever the source image
       is not square. Google asks for the product images as a list of URLs, and uses
       several of them when they are offered, so send the whole gallery.
+
+      Fix of 21/07/2026: the first version of this override appended page_image
+      after the loop, unconditionally. page_image is the featured image, which is
+      already part of product.media, so every product shipped its main visual
+      twice. Measured on production: 137 fiches out of 146 carried a duplicate.
+      page_image is now only the fallback for a product that has no image media
+      at all, and the separator is driven by forloop so the array stays valid.
     {%- endcomment -%}
+    {%- assign gallery = product.media | where: 'media_type', 'image' -%}
     "image": [
-      {%- for media in product.media limit: 6 -%}
-        {%- if media.media_type == 'image' -%}
-          {{ media | image_url: width: 1600 | prepend: 'https:' | json }},
-        {%- endif -%}
-      {%- endfor -%}
-      {{ page_image | image_url: width: 1600 | prepend: 'https:' | json }}
+      {%- if gallery.size > 0 -%}
+        {%- for media in gallery limit: 6 -%}
+          {{ media | image_url: width: 1600 | prepend: 'https:' | json }}
+          {%- unless forloop.last -%},{%- endunless -%}
+        {%- endfor -%}
+      {%- elsif page_image != blank -%}
+        {{ page_image | image_url: width: 1600 | prepend: 'https:' | json }}
+      {%- endif -%}
     ]
   {%- endcapture -%}
 {%- elsif request.page_type == 'collection' -%}
