@@ -38,11 +38,20 @@ or change the format of some info
           "availability": {%- if variant.available -%}"https://schema.org/InStock"{%- elsif variant.incoming -%}"https://schema.org/BackOrder"{% else %}"https://schema.org/OutOfStock"{%- endif -%},
           {%- comment -%}
             Custom (not Impact): itemCondition is required by Google for merchant
-            listings. The whole catalogue is sealed and new (vcollect.etat_boite =
-            "Neuf" on 100% of products, référentiel du 20/07/2026), so the value is
-            read from the metafield and only falls back to New when it is absent.
+            listings, and Impact emitted none.
+
+            Every product of the catalogue is sealed and new. There is no metafield
+            holding the condition today: referentiel-catalogue.md describes a
+            vcollect.etat_boite, but the definition was never created, verified
+            against the Admin API on 21/07/2026 (the vcollect namespace has
+            etat_carte, unused, and no etat_boite). shopify.condition exists but is
+            filled on 7 products out of 147.
+
+            So this is a flat NewCondition, which is exact for the whole catalogue
+            today. The day damaged sealed goods are sold, read the condition here
+            rather than leaving this line to lie.
           {%- endcomment -%}
-          "itemCondition": {%- if product.metafields.vcollect.etat_boite.value == 'Abîmé' or product.metafields.vcollect.etat_boite.value == 'Choc' -%}"https://schema.org/UsedCondition"{%- else -%}"https://schema.org/NewCondition"{%- endif -%},
+          "itemCondition": "https://schema.org/NewCondition",
           "price": {{ variant.price | divided_by: 100.0 | json }},
           "priceCurrency": {{ cart.currency.iso_code | json }},
           "priceValidUntil": "{{ 'now' | date: '%s' | plus: days_product_price_valid_until | date: '%Y-%m-%d' }}",
