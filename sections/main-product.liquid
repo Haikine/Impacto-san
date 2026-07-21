@@ -37,12 +37,142 @@
       --product-gallery-media-list-gap: var(--grid-gutter);
     }
   }
+
+  {%- comment -%}
+    Impact core addition: styles for the custom product blocks that replace the Buy Box app
+    (inventory bar, trust badges, payment icons, info wrapper). Kept in one delimited area so a
+    future Impact update is easy to reconcile. Remove this block together with the matching
+    `custom_*` schema blocks and the `snippets/custom-*.liquid` files.
+  {%- endcomment -%}
+
+  {%- comment -%}
+    Impact spaces product info blocks with `.product-info > * + *`. These rules are more specific, so the
+    theme spacing is re-applied here as the baseline and the block margin settings act as an offset on top
+    of it. Declaring a bare `margin-block` instead would collapse the blocks against their neighbours.
+  {%- endcomment -%}
+  #shopify-section-{{ section.id }} .custom-inventory-bar {
+    display: block;
+    max-width: var(--cib-max-width);
+    margin-block: calc(var(--product-info-block-spacing) + var(--cib-margin-top)) calc(var(--product-info-block-spacing) + var(--cib-margin-bottom));
+  }
+
+  #shopify-section-{{ section.id }} .custom-inventory-bar__item[hidden] {
+    display: none;
+  }
+
+  #shopify-section-{{ section.id }} .custom-inventory-bar__text {
+    display: block;
+    margin-block-end: var(--cib-height);
+    font-size: var(--cib-font-size);
+    color: var(--cib-state-color);
+  }
+
+  #shopify-section-{{ section.id }} .custom-inventory-bar__track {
+    overflow: hidden;
+    height: var(--cib-height);
+    border-radius: var(--cib-radius);
+    background-color: var(--cib-track-color);
+  }
+
+  #shopify-section-{{ section.id }} .custom-inventory-bar__fill {
+    height: 100%;
+    border-radius: var(--cib-radius);
+    background-color: var(--cib-state-color);
+  }
+
+  #shopify-section-{{ section.id }} .custom-trust-badges {
+    display: flex;
+    justify-content: space-around;
+    gap: 8px;
+    max-width: var(--ctb-max-width);
+    margin-block: calc(var(--product-info-block-spacing) + var(--ctb-margin-top)) calc(var(--product-info-block-spacing) + var(--ctb-margin-bottom));
+    padding: 0;
+    list-style: none;
+  }
+
+  #shopify-section-{{ section.id }} .custom-trust-badges__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 33%;
+    text-align: center;
+  }
+
+  #shopify-section-{{ section.id }} .custom-trust-badges__item .icon {
+    flex-shrink: 0;
+    width: var(--ctb-icon-size);
+    height: var(--ctb-icon-size);
+    color: var(--ctb-color);
+  }
+
+  #shopify-section-{{ section.id }} .custom-trust-badges__text > * {
+    margin: 0;
+    font-size: var(--ctb-font-size);
+    line-height: normal;
+    color: var(--ctb-color);
+  }
+
+  #shopify-section-{{ section.id }} .custom-payment-icons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: var(--cpi-alignment);
+    gap: var(--cpi-gap);
+    max-width: var(--cpi-max-width);
+    margin-block: calc(var(--product-info-block-spacing) + var(--cpi-margin-top)) calc(var(--product-info-block-spacing) + var(--cpi-margin-bottom));
+  }
+
+  #shopify-section-{{ section.id }} .custom-payment-icons svg {
+    height: var(--cpi-icon-size);
+    width: auto;
+  }
+
+  {%- assign wrapper_block = section.blocks | where: 'type', 'custom_info_wrapper' | first -%}
+
+  {%- if wrapper_block != blank -%}
+    {%- capture wrapper_styles -%}
+      background: {{ wrapper_block.settings.background_color }};
+      border: {{ wrapper_block.settings.border_width }}px solid {{ wrapper_block.settings.border_color }};
+      border-radius: {{ wrapper_block.settings.border_radius }}px;
+      padding: {{ wrapper_block.settings.padding_block }}px {{ wrapper_block.settings.padding_inline }}px;
+      max-width: calc({{ wrapper_block.settings.max_width }} + {{ wrapper_block.settings.padding_inline | times: 2 }}px);
+      width: 100%;
+      margin-inline-end: auto;
+      overflow: hidden;
+    {%- endcapture -%}
+
+    {%- comment -%}
+      The Buy Box wrapper only styled the desktop layout (its "use in mobile" setting was off), so the
+      1000px breakpoint below reproduces the live rendering exactly.
+    {%- endcomment -%}
+    {%- if wrapper_block.settings.use_in_mobile -%}
+      #shopify-section-{{ section.id }} .product-info { {{ wrapper_styles }} }
+    {%- else -%}
+      @media screen and (min-width: 1000px) {
+        #shopify-section-{{ section.id }} .product-info { {{ wrapper_styles }} }
+      }
+    {%- endif -%}
+  {%- endif -%}
 </style>
 
 <div {% render 'section-properties', tight: true %}>
   <div class="product">
     {%- if product.media.size > 0 -%}
-      {%- render 'product-gallery', product: product -%}
+      {%- comment -%}
+      Custom vcollect: the gallery follows the shopper down the description instead of scrolling away.
+
+      With the carousel layout the media column is about one screen tall while the info column runs long (title, price,
+      buy buttons, description, characteristics, FAQ), so past the first scroll the product was being read about but no
+      longer seen.
+
+      Wrapped in the theme's own safe-sticky rather than given a plain position: sticky, because on a short laptop
+      screen the gallery is taller than the viewport: safe-sticky lets it scroll to its own end before pinning, where
+      plain sticky would pin the top and make the bottom of the image unreachable. The sticky positioning itself lives
+      in assets/custom-vcollect.css and only applies from 1000px, below which the theme stacks the two columns.
+      {%- endcomment -%}
+      <safe-sticky class="product-gallery-sticky">
+        {%- render 'product-gallery', product: product -%}
+      </safe-sticky>
     {%- endif -%}
 
     {%- render 'product-info', product: product, update_url: true -%}
@@ -1094,6 +1224,492 @@ quick buy information in a template, that will be extracted in JS, but ensure it
             }
           ],
           "default": "start"
+        }
+      ]
+    },
+    {
+      "type": "custom_inventory_bar",
+      "name": "Inventory bar (custom)",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Custom block replacing the Buy Box app. Only shown for variants with inventory tracking enabled and a quantity above zero. Use %IC% in the messages to insert the remaining quantity."
+        },
+        {
+          "type": "number",
+          "id": "max_quantity",
+          "label": "Quantity matching a full bar",
+          "default": 100
+        },
+        {
+          "type": "number",
+          "id": "low_threshold",
+          "label": "Low stock threshold",
+          "default": 40
+        },
+        {
+          "type": "number",
+          "id": "critical_threshold",
+          "label": "Very low stock threshold",
+          "default": 20
+        },
+        {
+          "type": "html",
+          "id": "high_text",
+          "label": "In stock message",
+          "default": "<strong>%IC%</strong> en stock"
+        },
+        {
+          "type": "html",
+          "id": "low_text",
+          "label": "Low stock message",
+          "default": "<strong>%IC%</strong> en stock - <strong>Stock bas</strong>"
+        },
+        {
+          "type": "html",
+          "id": "critical_text",
+          "label": "Very low stock message",
+          "default": "<strong>%IC%</strong> en stock - <strong>Stock très bas</strong>"
+        },
+        {
+          "type": "color",
+          "id": "high_color",
+          "label": "In stock color",
+          "default": "#00bf4d"
+        },
+        {
+          "type": "color",
+          "id": "low_color",
+          "label": "Low stock color",
+          "default": "#ffa500"
+        },
+        {
+          "type": "color",
+          "id": "critical_color",
+          "label": "Very low stock color",
+          "default": "#b40c1c"
+        },
+        {
+          "type": "color",
+          "id": "track_color",
+          "label": "Bar background color",
+          "default": "#e6e6e6"
+        },
+        {
+          "type": "range",
+          "id": "bar_height",
+          "label": "Bar height",
+          "unit": "px",
+          "min": 2,
+          "max": 20,
+          "step": 1,
+          "default": 8
+        },
+        {
+          "type": "range",
+          "id": "bar_radius",
+          "label": "Bar corner radius",
+          "unit": "px",
+          "min": 0,
+          "max": 20,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "range",
+          "id": "font_size",
+          "label": "Font size",
+          "unit": "px",
+          "min": 10,
+          "max": 24,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "type": "text",
+          "id": "max_width",
+          "label": "Maximum width",
+          "info": "Any CSS length, for instance 44rem.",
+          "default": "44rem"
+        },
+        {
+          "type": "range",
+          "id": "margin_top",
+          "label": "Top margin",
+          "unit": "px",
+          "min": -20,
+          "max": 40,
+          "step": 1,
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "margin_bottom",
+          "label": "Bottom margin",
+          "unit": "px",
+          "min": -20,
+          "max": 40,
+          "step": 1,
+          "default": 0
+        }
+      ]
+    },
+    {
+      "type": "custom_payment_icons",
+      "name": "Payment icons (custom)",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Custom block replacing the Buy Box app. Icons come from the payment methods enabled in Settings > Payments."
+        },
+        {
+          "type": "range",
+          "id": "icon_size",
+          "label": "Icon height",
+          "unit": "px",
+          "min": 16,
+          "max": 60,
+          "step": 2,
+          "default": 30
+        },
+        {
+          "type": "select",
+          "id": "alignment",
+          "label": "Alignment",
+          "options": [
+            {
+              "value": "space-between",
+              "label": "Justified"
+            },
+            {
+              "value": "flex-start",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "flex-end",
+              "label": "Right"
+            }
+          ],
+          "default": "space-between"
+        },
+        {
+          "type": "range",
+          "id": "min_gap",
+          "label": "Minimum gap",
+          "unit": "px",
+          "min": 0,
+          "max": 30,
+          "step": 1,
+          "default": 8
+        },
+        {
+          "type": "text",
+          "id": "max_width",
+          "label": "Maximum width",
+          "info": "Any CSS length, for instance 44rem.",
+          "default": "44rem"
+        },
+        {
+          "type": "range",
+          "id": "margin_top",
+          "label": "Top margin",
+          "unit": "px",
+          "min": -20,
+          "max": 40,
+          "step": 1,
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "margin_bottom",
+          "label": "Bottom margin",
+          "unit": "px",
+          "min": -20,
+          "max": 40,
+          "step": 1,
+          "default": 0
+        }
+      ]
+    },
+    {
+      "type": "custom_trust_badges",
+      "name": "Trust badges (custom)",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Custom block replacing the Buy Box app. Leave a text empty to hide the matching badge."
+        },
+        {
+          "type": "select",
+          "id": "icon_1",
+          "label": "Badge 1 icon",
+          "options": [
+            {
+              "value": "picto-truck",
+              "label": "Delivery"
+            },
+            {
+              "value": "picto-gift",
+              "label": "Gift"
+            },
+            {
+              "value": "picto-customer-support",
+              "label": "Support"
+            },
+            {
+              "value": "picto-shield",
+              "label": "Shield"
+            },
+            {
+              "value": "picto-lock",
+              "label": "Lock"
+            },
+            {
+              "value": "picto-return",
+              "label": "Return"
+            },
+            {
+              "value": "picto-validation",
+              "label": "Check"
+            },
+            {
+              "value": "picto-credit-card",
+              "label": "Credit card"
+            }
+          ],
+          "default": "picto-truck"
+        },
+        {
+          "type": "richtext",
+          "id": "text_1",
+          "label": "Badge 1 text",
+          "default": "<p><strong>Livraison sous 48h</strong></p>"
+        },
+        {
+          "type": "select",
+          "id": "icon_2",
+          "label": "Badge 2 icon",
+          "options": [
+            {
+              "value": "picto-truck",
+              "label": "Delivery"
+            },
+            {
+              "value": "picto-gift",
+              "label": "Gift"
+            },
+            {
+              "value": "picto-customer-support",
+              "label": "Support"
+            },
+            {
+              "value": "picto-shield",
+              "label": "Shield"
+            },
+            {
+              "value": "picto-lock",
+              "label": "Lock"
+            },
+            {
+              "value": "picto-return",
+              "label": "Return"
+            },
+            {
+              "value": "picto-validation",
+              "label": "Check"
+            },
+            {
+              "value": "picto-credit-card",
+              "label": "Credit card"
+            }
+          ],
+          "default": "picto-gift"
+        },
+        {
+          "type": "richtext",
+          "id": "text_2",
+          "label": "Badge 2 text"
+        },
+        {
+          "type": "select",
+          "id": "icon_3",
+          "label": "Badge 3 icon",
+          "options": [
+            {
+              "value": "picto-truck",
+              "label": "Delivery"
+            },
+            {
+              "value": "picto-gift",
+              "label": "Gift"
+            },
+            {
+              "value": "picto-customer-support",
+              "label": "Support"
+            },
+            {
+              "value": "picto-shield",
+              "label": "Shield"
+            },
+            {
+              "value": "picto-lock",
+              "label": "Lock"
+            },
+            {
+              "value": "picto-return",
+              "label": "Return"
+            },
+            {
+              "value": "picto-validation",
+              "label": "Check"
+            },
+            {
+              "value": "picto-credit-card",
+              "label": "Credit card"
+            }
+          ],
+          "default": "picto-customer-support"
+        },
+        {
+          "type": "richtext",
+          "id": "text_3",
+          "label": "Badge 3 text"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text and icon color",
+          "default": "#000000"
+        },
+        {
+          "type": "range",
+          "id": "icon_size",
+          "label": "Icon size",
+          "unit": "px",
+          "min": 12,
+          "max": 48,
+          "step": 2,
+          "default": 20
+        },
+        {
+          "type": "range",
+          "id": "font_size",
+          "label": "Font size",
+          "unit": "px",
+          "min": 10,
+          "max": 24,
+          "step": 1,
+          "default": 12
+        },
+        {
+          "type": "text",
+          "id": "max_width",
+          "label": "Maximum width",
+          "info": "Any CSS length, for instance 44rem.",
+          "default": "44rem"
+        },
+        {
+          "type": "range",
+          "id": "margin_top",
+          "label": "Top margin",
+          "unit": "px",
+          "min": -20,
+          "max": 40,
+          "step": 1,
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "margin_bottom",
+          "label": "Bottom margin",
+          "unit": "px",
+          "min": -20,
+          "max": 40,
+          "step": 1,
+          "default": 0
+        }
+      ]
+    },
+    {
+      "type": "custom_info_wrapper",
+      "name": "Info wrapper (custom)",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Custom block replacing the Buy Box app. Draws a box around the whole product information column. Its position in the block list does not matter."
+        },
+        {
+          "type": "checkbox",
+          "id": "use_in_mobile",
+          "label": "Also show on mobile",
+          "default": false
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color",
+          "default": "#e9f6f9"
+        },
+        {
+          "type": "color",
+          "id": "border_color",
+          "label": "Border color",
+          "default": "#000000"
+        },
+        {
+          "type": "range",
+          "id": "border_width",
+          "label": "Border width",
+          "unit": "px",
+          "min": 0,
+          "max": 6,
+          "step": 1,
+          "default": 1
+        },
+        {
+          "type": "range",
+          "id": "border_radius",
+          "label": "Corner radius",
+          "unit": "px",
+          "min": 0,
+          "max": 40,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "range",
+          "id": "padding_block",
+          "label": "Vertical padding",
+          "unit": "px",
+          "min": 0,
+          "max": 60,
+          "step": 2,
+          "default": 20
+        },
+        {
+          "type": "range",
+          "id": "padding_inline",
+          "label": "Horizontal padding",
+          "unit": "px",
+          "min": 0,
+          "max": 60,
+          "step": 2,
+          "default": 20
+        },
+        {
+          "type": "text",
+          "id": "max_width",
+          "label": "Maximum content width",
+          "info": "Any CSS length, for instance 44rem.",
+          "default": "44rem"
         }
       ]
     }
