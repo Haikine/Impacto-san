@@ -101,6 +101,22 @@ content the merchant entered.
       au-dessus si les deux se croisent.
     {%- endcomment -%}
     {%- comment -%}
+      Le thème pose les points de défilement en absolu dans le coin bas droit du
+      bandeau (theme.css 8275-8283). Sur ces visuels chargés ils se perdent dans
+      l'image. En les repassant en flux normal ils descendent sous la dernière
+      diapositive, centrés sur toute la largeur, sur le fond de section : points
+      blancs sur fond sombre, donc lisibles.
+      Mesuré : avant, les points étaient à left 1291 dans un bandeau finissant à
+      702. Après, ils sont à top 702, centrés, la section gagne 40px.
+    {%- endcomment -%}
+    #shopify-section-{{ section.id }} .slideshow__controls {
+      position: static;
+      display: flex;
+      justify-content: center;
+      padding-block: var(--spacing-4);
+    }
+
+    {%- comment -%}
       Positionnement absolu, et pas un simple élément de grille : en flux, la
       hauteur en pourcentage du visuel n'a pas de référence définie à résoudre,
       le navigateur retombe sur la taille réelle de l'image (1176px) et le
