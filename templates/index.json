@@ -17,6 +17,8 @@
           "settings": {
             "image": "shopify://shop_images/m6-japonais-bandeau.webp",
             "mobile_image": "",
+            "product_image": "shopify://shop_images/display-m6-detoure.webp",
+            "product_image_size": 76,
             "show_countdown": true,
             "target_date": "2026-07-31",
             "hide_when_expired": true,
