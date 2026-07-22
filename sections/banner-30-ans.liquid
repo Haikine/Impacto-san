@@ -100,10 +100,17 @@ content the merchant entered.
       Il est déclaré avant le bloc de texte : à z-index égal, le texte reste
       au-dessus si les deux se croisent.
     {%- endcomment -%}
+    {%- comment -%}
+      Positionnement absolu, et pas un simple élément de grille : en flux, la
+      hauteur en pourcentage du visuel n'a pas de référence définie à résoudre,
+      le navigateur retombe sur la taille réelle de l'image (1176px) et le
+      bandeau enfle. Hors flux, il ne peut plus peser sur la hauteur, et les
+      deux diapositives gardent la même.
+    {%- endcomment -%}
     #shopify-section-{{ section.id }} .banner-product {
       grid-area: 1 / 1 / span 3 / span 3;
-      align-self: stretch;
-      justify-self: stretch;
+      position: absolute;
+      inset: 0;
       max-width: none;
       align-items: flex-end;
       justify-content: flex-end;
