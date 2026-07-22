@@ -258,9 +258,27 @@ content the merchant entered.
             {%- endif -%}
 
             {%- comment -%}---------------- PRODUIT ----------------{%- endcomment -%}
+            {%- comment -%}
+              La voie normale est le sélecteur d'image : le marchand dépose son
+              visuel dans la bibliothèque de fichiers et le choisit dans
+              l'éditeur, sans toucher au code.
+
+              ⚠️ PONT TEMPORAIRE, à retirer. Le visuel M6 n'a pas pu être déposé
+              en bibliothèque faute d'accès admin le 22/07/2026, il voyage donc
+              dans assets/ avec le thème. Liquid ne sait pas lire les dimensions
+              d'un fichier de assets/, elles sont donc écrites en dur ici, ce qui
+              n'a de sens que pour ce fichier précis. Dès que
+              display-m6-detoure.webp est dans la bibliothèque et sélectionné
+              dans l'éditeur, supprimer ce bloc elsif et le fichier
+              assets/display-m6-detoure.webp.
+            {%- endcomment -%}
             {%- if block.settings.product_image != blank -%}
               <div class="banner-product" style="--banner-product-size: {{ block.settings.product_image_size }}%;">
                 {{- block.settings.product_image | image_url: width: 1200 | image_tag: loading: 'lazy', fetchpriority: 'low', sizes: '46vw', widths: '400,600,800,1000,1200', alt: block.settings.product_image.alt -}}
+              </div>
+            {%- elsif block.settings.product_image_bridge -%}
+              <div class="banner-product" style="--banner-product-size: {{ block.settings.product_image_size }}%;">
+                <img src="{{ 'display-m6-detoure.webp' | asset_url }}" width="1006" height="1176" alt="Display Storm Emeralda M6 en japonais, 30 boosters de 5 cartes" loading="lazy" fetchpriority="low">
               </div>
             {%- endif -%}
 
@@ -493,6 +511,13 @@ content the merchant entered.
           "id": "product_image",
           "label": "Visuel produit détouré",
           "info": "Posé à droite du bandeau, fondu par le bas. Utiliser une image détourée à fond transparent (PNG ou WebP) : un fond blanc apparaîtrait comme un rectangle. Masqué sur mobile."
+        },
+        {
+          "type": "checkbox",
+          "id": "product_image_bridge",
+          "label": "Utiliser le visuel M6 livré avec le thème",
+          "info": "Dépannage temporaire, en attendant que display-m6-detoure.webp soit déposé dans la bibliothèque de fichiers. Sans effet si un visuel est choisi ci-dessus. À décocher et à retirer du code une fois le dépôt fait.",
+          "default": false
         },
         {
           "type": "range",
