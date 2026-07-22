@@ -38,9 +38,14 @@ disappears. A slide whose date is empty or unreadable is never hidden: an unpars
 content the merchant entered.
 {%- endcomment -%}
 
+{%- comment -%}
+  Count the slides that survive their deadline, and remember the first of them: the carousel colors its controls from
+  the selected slide, so the section has to start on the colors of the slide actually shown first, not on those of a
+  block that expired days ago.
+{%- endcomment -%}
 {%- liquid
   assign now_timestamp = 'now' | date: '%s' | plus: 0
-  assign visible_ids = ''
+  assign visible_count = 0
 
   for block in section.blocks
     assign block_target = block.settings.target_date | date: '%s' | plus: 0
@@ -50,26 +55,15 @@ content the merchant entered.
       continue
     endif
 
-    assign visible_ids = visible_ids | append: block.id | append: ','
-  endfor
+    assign visible_count = visible_count | plus: 1
 
-  assign visible_ids = visible_ids | split: ','
+    if visible_count == 1
+      assign first_block = block
+    endif
+  endfor
 -%}
 
-{%- if visible_ids.size > 0 -%}
-  {%- assign first_block_id = visible_ids | first -%}
-
-  {%- comment -%}
-    The carousel colors its controls from the selected slide, so the section starts on the colors of the slide that is
-    actually shown first, not on those of a block that expired days ago.
-  {%- endcomment -%}
-  {%- for block in section.blocks -%}
-    {%- if block.id == first_block_id -%}
-      {%- assign first_block = block -%}
-      {%- break -%}
-    {%- endif -%}
-  {%- endfor -%}
-
+{%- if visible_count > 0 -%}
   <script type="module" src="{{ 'custom-countdown.js' | asset_url }}"></script>
 
   <style>
@@ -153,32 +147,45 @@ content the merchant entered.
 
   {%- assign carousel_id = 'countdown-banners-' | append: section.id -%}
 
-  <x-slideshow class="slideshow {% unless section.settings.full_width %}slideshow--boxed{% endunless %} {% if visible_ids.size > 1 %}slideshow--multiple-slides{% endif %}" {% if section.settings.allow_transparent_header %}allow-transparent-header{% endif %}>
+  <x-slideshow class="slideshow {% unless section.settings.full_width %}slideshow--boxed{% endunless %} {% if visible_count > 1 %}slideshow--multiple-slides{% endif %}" {% if section.settings.allow_transparent_header %}allow-transparent-header{% endif %}>
     {%- unless section.settings.full_width -%}
       <span class="slideshow__slide-background"></span>
     {%- endunless -%}
 
-    <slideshow-carousel id="{{ carousel_id }}" class="slideshow__carousel" reveal-on-scroll="true" selector=".slideshow__slide" transition="{{ section.settings.transition_type }}" {% if section.settings.autoplay and visible_ids.size > 1 %}autoplay="{{ section.settings.cycle_speed }}"{% endif %} role="region">
-      {%- for block in section.blocks -%}
-        {%- unless visible_ids contains block.id -%}
-          {%- continue -%}
-        {%- endunless -%}
+    <slideshow-carousel id="{{ carousel_id }}" class="slideshow__carousel" reveal-on-scroll="true" selector=".slideshow__slide" transition="{{ section.settings.transition_type }}" {% if section.settings.autoplay and visible_count > 1 %}autoplay="{{ section.settings.cycle_speed }}"{% endif %} role="region">
+      {%- assign rendered_count = 0 -%}
 
+      {%- for block in section.blocks -%}
         {%- liquid
           assign target_timestamp = block.settings.target_date | date: '%s' | plus: 0
           assign remaining = target_timestamp | minus: now_timestamp
+          assign is_expired = false
 
-          if target_timestamp == 0 or remaining < 0
+          comment
+            A blank or unreadable date leaves nothing to count down to, and must never make the slide disappear.
+          endcomment
+          if target_timestamp == 0
             assign remaining = 0
+          elsif remaining <= 0
+            assign remaining = 0
+            assign is_expired = true
           endif
+        -%}
 
+        {%- if is_expired and block.settings.hide_when_expired -%}
+          {%- continue -%}
+        {%- endif -%}
+
+        {%- liquid
           assign remaining_days = remaining | divided_by: 86400
           assign remaining_hours = remaining | modulo: 86400 | divided_by: 3600
           assign remaining_minutes = remaining | modulo: 3600 | divided_by: 60
           assign remaining_seconds = remaining | modulo: 60
 
+          assign rendered_count = rendered_count | plus: 1
           assign is_first = false
-          if block.id == first_block_id
+
+          if rendered_count == 1
             assign is_first = true
           endif
         -%}
@@ -220,7 +227,7 @@ content the merchant entered.
                 {%- endif -%}
 
                 {%- if block.settings.show_countdown -%}
-                  <countdown-timer class="countdown" target="{{ block.settings.target_date | date: '%Y-%m-%dT%H:%M:%S%z' }}" {% if remaining == 0 %}expired{% endif %}>
+                  <countdown-timer class="countdown" target="{{ block.settings.target_date | date: '%Y-%m-%dT%H:%M:%S%z' }}" {% if is_expired %}expired{% endif %}>
                     <span class="countdown__unit">
                       <span class="countdown__value" data-countdown-days>{{ remaining_days }}</span>
                       <span class="countdown__label">{{ 'general.countdown.days' | t }}</span>
@@ -249,7 +256,7 @@ content the merchant entered.
         </div>
       {%- endfor -%}
 
-      {%- if visible_ids.size > 1 and section.settings.controls_type != 'none' -%}
+      {%- if visible_count > 1 and section.settings.controls_type != 'none' -%}
         <div class="slideshow__controls">
           {%- case section.settings.controls_type -%}
             {%- when 'filled_arrows' or 'outline_arrows' -%}
@@ -267,7 +274,7 @@ content the merchant entered.
 
             {%- when 'numbers' -%}
               <page-dots class="numbered-dots" aria-controls="{{ carousel_id }}">
-                {%- for i in (1..visible_ids.size) -%}
+                {%- for i in (1..visible_count) -%}
                   <button type="button" class="numbered-dots__item" aria-current="{% if forloop.first %}true{% else %}false{% endif %}">
                     <svg width="100%" height="100%" {% if section.settings.autoplay %}style="--percent: 0"{% endif %}>
                       <circle cx="50%" cy="50%" r="15"></circle>
@@ -281,7 +288,7 @@ content the merchant entered.
 
             {%- when 'dots' -%}
               <page-dots class="stretching-dots" aria-controls="{{ carousel_id }}">
-                {%- for i in (1..visible_ids.size) -%}
+                {%- for i in (1..visible_count) -%}
                   <button type="button" class="tap-area" aria-current="{% if forloop.first %}true{% else %}false{% endif %}">
                     <span class="sr-only">{{ 'general.accessibility.go_to_item' | t: index: forloop.index }}</span>
                   </button>

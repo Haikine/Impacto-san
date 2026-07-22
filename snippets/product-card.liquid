@@ -82,86 +82,6 @@ Supported variables
           {{- next_media | image_url: width: next_media.width | image_tag: class: 'product-card__image product-card__image--secondary object-fill', loading: 'lazy', fetchpriority: 'low', sizes: sizes, widths: '200,300,400,500,600,700,800,1000,1200,1400,1600,1800' -}}
         {%- endif -%}
       </a>
-
-      {%- comment -%}
-      Custom vcollect: the quick buy is the shortest path into the cart and it never opens the product page, so the
-      release date has to be enforced here too. Impact only tests product.available, which is why stock on an
-      unreleased product used to make it buyable from a collection page while its own page showed a waitlist.
-
-      Two outcomes, not one. Pre-orders open: the button stays and says "Pré-commander". Pre-orders closed: no button
-      at all, the card keeps its "Bientôt disponible" badge and the shopper goes to the page to leave an email.
-      {%- endcomment -%}
-      {%- capture is_coming_soon -%}{%- render 'coming-soon-check', product: product -%}{%- endcapture -%}
-      {%- assign is_coming_soon = is_coming_soon | strip -%}
-      {%- capture is_pre_order -%}{%- render 'pre-order-check', product: product -%}{%- endcapture -%}
-      {%- assign is_pre_order = is_pre_order | strip -%}
-
-      {%- assign allow_quick_buy = true -%}
-      {%- if is_coming_soon == 'true' and is_pre_order != 'true' -%}
-        {%- assign allow_quick_buy = false -%}
-      {%- endif -%}
-
-      {%- if show_quick_buy and product.available and allow_quick_buy -%}
-        <div class="product-card__quick-buy">
-          {%- comment -%}
-          The label also feeds the aria-label of the mobile icon-only button, so screen readers announce the pre-order
-          too.
-          {%- endcomment -%}
-          {%- if is_pre_order == 'true' -%}
-            {%- assign quick_add_label = 'product.general.pre_order_button' | t -%}
-          {%- else -%}
-            {%- assign quick_add_label = 'product.general.quick_add' | t -%}
-          {%- endif -%}
-
-          {%- if product.variants.size == 1 and product.selling_plan_groups.size == 0 -%}
-            {%- form 'product', product, is: 'product-form' -%}
-              <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-
-              {%- comment -%}
-              Custom vcollect: this form adds to the cart WITHOUT going through 'buy-buttons', so the pre-order line
-              item property has to be repeated here. Without it a single-variant pre-order added straight from a
-              collection page reaches the checkout with nothing saying it ships later, which is exactly the case that
-              lets a shopper pay for an unreleased product believing it ships now.
-
-              Products with several variants take the other branch, open the quick buy drawer and go through
-              'buy-buttons', which carries the property already.
-              {%- endcomment -%}
-              {%- if is_pre_order == 'true' -%}
-                {%- assign release_date_formatted = product.metafields.vcollect.date_sortie.value | date: '%d/%m/%Y' -%}
-                {%- assign pre_order_property_name = 'product.general.pre_order_property_name' | t -%}
-                {%- assign pre_order_property_value = 'product.general.pre_order_property_value' | t: date: release_date_formatted -%}
-                <input type="hidden" name="properties[{{ pre_order_property_name | escape }}]" value="{{ pre_order_property_value | escape }}">
-              {%- endif -%}
-
-              <div class="pointer-fine:hidden">
-                <button type="submit" is="custom-button" class="product-card__mobile-quick-buy-button" aria-label="{{ quick_add_label | escape }}">
-                  {%- render 'icon' with 'quick-buy-cart' -%}
-                </button>
-              </div>
-
-              <div class="pointer-coarse:hidden">
-                {%- render 'button', type: 'submit', content: quick_add_label -%}
-              </div>
-            {%- endform -%}
-          {%- else -%}
-            {%- capture quick_buy_id -%}quick-buy-{{ section.id }}-{{ product.id }}{%- endcapture -%}
-
-            <div class="pointer-fine:hidden">
-              <button type="button" aria-controls="{{ quick_buy_id }}" aria-expanded="false" aria-label="{{ quick_add_label | escape }}" is="custom-button" class="product-card__mobile-quick-buy-button">
-                {%- render 'icon' with 'quick-buy-cart' -%}
-              </button>
-            </div>
-
-            <div class="pointer-coarse:hidden">
-              {%- render 'button', content: quick_add_label, aria_controls: quick_buy_id -%}
-            </div>
-
-            <quick-buy-drawer id="{{ quick_buy_id }}" header-bordered open-from="bottom" handle="{{ product.handle }}" role="region" aria-live="polite" class="quick-buy-drawer drawer">
-              {%- comment -%}Quick buy content is filled on demand for performance reasons {%- endcomment -%}
-            </quick-buy-drawer>
-          {%- endif -%}
-        </div>
-      {%- endif -%}
     </div>
   {%- endif -%}
 
@@ -185,21 +105,35 @@ Supported variables
       {%- endif -%}
     {%- endif -%}
 
-    <div class="v-stack gap-0.5 w-full {% if text_alignment == 'center' %}justify-items-center{% endif %}">
-      {%- if show_rating and show_vendor == false or product.vendor == blank -%}
-        <div class="rating-with-text">
-          <span class="product-card__title"><a href="{{ product.url }}" class="bold" data-instant>{{ product.title }}</a></span>
+    {%- comment -%}
+    Custom vcollect: Impact puts the rating on the same line as the title. `.rating-with-text` gives the rating the
+    room it needs and leaves the rest to the title, which on a phone tile of about 170px means roughly two thirds of
+    it, so a name like "Classeur 360 cartes Zip Premium" breaks one word per line and the tile grows by three lines.
 
-          {%- if text_alignment != 'center' -%}
-            {%- capture rating_class -%}{% if mobile_reduced %}hidden sm:flex{% endif %}{%- endcapture -%}
-            {%- render 'product-rating', product: product, class: rating_class, display_mode: settings.product_rating_mode -%}
-          {%- endif -%}
+    The title now owns its line and the rating moves next to the price, which is short and has room to spare. This is
+    the pairing the theme itself uses on the product page (`.product-info__price .rating-with-text`).
+
+    `rating_shown_above` guards the case where the vendor row already took the rating: the block above is unchanged,
+    and without the guard the stars would be printed twice.
+    {%- endcomment -%}
+    {%- assign rating_shown_above = false -%}
+    {%- if show_vendor and product.vendor != blank and show_rating and text_alignment != 'center' -%}
+      {%- assign rating_shown_above = true -%}
+    {%- endif -%}
+
+    <div class="v-stack gap-0.5 w-full {% if text_alignment == 'center' %}justify-items-center{% endif %}">
+      <span class="product-card__title"><a href="{{ product.url }}" class="bold" data-instant>{{ product.title }}</a></span>
+
+      {%- if show_rating and rating_shown_above == false and text_alignment != 'center' -%}
+        <div class="rating-with-text">
+          {%- render 'price-list', product: product, text_alignment: text_alignment -%}
+
+          {%- capture rating_class -%}{% if mobile_reduced %}hidden sm:flex{% endif %}{%- endcapture -%}
+          {%- render 'product-rating', product: product, class: rating_class, display_mode: settings.product_rating_mode -%}
         </div>
       {%- else -%}
-        <span class="product-card__title"><a href="{{ product.url }}" class="bold" data-instant>{{ product.title }}</a></span>
+        {%- render 'price-list', product: product, text_alignment: text_alignment -%}
       {%- endif -%}
-
-      {%- render 'price-list', product: product, text_alignment: text_alignment -%}
     </div>
 
     {%- if show_rating and mobile_reduced or text_alignment == 'center' -%}
@@ -262,6 +196,79 @@ Supported variables
           {%- break -%}
         {%- endif -%}
       {%- endfor -%}
+    {%- endif -%}
+
+    {%- comment -%}
+    --------------------------------------------------------------------------------------------------------------
+    QUICK BUY
+    --------------------------------------------------------------------------------------------------------------
+
+    Custom vcollect: Impact places this button over the product photo and only reveals it on hover, so on a desktop
+    the shopper has to discover it by accident and it hides part of the image once it appears. It now sits at the
+    end of the card, always visible, in the normal flow. Being inside `.product-card__info` is what keeps it aligned
+    with the title and the price: the info block already carries the card padding, which differs between a card with
+    its own background and one that blends into the section.
+
+    The single icon-only variant that Impact used on touch screens is gone with the overlay: a button in the flow
+    has room for its label on every screen, and one button reads the same everywhere.
+
+    The quick buy is also the shortest path into the cart and it never opens the product page, so the release date
+    has to be enforced here too. Impact only tests product.available, which is why stock on an unreleased product
+    used to make it buyable from a collection page while its own page showed a waitlist.
+
+    Two outcomes, not one. Pre-orders open: the button stays and says "Pré-commander". Pre-orders closed: no button
+    at all, the card keeps its "Bientôt disponible" badge and the shopper goes to the page to leave an email.
+    {%- endcomment -%}
+    {%- capture is_coming_soon -%}{%- render 'coming-soon-check', product: product -%}{%- endcapture -%}
+    {%- assign is_coming_soon = is_coming_soon | strip -%}
+    {%- capture is_pre_order -%}{%- render 'pre-order-check', product: product -%}{%- endcapture -%}
+    {%- assign is_pre_order = is_pre_order | strip -%}
+
+    {%- assign allow_quick_buy = true -%}
+    {%- if is_coming_soon == 'true' and is_pre_order != 'true' -%}
+      {%- assign allow_quick_buy = false -%}
+    {%- endif -%}
+
+    {%- if show_quick_buy and product.available and allow_quick_buy -%}
+      <div class="product-card__quick-buy">
+        {%- if is_pre_order == 'true' -%}
+          {%- assign quick_add_label = 'product.general.pre_order_button' | t -%}
+        {%- else -%}
+          {%- assign quick_add_label = 'product.general.quick_add' | t -%}
+        {%- endif -%}
+
+        {%- if product.variants.size == 1 and product.selling_plan_groups.size == 0 -%}
+          {%- form 'product', product, is: 'product-form' -%}
+            <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+
+            {%- comment -%}
+            Custom vcollect: this form adds to the cart WITHOUT going through 'buy-buttons', so the pre-order line
+            item property has to be repeated here. Without it a single-variant pre-order added straight from a
+            collection page reaches the checkout with nothing saying it ships later, which is exactly the case that
+            lets a shopper pay for an unreleased product believing it ships now.
+
+            Products with several variants take the other branch, open the quick buy drawer and go through
+            'buy-buttons', which carries the property already.
+            {%- endcomment -%}
+            {%- if is_pre_order == 'true' -%}
+              {%- assign release_date_formatted = product.metafields.vcollect.date_sortie.value | date: '%d/%m/%Y' -%}
+              {%- assign pre_order_property_name = 'product.general.pre_order_property_name' | t -%}
+              {%- assign pre_order_property_value = 'product.general.pre_order_property_value' | t: date: release_date_formatted -%}
+              <input type="hidden" name="properties[{{ pre_order_property_name | escape }}]" value="{{ pre_order_property_value | escape }}">
+            {%- endif -%}
+
+            {%- render 'button', type: 'submit', content: quick_add_label, stretch: true -%}
+          {%- endform -%}
+        {%- else -%}
+          {%- capture quick_buy_id -%}quick-buy-{{ section.id }}-{{ product.id }}{%- endcapture -%}
+
+          {%- render 'button', content: quick_add_label, aria_controls: quick_buy_id, stretch: true -%}
+
+          <quick-buy-drawer id="{{ quick_buy_id }}" header-bordered open-from="bottom" handle="{{ product.handle }}" role="region" aria-live="polite" class="quick-buy-drawer drawer">
+            {%- comment -%}Quick buy content is filled on demand for performance reasons {%- endcomment -%}
+          </quick-buy-drawer>
+        {%- endif -%}
+      </div>
     {%- endif -%}
   </div>
 </product-card>

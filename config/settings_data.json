@@ -50,7 +50,7 @@
     "show_quick_buy": true,
     "show_product_rating": true,
     "product_color_display": "swatch",
-    "product_image_aspect_ratio": "natural",
+    "product_image_aspect_ratio": "square",
     "product_info_alignment": "start",
     "social_facebook": "https://www.facebook.com/Vcollect14/",
     "social_instagram": "https://www.instagram.com/vcollect14/",

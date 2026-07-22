@@ -121,6 +121,123 @@
 }
 
 /* ---------------------------------------------------------------------------
+ * Product cards: the add to cart button lives under the tile
+ * ---------------------------------------------------------------------------
+ * The theme pins the quick buy over the bottom corner of the photo and fades it
+ * in on hover. Two problems: on a desktop nothing tells the shopper the button
+ * exists until the pointer happens to cross the card, and once it does appear it
+ * covers the product it is selling.
+ *
+ * The button has been moved in the markup to the end of `.product-card__info`,
+ * so all that is left here is to undo the overlay: back into the flow, and
+ * visible at rest instead of only on hover.
+ *
+ * The `:not(:lang(...))` selectors the theme uses to set the inset weigh two
+ * classes, hence `.product-card .product-card__quick-buy` rather than the class
+ * alone. `inset: auto` clears the offsets those rules set on all four sides.
+ *
+ * No `display` here on purpose: the theme hides the quick buy inside the
+ * navigation promo cards with the same weight, and this file loads after it.
+ *
+ * `.product-card__info` sets `justify-items: start`, which would shrink the
+ * block to the width of its button, so the width is stated.
+ */
+.product-card .product-card__quick-buy {
+  position: static;
+  inset: auto;
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  width: 100%;
+}
+
+/* Two tiles per row on a phone leaves about 170px for a label such as
+ * "Pré-commander". The theme's own small button size is what fits it. */
+@media screen and (max-width: 699px) {
+  .product-card__quick-buy .button {
+    font-size: var(--text-xs);
+    padding-block: var(--spacing-2);
+    padding-inline: var(--spacing-2);
+    line-height: 1.7;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Product cards: one height for every tile in a row
+ * ---------------------------------------------------------------------------
+ * A row of tiles used to be a staircase. Three things moved independently: the
+ * photo (no fixed ratio, so its height followed the file), the title (one, two
+ * or four lines depending on the product name) and the colour swatches (only
+ * accessories have them). Prices and buttons therefore never landed on the same
+ * line, which is what makes a grid look assembled by hand.
+ *
+ * Each of the three is pinned below. The photo is handled by the theme's own
+ * "Square (1:1)" setting rather than here, see config/settings_data.json.
+ */
+
+/* The tile has to be as tall as the tallest of its row before anything inside
+ * it can be aligned. From 700px the theme already does this with subgrid
+ * (`.product-list > * { grid-template-rows: subgrid }`), which is why this is
+ * scoped to the width where that rule does not apply. Writing the rows here too
+ * would replace the subgrid and undo the theme's own alignment.
+ *
+ * `auto 1fr` = the photo keeps its height, the text block takes everything that
+ * is left. A card with no photo simply puts its text in the first row. */
+@media screen and (max-width: 699px) {
+  .product-card {
+    grid-template-rows: auto 1fr;
+  }
+}
+
+/* Two lines for the title, always: clamped so a long name cannot push the price
+ * down, and reserved so a short one cannot pull it up. 3em is exactly two lines
+ * at the 1.5 line-height the theme sets on this element.
+ *
+ * The width is stated because a centered card switches the block to
+ * `justify-items: center`, which would otherwise size the title to its text and
+ * clamp against the wrong width. */
+.product-card__title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  width: 100%;
+  min-height: 3em;
+}
+
+/* Swatches exist on accessories and not on sealed products, so the last element
+ * before the button moves from one card to the next. Rather than reserving a
+ * row that is empty most of the time, the button is pushed to the bottom edge
+ * and absorbs the difference itself.
+ *
+ * Flex, not the theme's grid: `margin-block-start: auto` only absorbs free space
+ * in flex. The theme's grid sets `align-content: start` from 700px, which parks
+ * the spare height below the last row where no margin can reach it.
+ * `align-items` replaces the `justify-items` the grid used, same result. */
+.product-card__info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.product-card__info--center {
+  align-items: center;
+}
+
+.product-card .product-card__quick-buy {
+  margin-block-start: auto;
+  padding-block-start: var(--spacing-2);
+}
+
+/* The second photo, shown on hover, is absolutely positioned over the first and
+ * the theme crops it to fill (`object-fill`). Against a square box that crop is
+ * visible, and the product would jump and change size under the pointer. The
+ * primary photo is fitted whole, this one now is too. */
+.product-card__image--secondary {
+  object-fit: contain;
+}
+
+/* ---------------------------------------------------------------------------
  * Product page: keep the gallery alongside the description
  * ---------------------------------------------------------------------------
  * With the carousel gallery layout the media column is about one screen tall
