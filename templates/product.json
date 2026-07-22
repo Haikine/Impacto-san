@@ -227,7 +227,7 @@
         "background_gradient": "",
         "text_color": "",
         "enable_review_integration": true,
-        "review_header_gradient": "linear-gradient(135deg, rgba(0, 67, 181, 1), rgba(0, 32, 110, 1) 100%)",
+        "review_header_gradient": "linear-gradient(135deg, rgba(0, 45, 120, 1), rgba(0, 22, 70, 1) 100%)",
         "review_header_text_color": "#ffffff",
         "review_button_background": "#000000",
         "review_button_text_color": "#ffffff"

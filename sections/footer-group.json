@@ -88,8 +88,8 @@
     "footer": {
       "type": "footer",
       "custom_css": [
-        ".footer__block--text {background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 203, 5, 0.4); border-radius: var(--rounded-sm); padding: var(--spacing-5);}",
-        ".footer__block--text > p.bold {color: #3d85ff; font-size: var(--text-h5); letter-spacing: -0.01em; margin-block-end: var(--spacing-2);}",
+        ".footer__block--text {background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(90, 141, 226, 0.4); border-radius: var(--rounded-sm); padding: var(--spacing-5);}",
+        ".footer__block--text > p.bold {color: #5a8de2; font-size: var(--text-h5); letter-spacing: -0.01em; margin-block-end: var(--spacing-2);}",
         ".footer__block--text .text-subdued {color: rgb(var(--text-color));}",
         "@media screen and (max-width: 699px) {.footer__block--text {padding: var(--spacing-4);}}"
       ],

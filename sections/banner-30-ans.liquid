@@ -1,13 +1,21 @@
 {%- comment -%}
 ----------------------------------------------------------------------------------------------------------------------
-COUNTDOWN BANNER (custom vcollect)
+COUNTDOWN BANNER CAROUSEL (custom vcollect)
 ----------------------------------------------------------------------------------------------------------------------
 
 Custom addition to the Impact theme. Not part of Maestrooo's base code, so it lives in its own section file and can be
 deleted without touching anything the theme ships.
 
-Built for the 30 ans Pokémon drop, but nothing here is specific to it: the deadline, the wording and the colors are all
-settings, so the same section serves the next launch.
+Built for the 30 ans Pokémon and M6 drops, but nothing here is specific to them: each slide carries its own deadline,
+wording, image and colors, so the same section serves the next launches.
+
+********************************************
+One slide per launch, rotating
+********************************************
+
+Slides are blocks, and they rotate inside Impact's own <slideshow-carousel>, the same element the theme's Slideshow
+section uses. Reusing it rather than writing a second carousel means the arrows, dots, swipe gestures, autoplay and
+fade transitions all behave exactly like the rest of the store, and keep working when Impact updates its script.
 
 ********************************************
 The banner works without JavaScript
@@ -21,49 +29,61 @@ The deadline is emitted as a full ISO instant resolved in the shop timezone, so 
 moment whatever their own timezone.
 
 ********************************************
-It removes itself
+Slides remove themselves
 ********************************************
 
-Once the deadline has passed the section disappears on its own if "masquer après la date" is on, so a launch banner
-never lingers on the homepage announcing an event that already happened.
+Once a deadline has passed the slide drops out of the carousel on its own if "masquer après la date" is on, so a launch
+never lingers on the homepage announcing an event that already happened. When the last slide expires the whole section
+disappears. A slide whose date is empty or unreadable is never hidden: an unparseable date must not silently erase
+content the merchant entered.
 {%- endcomment -%}
 
 {%- liquid
-  assign target_timestamp = section.settings.target_date | date: '%s' | plus: 0
   assign now_timestamp = 'now' | date: '%s' | plus: 0
-  assign remaining = target_timestamp | minus: now_timestamp
+  assign visible_ids = ''
 
-  if remaining < 0
-    assign remaining = 0
-  endif
+  for block in section.blocks
+    assign block_target = block.settings.target_date | date: '%s' | plus: 0
+    assign block_remaining = block_target | minus: now_timestamp
 
-  assign remaining_days = remaining | divided_by: 86400
-  assign remaining_hours = remaining | modulo: 86400 | divided_by: 3600
-  assign remaining_minutes = remaining | modulo: 3600 | divided_by: 60
-  assign remaining_seconds = remaining | modulo: 60
-  assign is_expired = false
+    if block_target > 0 and block_remaining <= 0 and block.settings.hide_when_expired
+      continue
+    endif
 
-  if remaining == 0
-    assign is_expired = true
-  endif
+    assign visible_ids = visible_ids | append: block.id | append: ','
+  endfor
+
+  assign visible_ids = visible_ids | split: ','
 -%}
 
-{%- if is_expired and section.settings.hide_when_expired -%}
-  {%- comment -%} Nothing to announce any more. {%- endcomment -%}
-{%- else -%}
-  {%- unless section.settings.full_width -%}
-    {%- render 'section-spacing-collapsing' -%}
-  {%- endunless -%}
+{%- if visible_ids.size > 0 -%}
+  {%- assign first_block_id = visible_ids | first -%}
+
+  {%- comment -%}
+    The carousel colors its controls from the selected slide, so the section starts on the colors of the slide that is
+    actually shown first, not on those of a block that expired days ago.
+  {%- endcomment -%}
+  {%- for block in section.blocks -%}
+    {%- if block.id == first_block_id -%}
+      {%- assign first_block = block -%}
+      {%- break -%}
+    {%- endif -%}
+  {%- endfor -%}
 
   <script type="module" src="{{ 'custom-countdown.js' | asset_url }}"></script>
 
   <style>
-    #shopify-section-{{ section.id }} {
-      {%- if section.settings.full_width -%}
-        --section-outer-spacing-block: 0;
-      {%- endif -%}
+    {%- if section.settings.controls_type == 'filled_arrows' -%}
+      {%- assign controls_background = first_block.settings.button_background -%}
+      {%- assign controls_color = first_block.settings.button_text_color -%}
+    {%- else -%}
+      {%- assign controls_color = first_block.settings.text_color -%}
+    {%- endif -%}
 
-      --content-over-media-overlay: {{ section.settings.overlay_color.rgb }} / {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+    #shopify-section-{{ section.id }} {
+      --slideshow-background: {{ first_block.settings.background_gradient | default: first_block.settings.background }};
+      --slideshow-controls-background: {{ controls_background.rgb }};
+      --slideshow-controls-color: {{ controls_color.rgb }};
 
       {%- if section.settings.allow_transparent_header -%}
         margin-block-start: calc(-1 * var(--header-height) * var(--section-is-first));
@@ -71,9 +91,9 @@ never lingers on the homepage announcing an event that already happened.
     }
 
     {%- comment -%}
-      The theme applies --content-over-media-height to the image, not to the container, so a banner running on a
-      gradient alone would collapse to the height of its text. Mirroring it as a minimum keeps the hero the size the
-      merchant picked whether or not an image has been uploaded.
+      The theme applies --content-over-media-height to the image, not to the container, so a slide running on a gradient
+      alone would collapse to the height of its text. Mirroring it as a minimum keeps the hero the size the merchant
+      picked whether or not an image has been uploaded.
     {%- endcomment -%}
     #shopify-section-{{ section.id }} .content-over-media {
       min-block-size: var(--content-over-media-height, auto);
@@ -94,8 +114,6 @@ never lingers on the homepage announcing an event that already happened.
       min-width: 4.5rem;
       padding: var(--spacing-2) var(--spacing-3);
       border-radius: var(--rounded-sm);
-      background: rgb({{ section.settings.countdown_background.rgb }} / {{ section.settings.countdown_opacity | divided_by: 100.0 }});
-      color: {{ section.settings.countdown_text_color }};
     }
 
     #shopify-section-{{ section.id }} .countdown__value {
@@ -111,78 +129,181 @@ never lingers on the homepage announcing an event that already happened.
       text-transform: uppercase;
       opacity: 0.75;
     }
-  </style>
 
-  <div {% render 'section-properties' %} {% if section.settings.allow_transparent_header %}allow-transparent-header{% endif %}>
-    {%- capture class -%}content-over-media content-over-media--{{ section.settings.image_size }} {% if section.settings.full_width %}full-bleed{% else %}shadow-block rounded-lg{% endif %}{%- endcapture -%}
-
-    <image-banner reveal-on-scroll="true" {% render 'surface', class: class, background: section.settings.background, background_gradient: section.settings.background_gradient, text_color: section.settings.text_color %}>
-      {%- if section.settings.image != blank -%}
-        {%- capture image_class -%}{% if section.settings.mobile_image != blank %}hidden sm:block{% endif %}{%- endcapture -%}
-        {%- capture sizes -%}{% if section.settings.full_width %}100vw{% else %}(max-width: 740px) calc(100vw - 40px), (max-width: 999px) calc(100vw - 64px), min({{ settings.page_width }}px, 100vw - 96px){% endif %}{%- endcapture -%}
-
-        {{- section.settings.image | image_url: width: section.settings.image.width | image_tag: loading: 'eager', fetchpriority: 'high', sizes: sizes, widths: '400,600,800,1000,1200,1400,1600,1800,2000,2400,2800,3200', class: image_class -}}
-
-        {%- if section.settings.mobile_image != blank -%}
-          {{- section.settings.mobile_image | image_url: width: section.settings.mobile_image.width | image_tag: loading: 'eager', fetchpriority: 'high', sizes: sizes, widths: '400,600,800,1000,1200,1400,1600', class: 'sm:hidden' -}}
-        {%- endif -%}
+    {%- for block in section.blocks -%}
+      {%- if section.settings.controls_type == 'filled_arrows' -%}
+        {%- assign controls_background = block.settings.button_background -%}
+        {%- assign controls_color = block.settings.button_text_color -%}
+      {%- else -%}
+        {%- assign controls_color = block.settings.text_color -%}
       {%- endif -%}
 
-      <div class="{{ section.settings.mobile_text_position }} {{ section.settings.desktop_text_position }}">
-        <div class="prose">
-          {%- if section.settings.subheading != blank -%}
-            <p class="bold">{{ section.settings.subheading | escape }}</p>
-          {%- endif -%}
+      #block-{{ block.id }} {
+        --slideshow-slide-background: {{ block.settings.background_gradient | default: block.settings.background }};
+        --slideshow-slide-controls-background: {{ controls_background.rgb }};
+        --slideshow-slide-controls-color: {{ controls_color.rgb }};
+      }
 
-          {%- if section.settings.title != blank -%}
-            <p class="{{ section.settings.heading_tag }}" {% if settings.heading_apparition != 'none' %}reveal-on-scroll="true"{% endif %}>
-              {%- render 'styled-text', content: section.settings.title, apparition_effect: true -%}
-            </p>
-          {%- endif -%}
+      #block-{{ block.id }} .countdown__unit {
+        background: rgb({{ block.settings.countdown_background.rgb }} / {{ block.settings.countdown_opacity | divided_by: 100.0 }});
+        color: {{ block.settings.countdown_text_color }};
+      }
+    {%- endfor -%}
+  </style>
 
-          {%- if section.settings.content != blank -%}
-            <div>{{ section.settings.content }}</div>
-          {%- endif -%}
+  {%- assign carousel_id = 'countdown-banners-' | append: section.id -%}
 
-          {%- if section.settings.show_countdown -%}
-            <countdown-timer class="countdown" target="{{ section.settings.target_date | date: '%Y-%m-%dT%H:%M:%S%z' }}" {% if is_expired %}expired{% endif %}>
-              <span class="countdown__unit">
-                <span class="countdown__value" data-countdown-days>{{ remaining_days }}</span>
-                <span class="countdown__label">{{ 'general.countdown.days' | t }}</span>
-              </span>
-              <span class="countdown__unit">
-                <span class="countdown__value" data-countdown-hours>{{ remaining_hours }}</span>
-                <span class="countdown__label">{{ 'general.countdown.hours' | t }}</span>
-              </span>
-              <span class="countdown__unit">
-                <span class="countdown__value" data-countdown-minutes>{{ remaining_minutes }}</span>
-                <span class="countdown__label">{{ 'general.countdown.minutes' | t }}</span>
-              </span>
-              <span class="countdown__unit">
-                <span class="countdown__value" data-countdown-seconds>{{ remaining_seconds }}</span>
-                <span class="countdown__label">{{ 'general.countdown.seconds' | t }}</span>
-              </span>
-            </countdown-timer>
-          {%- endif -%}
+  <x-slideshow class="slideshow {% unless section.settings.full_width %}slideshow--boxed{% endunless %} {% if visible_ids.size > 1 %}slideshow--multiple-slides{% endif %}" {% if section.settings.allow_transparent_header %}allow-transparent-header{% endif %}>
+    {%- unless section.settings.full_width -%}
+      <span class="slideshow__slide-background"></span>
+    {%- endunless -%}
 
-          {%- if section.settings.button_text != blank -%}
-            {%- render 'button', content: section.settings.button_text, href: section.settings.button_url, size: 'lg', background: section.settings.button_background, text_color: section.settings.button_text_color -%}
-          {%- endif -%}
+    <slideshow-carousel id="{{ carousel_id }}" class="slideshow__carousel" reveal-on-scroll="true" selector=".slideshow__slide" transition="{{ section.settings.transition_type }}" {% if section.settings.autoplay and visible_ids.size > 1 %}autoplay="{{ section.settings.cycle_speed }}"{% endif %} role="region">
+      {%- for block in section.blocks -%}
+        {%- unless visible_ids contains block.id -%}
+          {%- continue -%}
+        {%- endunless -%}
+
+        {%- liquid
+          assign target_timestamp = block.settings.target_date | date: '%s' | plus: 0
+          assign remaining = target_timestamp | minus: now_timestamp
+
+          if target_timestamp == 0 or remaining < 0
+            assign remaining = 0
+          endif
+
+          assign remaining_days = remaining | divided_by: 86400
+          assign remaining_hours = remaining | modulo: 86400 | divided_by: 3600
+          assign remaining_minutes = remaining | modulo: 3600 | divided_by: 60
+          assign remaining_seconds = remaining | modulo: 60
+
+          assign is_first = false
+          if block.id == first_block_id
+            assign is_first = true
+          endif
+        -%}
+
+        {%- capture slide_style -%}--content-over-media-overlay: {{ block.settings.overlay_color.rgb }} / {{ block.settings.overlay_opacity | divided_by: 100.0 }};{%- endcapture -%}
+        {%- capture slide_class -%}content-over-media content-over-media--{{ section.settings.image_size }} {% unless section.settings.full_width %}rounded{% endunless %}{%- endcapture -%}
+
+        <div id="block-{{ block.id }}" class="slideshow__slide {% if is_first %}is-selected{% endif %}" role="group" {{ block.shopify_attributes }}>
+          <div {% render 'surface', class: slide_class, style: slide_style, background: block.settings.background, background_gradient: block.settings.background_gradient, text_color: block.settings.text_color %}>
+            {%- comment -%}---------------- MEDIA ----------------{%- endcomment -%}
+            {%- if block.settings.image != blank -%}
+              {%- capture sizes -%}{% if section.settings.full_width %}100vw{% else %}min({{ settings.page_width }}px, 100vw){% endif %}{%- endcapture -%}
+              {%- capture loading_strategy -%}{% if is_first %}eager{% else %}lazy{% endif %}{%- endcapture -%}
+              {%- capture fetch_priority -%}{% if is_first %}high{% else %}low{% endif %}{%- endcapture -%}
+              {%- capture image_class -%}{% if block.settings.mobile_image != blank %}hidden sm:block{% endif %}{%- endcapture -%}
+
+              {{- block.settings.image | image_url: width: block.settings.image.width | image_tag: loading: loading_strategy, fetchpriority: fetch_priority, sizes: sizes, widths: '400,600,800,1000,1200,1400,1600,1800,2000,2400,2800,3200', class: image_class -}}
+
+              {%- if block.settings.mobile_image != blank -%}
+                {{- block.settings.mobile_image | image_url: width: block.settings.mobile_image.width | image_tag: loading: loading_strategy, fetchpriority: fetch_priority, sizes: sizes, widths: '400,600,800,1000,1200,1400,1600', class: 'sm:hidden' -}}
+              {%- endif -%}
+            {%- endif -%}
+
+            {%- comment -%}---------------- CONTENT ----------------{%- endcomment -%}
+            <div class="{{ block.settings.mobile_text_position }} {{ block.settings.desktop_text_position }}">
+              <div class="prose">
+                {%- if block.settings.subheading != blank -%}
+                  <p class="bold" data-sequence="subheading">{{ block.settings.subheading | escape }}</p>
+                {%- endif -%}
+
+                {%- if block.settings.title != blank -%}
+                  <p class="{{ block.settings.heading_tag }}" data-sequence="heading">
+                    {%- render 'styled-text', content: block.settings.title, apparition_effect: true -%}
+                  </p>
+                {%- endif -%}
+
+                {%- if block.settings.content != blank -%}
+                  <div>{{ block.settings.content }}</div>
+                {%- endif -%}
+
+                {%- if block.settings.show_countdown -%}
+                  <countdown-timer class="countdown" target="{{ block.settings.target_date | date: '%Y-%m-%dT%H:%M:%S%z' }}" {% if remaining == 0 %}expired{% endif %}>
+                    <span class="countdown__unit">
+                      <span class="countdown__value" data-countdown-days>{{ remaining_days }}</span>
+                      <span class="countdown__label">{{ 'general.countdown.days' | t }}</span>
+                    </span>
+                    <span class="countdown__unit">
+                      <span class="countdown__value" data-countdown-hours>{{ remaining_hours }}</span>
+                      <span class="countdown__label">{{ 'general.countdown.hours' | t }}</span>
+                    </span>
+                    <span class="countdown__unit">
+                      <span class="countdown__value" data-countdown-minutes>{{ remaining_minutes }}</span>
+                      <span class="countdown__label">{{ 'general.countdown.minutes' | t }}</span>
+                    </span>
+                    <span class="countdown__unit">
+                      <span class="countdown__value" data-countdown-seconds>{{ remaining_seconds }}</span>
+                      <span class="countdown__label">{{ 'general.countdown.seconds' | t }}</span>
+                    </span>
+                  </countdown-timer>
+                {%- endif -%}
+
+                {%- if block.settings.button_text != blank -%}
+                  {%- render 'button', content: block.settings.button_text, href: block.settings.button_url, size: 'lg', background: block.settings.button_background, text_color: block.settings.button_text_color -%}
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </image-banner>
-  </div>
+      {%- endfor -%}
+
+      {%- if visible_ids.size > 1 and section.settings.controls_type != 'none' -%}
+        <div class="slideshow__controls">
+          {%- case section.settings.controls_type -%}
+            {%- when 'filled_arrows' or 'outline_arrows' -%}
+              <div class="prev-next-buttons">
+                <button is="prev-button" aria-controls="{{ carousel_id }}" class="circle-button circle-button--lg {% if section.settings.controls_type == 'filled_arrows' %}circle-button--fill{% else %}circle-button--bordered{% endif %} group">
+                  <span class="sr-only">{{ 'general.accessibility.previous' | t }}</span>
+                  <span class="animated-arrow animated-arrow--reverse"></span>
+                </button>
+
+                <button is="next-button" aria-controls="{{ carousel_id }}" class="circle-button circle-button--lg {% if section.settings.controls_type == 'filled_arrows' %}circle-button--fill{% else %}circle-button--bordered{% endif %} group">
+                  <span class="sr-only">{{ 'general.accessibility.next' | t }}</span>
+                  <span class="animated-arrow"></span>
+                </button>
+              </div>
+
+            {%- when 'numbers' -%}
+              <page-dots class="numbered-dots" aria-controls="{{ carousel_id }}">
+                {%- for i in (1..visible_ids.size) -%}
+                  <button type="button" class="numbered-dots__item" aria-current="{% if forloop.first %}true{% else %}false{% endif %}">
+                    <svg width="100%" height="100%" {% if section.settings.autoplay %}style="--percent: 0"{% endif %}>
+                      <circle cx="50%" cy="50%" r="15"></circle>
+                      <circle cx="50%" cy="50%" r="15"></circle>
+                    </svg>
+
+                    <span>{{- forloop.index -}}</span>
+                  </button>
+                {%- endfor -%}
+              </page-dots>
+
+            {%- when 'dots' -%}
+              <page-dots class="stretching-dots" aria-controls="{{ carousel_id }}">
+                {%- for i in (1..visible_ids.size) -%}
+                  <button type="button" class="tap-area" aria-current="{% if forloop.first %}true{% else %}false{% endif %}">
+                    <span class="sr-only">{{ 'general.accessibility.go_to_item' | t: index: forloop.index }}</span>
+                  </button>
+                {%- endfor -%}
+              </page-dots>
+          {%- endcase -%}
+        </div>
+      {%- endif -%}
+    </slideshow-carousel>
+  </x-slideshow>
 {%- endif -%}
 
 {% schema %}
 {
-  "name": "Bannière compte à rebours",
-  "class": "shopify-section--image-with-text-overlay",
+  "name": "Carrousel de bannières",
+  "class": "shopify-section--slideshow",
   "tag": "section",
   "disabled_on": {
     "templates": ["password"],
     "groups": ["header", "custom.overlay"]
   },
+  "max_blocks": 5,
   "settings": [
     {
       "type": "checkbox",
@@ -222,203 +343,280 @@ never lingers on the homepage announcing an event that already happened.
       "default": "md"
     },
     {
-      "type": "image_picker",
-      "id": "image",
-      "label": "Image (ordinateur)"
-    },
-    {
-      "type": "image_picker",
-      "id": "mobile_image",
-      "label": "Image (mobile)"
-    },
-    {
       "type": "header",
-      "content": "Compte à rebours"
+      "content": "Défilement"
+    },
+    {
+      "type": "select",
+      "id": "controls_type",
+      "label": "Contrôles",
+      "options": [
+        {
+          "value": "none",
+          "label": "Aucun"
+        },
+        {
+          "value": "filled_arrows",
+          "label": "Flèches pleines"
+        },
+        {
+          "value": "outline_arrows",
+          "label": "Flèches contournées"
+        },
+        {
+          "value": "numbers",
+          "label": "Numéros"
+        },
+        {
+          "value": "dots",
+          "label": "Points"
+        }
+      ],
+      "default": "dots"
+    },
+    {
+      "type": "select",
+      "id": "transition_type",
+      "label": "Type de transition",
+      "options": [
+        {
+          "value": "fade",
+          "label": "Fondu"
+        },
+        {
+          "value": "fade_with_text",
+          "label": "Fondu avec animation du texte"
+        }
+      ],
+      "default": "fade_with_text"
     },
     {
       "type": "checkbox",
-      "id": "show_countdown",
-      "label": "Afficher le compte à rebours",
+      "id": "autoplay",
+      "label": "Faire défiler automatiquement",
       "default": true
-    },
-    {
-      "type": "text",
-      "id": "target_date",
-      "label": "Date visée",
-      "info": "Au format AAAA-MM-JJ, par exemple 2026-09-16. Une heure peut être ajoutée : 2026-09-16 10:00.",
-      "default": "2026-09-16"
-    },
-    {
-      "type": "checkbox",
-      "id": "hide_when_expired",
-      "label": "Masquer la section une fois la date passée",
-      "default": true
-    },
-    {
-      "type": "header",
-      "content": "Contenu"
-    },
-    {
-      "type": "text",
-      "id": "subheading",
-      "label": "Sur-titre",
-      "default": "SORTIE MONDIALE"
-    },
-    {
-      "type": "text",
-      "id": "title",
-      "label": "Titre",
-      "default": "30 ANS POKÉMON"
-    },
-    {
-      "type": "select",
-      "id": "heading_tag",
-      "label": "Taille du titre",
-      "options": [
-        {
-          "value": "h0",
-          "label": "Très grande"
-        },
-        {
-          "value": "h1",
-          "label": "Grande"
-        },
-        {
-          "value": "h2",
-          "label": "Moyenne"
-        }
-      ],
-      "default": "h0"
-    },
-    {
-      "type": "richtext",
-      "id": "content",
-      "label": "Texte"
-    },
-    {
-      "type": "text",
-      "id": "button_text",
-      "label": "Texte du bouton",
-      "default": "Découvrir la gamme"
-    },
-    {
-      "type": "url",
-      "id": "button_url",
-      "label": "Lien du bouton"
-    },
-    {
-      "type": "select",
-      "id": "mobile_text_position",
-      "label": "Position du texte (mobile)",
-      "options": [
-        {
-          "value": "place-self-center text-center",
-          "label": "Centre"
-        },
-        {
-          "value": "place-self-end-center text-center",
-          "label": "Bas"
-        }
-      ],
-      "default": "place-self-center text-center"
-    },
-    {
-      "type": "select",
-      "id": "desktop_text_position",
-      "label": "Position du texte (ordinateur)",
-      "options": [
-        {
-          "value": "sm:place-self-center sm:text-center",
-          "label": "Centre"
-        },
-        {
-          "value": "sm:place-self-center-start sm:text-start",
-          "label": "Gauche"
-        },
-        {
-          "value": "sm:place-self-end-center sm:text-center",
-          "label": "Bas"
-        }
-      ],
-      "default": "sm:place-self-center sm:text-center"
-    },
-    {
-      "type": "header",
-      "content": "Couleurs",
-      "info": "Le dégradé remplace la couleur unie quand il est renseigné."
-    },
-    {
-      "type": "color",
-      "id": "background",
-      "label": "Fond",
-      "default": "#1a1a1a"
-    },
-    {
-      "type": "color_background",
-      "id": "background_gradient",
-      "label": "Dégradé de fond",
-      "default": "linear-gradient(140deg, rgba(26, 26, 26, 1), rgba(0, 58, 112, 1) 100%)"
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Texte",
-      "default": "#ffffff"
-    },
-    {
-      "type": "color",
-      "id": "overlay_color",
-      "label": "Voile sur l'image",
-      "default": "#000000"
     },
     {
       "type": "range",
-      "id": "overlay_opacity",
-      "min": 0,
-      "max": 100,
+      "id": "cycle_speed",
+      "min": 4,
+      "max": 20,
       "step": 1,
-      "unit": "%",
-      "label": "Opacité du voile",
-      "default": 40
-    },
+      "unit": "sec",
+      "label": "Changer de bannière toutes les",
+      "default": 6
+    }
+  ],
+  "blocks": [
     {
-      "type": "color",
-      "id": "countdown_background",
-      "label": "Fond des compteurs",
-      "default": "#ffffff"
-    },
-    {
-      "type": "range",
-      "id": "countdown_opacity",
-      "min": 0,
-      "max": 100,
-      "step": 5,
-      "unit": "%",
-      "label": "Opacité des compteurs",
-      "default": 15
-    },
-    {
-      "type": "color",
-      "id": "countdown_text_color",
-      "label": "Texte des compteurs",
-      "default": "#ffffff"
-    },
-    {
-      "type": "color",
-      "id": "button_background",
-      "label": "Fond du bouton",
-      "default": "#0043b5"
-    },
-    {
-      "type": "color",
-      "id": "button_text_color",
-      "label": "Texte du bouton",
-      "default": "#ffffff"
+      "type": "banner",
+      "name": "Bannière",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image (ordinateur)"
+        },
+        {
+          "type": "image_picker",
+          "id": "mobile_image",
+          "label": "Image (mobile)"
+        },
+        {
+          "type": "header",
+          "content": "Compte à rebours"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_countdown",
+          "label": "Afficher le compte à rebours",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "target_date",
+          "label": "Date visée",
+          "info": "Au format AAAA-MM-JJ, par exemple 2026-09-16. Une heure peut être ajoutée : 2026-09-16 10:00.",
+          "default": "2026-09-16"
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_when_expired",
+          "label": "Masquer la bannière une fois la date passée",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Contenu"
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "Sur-titre",
+          "default": "SORTIE MONDIALE"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titre",
+          "default": "30 ANS POKÉMON"
+        },
+        {
+          "type": "select",
+          "id": "heading_tag",
+          "label": "Taille du titre",
+          "options": [
+            {
+              "value": "h0",
+              "label": "Très grande"
+            },
+            {
+              "value": "h1",
+              "label": "Grande"
+            },
+            {
+              "value": "h2",
+              "label": "Moyenne"
+            }
+          ],
+          "default": "h0"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Texte"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Texte du bouton",
+          "default": "Découvrir la gamme"
+        },
+        {
+          "type": "url",
+          "id": "button_url",
+          "label": "Lien du bouton"
+        },
+        {
+          "type": "select",
+          "id": "mobile_text_position",
+          "label": "Position du texte (mobile)",
+          "options": [
+            {
+              "value": "place-self-center text-center",
+              "label": "Centre"
+            },
+            {
+              "value": "place-self-end-center text-center",
+              "label": "Bas"
+            }
+          ],
+          "default": "place-self-center text-center"
+        },
+        {
+          "type": "select",
+          "id": "desktop_text_position",
+          "label": "Position du texte (ordinateur)",
+          "options": [
+            {
+              "value": "sm:place-self-center sm:text-center",
+              "label": "Centre"
+            },
+            {
+              "value": "sm:place-self-center-start sm:text-start",
+              "label": "Gauche"
+            },
+            {
+              "value": "sm:place-self-end-center sm:text-center",
+              "label": "Bas"
+            }
+          ],
+          "default": "sm:place-self-center sm:text-center"
+        },
+        {
+          "type": "header",
+          "content": "Couleurs",
+          "info": "Le dégradé remplace la couleur unie quand il est renseigné."
+        },
+        {
+          "type": "color",
+          "id": "background",
+          "label": "Fond",
+          "default": "#1a1a1a"
+        },
+        {
+          "type": "color_background",
+          "id": "background_gradient",
+          "label": "Dégradé de fond",
+          "default": "linear-gradient(140deg, rgba(26, 26, 26, 1), rgba(0, 58, 112, 1) 100%)"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Texte",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "overlay_color",
+          "label": "Voile sur l'image",
+          "default": "#000000"
+        },
+        {
+          "type": "range",
+          "id": "overlay_opacity",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Opacité du voile",
+          "default": 40
+        },
+        {
+          "type": "color",
+          "id": "countdown_background",
+          "label": "Fond des compteurs",
+          "default": "#ffffff"
+        },
+        {
+          "type": "range",
+          "id": "countdown_opacity",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "unit": "%",
+          "label": "Opacité des compteurs",
+          "default": 15
+        },
+        {
+          "type": "color",
+          "id": "countdown_text_color",
+          "label": "Texte des compteurs",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "button_background",
+          "label": "Fond du bouton",
+          "default": "#002d78"
+        },
+        {
+          "type": "color",
+          "id": "button_text_color",
+          "label": "Texte du bouton",
+          "default": "#ffffff"
+        }
+      ]
     }
   ],
   "presets": [
     {
-      "name": "Bannière compte à rebours"
+      "name": "Carrousel de bannières",
+      "blocks": [
+        {
+          "type": "banner"
+        }
+      ]
     }
   ]
 }
