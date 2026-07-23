@@ -15,6 +15,74 @@ or change the format of some info
   {%- assign house_brand = shop.name | downcase -%}
   {%- assign product_brand = product.vendor | downcase -%}
 
+  {%- comment -%}
+    Custom (not Impact): Google's merchant-listing report asks for a return
+    policy on every offer. The store ships only to EU countries (BE, DE, ES, FR,
+    IT, PT, read from shop.shipsToCountries on the Admin API, 23/07/2026), where
+    the 14-day right of withdrawal applies uniformly, so a single policy is exact
+    for the whole catalogue. The customer bears the return postage, confirmed by
+    Lucas on 23/07/2026, hence ReturnFeesCustomerResponsibility (the customer is
+    responsible for the actual cost) rather than a fixed ReturnShippingFees
+    amount we do not have. If the published refund page ever changes (free
+    returns, longer window, new market), update the fields below so the markup
+    can never contradict it.
+  {%- endcomment -%}
+  {%- capture merchant_return_policy -%}
+    "hasMerchantReturnPolicy": {
+      "@type": "MerchantReturnPolicy",
+      "applicableCountry": ["BE", "DE", "ES", "FR", "IT", "PT"],
+      "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+      "merchantReturnDays": 14,
+      "returnMethod": "https://schema.org/ReturnByMail",
+      "returnFees": "https://schema.org/ReturnFeesCustomerResponsibility"
+    }
+  {%- endcapture -%}
+
+  {%- comment -%}
+    Custom (not Impact): shipping rates + delay per destination, read from the
+    store's delivery profile "Profil général" on the Admin API (23/07/2026). The
+    carrier rates are weight-tiered, but Google wants one rate per product, so we
+    emit the entry tier (lightest parcel = one sealed item, exact for today's
+    unweighed catalogue and single-item orders). Per zone, the cheapest option:
+    FR 3.90 / BE 5.90 / ES-PT 7.90 / IT 7.90 (Mondial Relay point-relais), DE
+    11.50 (home only, no relay in that zone). transitTime 2-3 days comes straight
+    from the method names ("48-72h"); handlingTime is left out because the
+    profile does not state a dispatch delay and we will not invent one.
+
+    All rates are EUR: shop.shipsToCountries is the 6 EU countries below, none in
+    a non-EUR market. If a rate, a delay or a shipping country changes in the
+    admin, update the entries here so the markup keeps telling the truth.
+  {%- endcomment -%}
+  {%- capture shipping_details -%}
+    "shippingDetails": [
+      {%- assign shipping_countries = "FR,3.90|BE,5.90|ES,7.90|PT,7.90|IT,7.90|DE,11.50" | split: "|" -%}
+      {%- for entry in shipping_countries -%}
+        {%- assign parts = entry | split: "," -%}
+        {
+          "@type": "OfferShippingDetails",
+          "shippingRate": {
+            "@type": "MonetaryAmount",
+            "value": {{ parts[1] | json }},
+            "currency": "EUR"
+          },
+          "shippingDestination": {
+            "@type": "DefinedRegion",
+            "addressCountry": {{ parts[0] | json }}
+          },
+          "deliveryTime": {
+            "@type": "ShippingDeliveryTime",
+            "transitTime": {
+              "@type": "QuantitativeValue",
+              "minValue": 2,
+              "maxValue": 3,
+              "unitCode": "DAY"
+            }
+          }
+        }{%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    ]
+  {%- endcapture -%}
+
   {%- capture main_entity_microdata -%}
     {%- assign is_valid_global_gtin_length = false -%}
 
@@ -63,6 +131,12 @@ or change the format of some info
           "price": {{ variant.price | divided_by: 100.0 | json }},
           "priceCurrency": {{ cart.currency.iso_code | json }},
           "priceValidUntil": "{{ 'now' | date: '%s' | plus: days_product_price_valid_until | date: '%Y-%m-%d' }}",
+          {%- comment -%}
+            Custom (not Impact): pairs with priceValidUntil to bound the offer's
+            validity. published_at is the real date the product went on sale, so
+            the price has been valid since then, verifiable per product.
+          {%- endcomment -%}
+          "validFrom": "{{ product.published_at | date: '%Y-%m-%d' }}",
           {%- if variant.sku != blank -%}
             "sku": {{ variant.sku | json }},
           {%- endif -%}
@@ -89,6 +163,8 @@ or change the format of some info
           {%- elsif variant.sku != blank and product_brand == house_brand -%}
             "mpn": {{ variant.sku | json }},
           {%- endif -%}
+          {{ merchant_return_policy }},
+          {{ shipping_details }},
           "url": "{{ shop.url }}{{ product.url }}?variant={{ variant.id }}"
         }{% unless forloop.last %},{% endunless %}
       {%- endfor -%}
