@@ -44,11 +44,14 @@ LIQUID
     <div class="{% if section.settings.show_progress_bar %}scrollable-with-controls{% else %}floating-controls-container{% endif %}">
       {%- assign scroll_area_id = 'scroll-area-' | append: section.id -%}
 
-      {%- if section.settings.products.count > 0 -%}
-        <scroll-carousel selector="product-card" id="{{ scroll_area_id }}" class="scroll-area bleed {% if section.settings.products.count > section.settings.products_per_row_desktop %}is-scrollable{% endif %}">
+      {%- comment -%}vcollect customization: never suggest sold-out products, in both manual and dynamic modes{%- endcomment -%}
+      {%- assign manual_products = section.settings.products | where: 'available' -%}
+
+      {%- if manual_products.size > 0 -%}
+        <scroll-carousel selector="product-card" id="{{ scroll_area_id }}" class="scroll-area bleed {% if manual_products.size > section.settings.products_per_row_desktop %}is-scrollable{% endif %}">
           <reveal-items selector=".product-list > *">
             <product-list class="product-list">
-              {%- for product in section.settings.products -%}
+              {%- for product in manual_products -%}
                 {%- render 'product-card', product: product, stacked: section.settings.stack_products, background: section.settings.product_card_background, text_color: section.settings.product_card_text_color, show_badges: true -%}
               {%- endfor -%}
             </product-list>
@@ -57,7 +60,7 @@ LIQUID
 
         {%- if section.settings.stack_products == false -%}
           {%- if section.settings.show_progress_bar -%}
-            {%- assign default_progress = section.settings.products_per_row_desktop | times: 1.0 | divided_by: section.settings.products.count -%}
+            {%- assign default_progress = section.settings.products_per_row_desktop | times: 1.0 | divided_by: manual_products.size -%}
             {%- render 'scrollbar', observes: scroll_area_id, default_progress: default_progress, show_buttons: true -%}
           {%- else -%}
             <button is="prev-button" class="circle-button circle-button--lg circle-button--fill border group" aria-controls="{{ scroll_area_id }}" disabled>
@@ -73,11 +76,12 @@ LIQUID
         {%- endif -%}
       {%- else -%}
         <product-recommendations product="{{ product.id }}" limit="{{ section.settings.recommendations_count }}" intent="related" class="contents">
-          {%- if recommendations.performed and recommendations.products_count > 0 -%}
-            <scroll-carousel selector="product-card" id="{{ scroll_area_id }}" class="scroll-area bleed {% if section.settings.recommendations_count > section.settings.products_per_row_desktop %}is-scrollable{% endif %}">
+          {%- assign recommended_products = recommendations.products | where: 'available' -%}
+          {%- if recommendations.performed and recommended_products.size > 0 -%}
+            <scroll-carousel selector="product-card" id="{{ scroll_area_id }}" class="scroll-area bleed {% if recommended_products.size > section.settings.products_per_row_desktop %}is-scrollable{% endif %}">
               <reveal-items selector=".product-list > *">
                 <product-list class="product-list">
-                  {%- for product in recommendations.products -%}
+                  {%- for product in recommended_products -%}
                     {%- render 'product-card', product: product, stacked: section.settings.stack_products, background: section.settings.product_card_background, text_color: section.settings.product_card_text_color, show_badges: true -%}
                   {%- endfor -%}
                 </product-list>
@@ -86,7 +90,7 @@ LIQUID
 
             {%- if section.settings.stack_products == false -%}
               {%- if section.settings.show_progress_bar -%}
-                {%- assign default_progress = section.settings.products_per_row_desktop | times: 1.0 | divided_by: section.settings.recommendations_count -%}
+                {%- assign default_progress = section.settings.products_per_row_desktop | times: 1.0 | divided_by: recommended_products.size -%}
                 {%- render 'scrollbar', observes: scroll_area_id, default_progress: default_progress, show_buttons: true -%}
               {%- else -%}
                 <button is="prev-button" class="circle-button circle-button--lg circle-button--fill border group" aria-controls="{{ scroll_area_id }}" disabled>

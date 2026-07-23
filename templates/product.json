@@ -174,18 +174,6 @@
       "type": "related-products",
       "settings": {
         "recommendations_count": 6,
-        "products": [
-          "paquet-de-100-sleeves-classique",
-          "paquet-de-50-sleeves-premium",
-          "booster-m1s-mega-symphonia-japonais",
-          "booster-m2a-mega-dream-japonais",
-          "display-m1s-mega-symphonia-japonais",
-          "display-m2a-mega-dream-japonais",
-          "booster-m1l-mega-brave-japonais",
-          "display-mega-inferno-m2-japonais",
-          "protection-acrylique-etb-elite-trainer-box",
-          "protection-acrylique-display"
-        ],
         "full_width": true,
         "stack_products": false,
         "show_progress_bar": false,
