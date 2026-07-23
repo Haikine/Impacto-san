@@ -1,0 +1,72 @@
+{%- comment -%}
+----------------------------------------------------------------------------------------------------------------------
+CART DISCOUNT FIELD
+----------------------------------------------------------------------------------------------------------------------
+
+Custom addition to the Impact theme, not part of Maestrooo's base code. Impact only shows discounts once they exist:
+the code itself could not be entered before the checkout. This field lets the shopper apply a code from the cart page
+and the cart drawer, so the discounted total is visible before payment.
+
+All the behaviour lives in assets/custom-cart-discount.js, which sends the code to /cart/update.js and lets Shopify
+accept or refuse it. This snippet only renders the markup and hands over the translated messages, following the same
+pattern as gift-tiers-bar.liquid.
+
+The input carries no name attribute on purpose: on the cart page the component sits inside the checkout <form>, and a
+named field would be submitted with the order.
+{%- endcomment -%}
+
+<script type="module" src="{{ 'custom-cart-discount.js' | asset_url }}"></script>
+
+<style>
+  .cart-discount__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--spacing-2);
+    align-items: stretch;
+  }
+
+  .cart-discount__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-1);
+  }
+
+  .cart-discount__chip button {
+    line-height: 1;
+  }
+
+  .cart-discount [data-discount-message] {
+    color: #c0392b;
+  }
+</style>
+
+<cart-discount-form
+  class="cart-discount v-stack gap-2"
+  invalid-message="{{ 'cart.discount_field.invalid' | t | escape }}"
+  error-message="{{ 'cart.discount_field.error' | t | escape }}"
+  remove-label="{{ 'cart.discount_field.remove' | t: code: '@@code@@' | escape }}"
+>
+  <div class="cart-discount__row">
+    <div class="form-control">
+      <input
+        id="cart-discount-{{ section.id }}"
+        class="input is-floating"
+        type="text"
+        placeholder=" "
+        autocomplete="off"
+        autocapitalize="characters"
+        spellcheck="false"
+        data-discount-input
+      >
+      <label for="cart-discount-{{ section.id }}" class="floating-label">{{ 'cart.discount_field.label' | t }}</label>
+    </div>
+
+    <button type="button" class="button button--secondary" data-discount-apply>
+      {{- 'cart.discount_field.apply' | t -}}
+    </button>
+  </div>
+
+  <p class="text-sm" data-discount-message hidden></p>
+
+  <div class="h-stack gap-2" data-discount-applied hidden></div>
+</cart-discount-form>

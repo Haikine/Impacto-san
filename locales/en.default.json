@@ -116,6 +116,9 @@
     },
     "waitlist": {
       "intro": "Join the waitlist so you don't miss the release.",
+      "notify_button": "Notify me",
+      "error": "Something went wrong. Please try again in a moment.",
+      "security_check": "Quick security check, please complete it below:",
       "intro_restock": "This product is sold out. Leave your email and we'll tell you first when it's back.",
       "release_date": "Official release on {{ date }}",
       "email_label": "Your email address",
@@ -362,6 +365,13 @@
     "gift_tiers": {
       "limit_unreached_html": "Add {{ remaining_amount }} to receive your {{ reward }}.",
       "all_reached_html": "All your gifts are unlocked!"
+    },
+    "discount_field": {
+      "label": "Discount code",
+      "apply": "Apply",
+      "invalid": "This code is invalid or does not apply to your cart.",
+      "error": "The code could not be applied right now. Please try again.",
+      "remove": "Remove code {{ code }}"
     },
     "shipping_estimator": {
       "estimate_shipping": "Estimate shipping",

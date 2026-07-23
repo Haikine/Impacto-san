@@ -216,8 +216,8 @@ Supported variables
     has to be enforced here too. Impact only tests product.available, which is why stock on an unreleased product
     used to make it buyable from a collection page while its own page showed a waitlist.
 
-    Two outcomes, not one. Pre-orders open: the button stays and says "Pré-commander". Pre-orders closed: no button
-    at all, the card keeps its "Bientôt disponible" badge and the shopper goes to the page to leave an email.
+    Two outcomes, not one. Pre-orders open: the button stays and says "Pré-commander". Pre-orders closed: the quick
+    buy is replaced by a "Me prévenir" button that opens the waitlist drawer (see below).
     {%- endcomment -%}
     {%- capture is_coming_soon -%}{%- render 'coming-soon-check', product: product -%}{%- endcapture -%}
     {%- assign is_coming_soon = is_coming_soon | strip -%}
@@ -268,6 +268,45 @@ Supported variables
             {%- comment -%}Quick buy content is filled on demand for performance reasons {%- endcomment -%}
           </quick-buy-drawer>
         {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%}
+    --------------------------------------------------------------------------------------------------------------
+    WAITLIST FROM THE TILE
+    --------------------------------------------------------------------------------------------------------------
+
+    Custom vcollect: the two cases where the quick buy disappears are exactly the two cases where the product page
+    shows the waitlist instead of the buy buttons (see 'product-info'): unreleased without pre-order, and sold out.
+    Until now the tile went silent there and the shopper had to guess that the product page collects emails. The
+    same slot now carries a "Me prévenir" button opening the waitlist form in a drawer, so joining the list costs
+    one click from the collection instead of a page load.
+
+    The branch order mirrors the product page rule: an unreleased product has no stock yet, so testing availability
+    first would wrongly greet it with the "sold out" wording.
+
+    The drawer reuses the theme's x-drawer element, which handles the opening via aria-controls, the focus trap and
+    the bottom sheet on mobile. The form inside posts through fetch (see 'waitlist-form'), so signing up never
+    reloads the collection page.
+    {%- endcomment -%}
+    {%- assign card_waitlist_mode = '' -%}
+    {%- if is_coming_soon == 'true' and is_pre_order != 'true' -%}
+      {%- assign card_waitlist_mode = 'coming_soon' -%}
+    {%- elsif product.available == false -%}
+      {%- assign card_waitlist_mode = 'restock' -%}
+    {%- endif -%}
+
+    {%- if show_quick_buy and card_waitlist_mode != blank -%}
+      <div class="product-card__quick-buy">
+        {%- capture waitlist_drawer_id -%}waitlist-drawer-{{ section.id }}-{{ product.id }}{%- endcapture -%}
+        {%- assign notify_label = 'product.waitlist.notify_button' | t -%}
+
+        {%- render 'button', content: notify_label, aria_controls: waitlist_drawer_id, stretch: true, style: 'outline' -%}
+
+        <x-drawer id="{{ waitlist_drawer_id }}" header-bordered open-from="bottom" class="waitlist-drawer drawer">
+          <span class="h5" slot="header">{{ product.title }}</span>
+          {%- render 'waitlist-form', product: product, mode: card_waitlist_mode -%}
+        </x-drawer>
       </div>
     {%- endif -%}
   </div>

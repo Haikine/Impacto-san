@@ -95,6 +95,10 @@
       "added_to_cart": "Produit ajouté au panier !",
       "sold_out_badge": "En rupture",
       "coming_soon_badge": "Bientôt disponible",
+      "pre_order_badge": "Précommande",
+      "pre_order_note": "Précommande : expédition à partir du {{ date }}.",
+      "pre_order_property_name": "Précommande",
+      "pre_order_property_value": "Expédition à partir du {{ date }}",
       "new_release_badge": "Nouveauté",
       "on_sale_badge": "Promo",
       "discount_badge_html": "Economisez {{ savings }}",
@@ -112,6 +116,9 @@
     },
     "waitlist": {
       "intro": "Rejoins la liste d'attente pour ne pas manquer la mise en vente.",
+      "notify_button": "Me prévenir",
+      "error": "Une erreur est survenue. Réessaie dans un instant.",
+      "security_check": "Petite vérification de sécurité, valide-la ci-dessous :",
       "intro_restock": "Ce produit est épuisé. Laisse ton e-mail et tu seras prévenu en priorité de son retour.",
       "release_date": "Sortie officielle le {{ date }}",
       "email_label": "Ton adresse e-mail",
@@ -358,6 +365,13 @@
     "gift_tiers": {
       "limit_unreached_html": "Ajoutez {{ remaining_amount }} pour recevoir votre {{ reward }}.",
       "all_reached_html": "Tous vos cadeaux sont débloqués !"
+    },
+    "discount_field": {
+      "label": "Code promo",
+      "apply": "Appliquer",
+      "invalid": "Code invalide ou non applicable à votre panier.",
+      "error": "Le code ne peut pas être appliqué pour le moment. Merci de réessayer.",
+      "remove": "Retirer le code {{ code }}"
     },
     "shipping_estimator": {
       "estimate_shipping": "Estimer les frais de livraison",
