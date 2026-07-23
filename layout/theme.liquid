@@ -69,6 +69,12 @@ NOTE TO DEVELOPERS: welcome to Impact theme! We hope that you will enjoy editing
     {%- endcomment -%}
     <script type="module" src="{{ 'custom-gift-tiers.js' | asset_url }}"></script>
 
+    {%- comment -%}
+      Custom (not Impact): reopens the right waitlist drawer with its
+      confirmation after the native signup submission returns to the collection.
+    {%- endcomment -%}
+    <script type="module" src="{{ 'custom-waitlist.js' | asset_url }}"></script>
+
     {{ content_for_header }}
 
     {{- 'theme.css' | asset_url | stylesheet_tag: preload: true -}}
@@ -80,7 +86,7 @@ NOTE TO DEVELOPERS: welcome to Impact theme! We hope that you will enjoy editing
     {{- 'custom-vcollect.css' | asset_url | stylesheet_tag -}}
   </head>
 
-  <body class="{% if settings.show_page_transition %}page-transition{% endif %} {% if settings.zoom_image_on_hover %}zoom-image--enabled{% endif %}">
+  <body class="template-{{ request.page_type | handleize }} {% if settings.show_page_transition %}page-transition{% endif %} {% if settings.zoom_image_on_hover %}zoom-image--enabled{% endif %}">
     {%- render 'shadow-dom-templates' -%}
 
     <a href="#main" class="skip-to-content sr-only">{{ 'general.accessibility.skip_to_content' | t }}</a>

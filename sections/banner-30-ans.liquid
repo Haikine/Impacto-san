@@ -29,13 +29,25 @@ The deadline is emitted as a full ISO instant resolved in the shop timezone, so 
 moment whatever their own timezone.
 
 ********************************************
-Slides remove themselves
+After the deadline
 ********************************************
 
-Once a deadline has passed the slide drops out of the carousel on its own if "masquer après la date" is on, so a launch
-never lingers on the homepage announcing an event that already happened. When the last slide expires the whole section
-disappears. A slide whose date is empty or unreadable is never hidden: an unparseable date must not silently erase
-content the merchant entered.
+Two behaviours, per slide. With "masquer après la date" on, the slide drops out of the carousel on its own, and when the
+last slide expires the whole section disappears. With it off, the slide stays but the countdown hides itself and the
+"message après la date" shows in its place, so the banner flips from announcing the drop to announcing availability
+without anyone touching the editor at 00:00. The swap is pure CSS keyed on the [expired] attribute, which Liquid sets
+for visitors arriving after the date and custom-countdown.js sets for visitors watching the counter reach zero.
+
+A slide whose date is empty or unreadable is never hidden: an unparseable date must not silently erase content the
+merchant entered.
+
+********************************************
+Before the start date
+********************************************
+
+A slide can also carry an "afficher à partir du" date. Until that moment Liquid skips it entirely, so a promotion
+prepared in advance goes live at the right time without anyone touching the editor at 00:00. An empty or unreadable
+date shows the slide immediately, for the same reason an unreadable deadline never hides one.
 {%- endcomment -%}
 
 {%- comment -%}
@@ -48,6 +60,12 @@ content the merchant entered.
   assign visible_count = 0
 
   for block in section.blocks
+    assign block_start = block.settings.visible_from | date: '%s' | plus: 0
+
+    if block_start > now_timestamp
+      continue
+    endif
+
     assign block_target = block.settings.target_date | date: '%s' | plus: 0
     assign block_remaining = block_target | minus: now_timestamp
 
@@ -88,9 +106,22 @@ content the merchant entered.
       The theme applies --content-over-media-height to the image, not to the container, so a slide running on a gradient
       alone would collapse to the height of its text. Mirroring it as a minimum keeps the hero the size the merchant
       picked whether or not an image has been uploaded.
+
+      vcollect: the theme's fade carousel keeps only the selected slide in flow and stacks the rest absolutely, so the
+      section takes the height of whichever slide is showing. Slides carry different amounts of content (a countdown
+      here, none there, a longer paragraph), so the hero used to jump in height on every rotation. Pinning one height
+      on every slide, comfortably above the tallest content at each breakpoint, makes the rotation seamless. The value
+      is a floor, not a cap: if a future slide needs more it will grow, but then every slide grows with it and they
+      stay equal.
     {%- endcomment -%}
     #shopify-section-{{ section.id }} .content-over-media {
-      min-block-size: var(--content-over-media-height, auto);
+      min-block-size: 700px;
+    }
+
+    @media screen and (min-width: 700px) {
+      #shopify-section-{{ section.id }} .content-over-media {
+        min-block-size: 690px;
+      }
     }
 
     {%- comment -%}
@@ -114,6 +145,20 @@ content the merchant entered.
       display: flex;
       justify-content: center;
       padding-block: var(--spacing-4);
+    }
+
+    {%- comment -%}
+      vcollect: le conteneur du carrousel porte le fond sombre de la diapositive (theme.css .slideshow),
+      qui débordait sous l'image en une bande colorée derrière les points. Chaque diapositive garde son
+      propre fond, donc neutraliser celui du conteneur laisse le bandeau intact et pose les points sur le
+      fond clair de la page, sans bande de couleur. Les points passent alors en noir pour rester lisibles.
+    {%- endcomment -%}
+    #shopify-section-{{ section.id }} .slideshow {
+      background: transparent;
+    }
+
+    #shopify-section-{{ section.id }} .slideshow__controls .stretching-dots > * {
+      background: #1a1a1a;
     }
 
     {%- comment -%}
@@ -195,6 +240,25 @@ content the merchant entered.
       opacity: 0.75;
     }
 
+    {%- comment -%}
+      Passé la date, le compteur laisse sa place au message. En CSS plutôt qu'en
+      Liquid pour que la bascule se fasse aussi chez un visiteur déjà sur la
+      page au moment du zéro : custom-countdown.js pose alors l'attribut
+      [expired] et les deux règles s'inversent sans rechargement.
+    {%- endcomment -%}
+    #shopify-section-{{ section.id }} .countdown[expired] {
+      display: none;
+    }
+
+    #shopify-section-{{ section.id }} .countdown-expired-message {
+      display: none;
+      margin-block: var(--spacing-4);
+    }
+
+    #shopify-section-{{ section.id }} .countdown[expired] + .countdown-expired-message {
+      display: block;
+    }
+
     {%- for block in section.blocks -%}
       {%- if section.settings.controls_type == 'filled_arrows' -%}
         {%- assign controls_background = block.settings.button_background -%}
@@ -228,6 +292,12 @@ content the merchant entered.
 
       {%- for block in section.blocks -%}
         {%- liquid
+          assign start_timestamp = block.settings.visible_from | date: '%s' | plus: 0
+
+          if start_timestamp > now_timestamp
+            continue
+          endif
+
           assign target_timestamp = block.settings.target_date | date: '%s' | plus: 0
           assign remaining = target_timestamp | minus: now_timestamp
           assign is_expired = false
@@ -281,27 +351,9 @@ content the merchant entered.
             {%- endif -%}
 
             {%- comment -%}---------------- PRODUIT ----------------{%- endcomment -%}
-            {%- comment -%}
-              La voie normale est le sélecteur d'image : le marchand dépose son
-              visuel dans la bibliothèque de fichiers et le choisit dans
-              l'éditeur, sans toucher au code.
-
-              ⚠️ PONT TEMPORAIRE, à retirer. Le visuel M6 n'a pas pu être déposé
-              en bibliothèque faute d'accès admin le 22/07/2026, il voyage donc
-              dans assets/ avec le thème. Liquid ne sait pas lire les dimensions
-              d'un fichier de assets/, elles sont donc écrites en dur ici, ce qui
-              n'a de sens que pour ce fichier précis. Dès que
-              display-m6-detoure.webp est dans la bibliothèque et sélectionné
-              dans l'éditeur, supprimer ce bloc elsif et le fichier
-              assets/display-m6-detoure.webp.
-            {%- endcomment -%}
             {%- if block.settings.product_image != blank -%}
               <div class="banner-product" style="--banner-product-size: {{ block.settings.product_image_size }}%;">
                 {{- block.settings.product_image | image_url: width: 1200 | image_tag: loading: 'lazy', fetchpriority: 'low', sizes: '46vw', widths: '400,600,800,1000,1200', alt: block.settings.product_image.alt -}}
-              </div>
-            {%- elsif block.settings.product_image_bridge -%}
-              <div class="banner-product" style="--banner-product-size: {{ block.settings.product_image_size }}%;">
-                <img src="{{ 'display-m6-detoure.webp' | asset_url }}" width="1006" height="1176" alt="Display Storm Emeralda M6 en japonais, 30 boosters de 5 cartes" loading="lazy" fetchpriority="low">
               </div>
             {%- endif -%}
 
@@ -341,6 +393,10 @@ content the merchant entered.
                       <span class="countdown__label">{{ 'general.countdown.seconds' | t }}</span>
                     </span>
                   </countdown-timer>
+
+                  {%- if block.settings.expired_message != blank -%}
+                    <p class="countdown-expired-message bold">{{ block.settings.expired_message | escape }}</p>
+                  {%- endif -%}
                 {%- endif -%}
 
                 {%- if block.settings.button_text != blank -%}
@@ -536,13 +592,6 @@ content the merchant entered.
           "info": "Posé à droite du bandeau, fondu par le bas. Utiliser une image détourée à fond transparent (PNG ou WebP) : un fond blanc apparaîtrait comme un rectangle. Masqué sur mobile."
         },
         {
-          "type": "checkbox",
-          "id": "product_image_bridge",
-          "label": "Utiliser le visuel M6 livré avec le thème",
-          "info": "Dépannage temporaire, en attendant que display-m6-detoure.webp soit déposé dans la bibliothèque de fichiers. Sans effet si un visuel est choisi ci-dessus. À décocher et à retirer du code une fois le dépôt fait.",
-          "default": false
-        },
-        {
           "type": "range",
           "id": "product_image_size",
           "label": "Hauteur du visuel produit",
@@ -551,6 +600,16 @@ content the merchant entered.
           "max": 100,
           "step": 2,
           "default": 76
+        },
+        {
+          "type": "header",
+          "content": "Programmation"
+        },
+        {
+          "type": "text",
+          "id": "visible_from",
+          "label": "Afficher à partir du",
+          "info": "Au format AAAA-MM-JJ, par exemple 2026-08-01. Une heure peut être ajoutée : 2026-08-01 10:00. Laisser vide pour afficher tout de suite."
         },
         {
           "type": "header",
@@ -574,6 +633,13 @@ content the merchant entered.
           "id": "hide_when_expired",
           "label": "Masquer la bannière une fois la date passée",
           "default": true
+        },
+        {
+          "type": "text",
+          "id": "expired_message",
+          "label": "Message après la date",
+          "info": "Remplace le compte à rebours une fois la date passée. Sans effet si la bannière est masquée ci-dessus.",
+          "default": "Disponible dès maintenant"
         },
         {
           "type": "header",

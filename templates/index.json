@@ -12,17 +12,49 @@
     "banniere_drops": {
       "type": "banner-30-ans",
       "blocks": {
+        "banner_promo_accessoires": {
+          "type": "banner",
+          "settings": {
+            "image": "",
+            "mobile_image": "",
+            "product_image": "shopify://shop_images/promo-accessoires-v2.webp",
+            "product_image_size": 86,
+            "visible_from": "",
+            "show_countdown": false,
+            "target_date": "2026-08-08",
+            "hide_when_expired": true,
+            "expired_message": "",
+            "subheading": "DU 1ER AU 7 AOÛT",
+            "title": "-15% SUR LES ACCESSOIRES",
+            "heading_tag": "h0",
+            "content": "<p>Protégez vos cartes avant les drops M6 et 30 ans Pokémon : sleeves, toploaders et protections à -15% avec le code <strong>VCOLLECT15</strong>.</p>",
+            "button_text": "Voir les accessoires",
+            "button_url": "shopify://collections/accessoires",
+            "mobile_text_position": "place-self-center text-center",
+            "desktop_text_position": "sm:place-self-center-start sm:text-start",
+            "background": "#1a1a1a",
+            "background_gradient": "linear-gradient(140deg, rgba(26, 26, 26, 1), rgba(0, 58, 112, 1) 100%)",
+            "text_color": "#ffffff",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0,
+            "countdown_background": "#ffffff",
+            "countdown_opacity": 15,
+            "countdown_text_color": "#5a8de2",
+            "button_background": "#002d78",
+            "button_text_color": "#ffffff"
+          }
+        },
         "banner_m6": {
           "type": "banner",
           "settings": {
             "image": "shopify://shop_images/m6-japonais-bandeau.webp",
             "mobile_image": "",
-            "product_image": "",
-            "product_image_bridge": true,
+            "product_image": "shopify://shop_images/display-m6-detoure.webp",
             "product_image_size": 76,
             "show_countdown": true,
             "target_date": "2026-07-31",
-            "hide_when_expired": true,
+            "hide_when_expired": false,
+            "expired_message": "Disponible dès maintenant",
             "subheading": "SORTIE LE 31 JUILLET 2026",
             "title": "STORM EMERALDA M6",
             "heading_tag": "h0",
@@ -43,6 +75,36 @@
             "button_text_color": "#ffffff"
           }
         },
+        "banner_csv10c": {
+          "type": "banner",
+          "settings": {
+            "image": "shopify://shop_images/bandeau-csv10c-desktop.webp",
+            "mobile_image": "",
+            "product_image": "shopify://shop_images/display-csv10c-detoure.webp",
+            "product_image_size": 76,
+            "show_countdown": false,
+            "target_date": "",
+            "hide_when_expired": false,
+            "subheading": "DÉJÀ DISPONIBLE",
+            "title": "CHASING GLORY CSV10C",
+            "heading_tag": "h0",
+            "content": "<p>Le display chinois de l'extension Chasing Glory Together : 15 boosters, avec le Mewtwo de la Team Rocket en carte phare.</p>",
+            "button_text": "Voir le display CSV10C",
+            "button_url": "shopify://products/display-csv10c-chasing-glory-chinois",
+            "mobile_text_position": "place-self-center text-center",
+            "desktop_text_position": "sm:place-self-center-start sm:text-start",
+            "background": "#5c1420",
+            "background_gradient": "",
+            "text_color": "#ffffff",
+            "overlay_color": "#000000",
+            "overlay_opacity": 45,
+            "countdown_background": "#ffffff",
+            "countdown_opacity": 15,
+            "countdown_text_color": "#ffffff",
+            "button_background": "#002d78",
+            "button_text_color": "#ffffff"
+          }
+        },
         "banner_30_ans": {
           "type": "banner",
           "settings": {
@@ -50,7 +112,8 @@
             "mobile_image": "shopify://shop_images/bandeau-30-ans-mobile.jpg",
             "show_countdown": true,
             "target_date": "2026-09-16",
-            "hide_when_expired": true,
+            "hide_when_expired": false,
+            "expired_message": "Disponible dès maintenant",
             "subheading": "SORTIE MONDIALE LE 16 SEPTEMBRE 2026",
             "title": "30 ANS POKÉMON",
             "heading_tag": "h0",
@@ -74,7 +137,9 @@
       },
       "block_order": [
         "banner_m6",
-        "banner_30_ans"
+        "banner_csv10c",
+        "banner_30_ans",
+        "banner_promo_accessoires"
       ],
       "settings": {
         "full_width": true,
@@ -93,10 +158,10 @@
         "products": [],
         "full_width": false,
         "stack_products": false,
-        "show_progress_bar": true,
+        "show_progress_bar": false,
         "products_count": 8,
         "products_per_row_mobile": "2",
-        "products_per_row_desktop": 4,
+        "products_per_row_desktop": 5,
         "subheading": "",
         "title": "LE DROP 30 ANS",
         "content": "",
@@ -111,18 +176,71 @@
         "product_card_text_color": "#1a1a1a"
       }
     },
+    "collection_japonais": {
+      "type": "featured-collection",
+      "settings": {
+        "collection": "pokemon-japonais",
+        "products": [],
+        "full_width": false,
+        "stack_products": false,
+        "show_progress_bar": false,
+        "prioritize_in_stock": true,
+        "products_count": 8,
+        "products_per_row_mobile": "2",
+        "products_per_row_desktop": 5,
+        "subheading": "",
+        "title": "POKÉMON JAPONAIS",
+        "content": "",
+        "link_url": "shopify://collections/pokemon-japonais",
+        "link_text": "Voir tout le Pokémon japonais",
+        "background": "#f7f9f9",
+        "background_gradient": "",
+        "text_color": "",
+        "heading_color": "",
+        "heading_gradient": "",
+        "product_card_background": "#ffffff",
+        "product_card_text_color": "#1a1a1a"
+      }
+    },
+    "collection_chinois": {
+      "type": "featured-collection",
+      "settings": {
+        "collection": "pokemon-chinois",
+        "products": [],
+        "full_width": false,
+        "stack_products": false,
+        "show_progress_bar": false,
+        "prioritize_in_stock": true,
+        "products_count": 8,
+        "products_per_row_mobile": "2",
+        "products_per_row_desktop": 5,
+        "subheading": "",
+        "title": "POKÉMON CHINOIS",
+        "content": "",
+        "link_url": "shopify://collections/pokemon-chinois",
+        "link_text": "Voir tout le Pokémon chinois",
+        "background": "#f7f9f9",
+        "background_gradient": "",
+        "text_color": "",
+        "heading_color": "",
+        "heading_gradient": "",
+        "product_card_background": "#ffffff",
+        "product_card_text_color": "#1a1a1a"
+      }
+    },
     "new_releases": {
       "type": "new-releases",
+      "disabled": true,
       "settings": {
         "collection": "pokemon",
         "window_days": 30,
         "fill_with_recent": true,
         "full_width": false,
         "stack_products": false,
-        "show_progress_bar": true,
+        "show_progress_bar": false,
         "products_count": 8,
         "products_per_row_mobile": "2",
-        "products_per_row_desktop": 4,
+        "products_per_row_desktop": 5,
         "subheading": "",
         "title": "DERNIÈRES SORTIES",
         "content": "",
@@ -213,11 +331,11 @@
         }
       },
       "block_order": [
+        "e4a0ef18-1856-4ddd-83d8-871a60d7acac",
         "1664424046b00c932c-0",
-        "1664424046b00c932c-1",
         "1664424046b00c932c-2",
         "1664424046b00c932c-3",
-        "e4a0ef18-1856-4ddd-83d8-871a60d7acac"
+        "1664424046b00c932c-1"
       ],
       "settings": {
         "full_width": false,
@@ -236,10 +354,13 @@
     },
     "scrolling_text_kgTrei": {
       "type": "scrolling-text",
+      "custom_css": [
+        ".section {padding-block: var(--spacing-4);}"
+      ],
       "settings": {
         "full_width": true,
         "text": "LIVRAISON EN 48H • PRODUITS SCELLÉS OFFICIELS • AUCUN FRAIS DE DOUANE",
-        "text_size": "small",
+        "text_size": "xsmall",
         "text_style": "fill",
         "scrolling_mode": "auto",
         "scrolling_speed": 20,
@@ -256,13 +377,14 @@
         "products": [],
         "full_width": false,
         "stack_products": false,
-        "show_progress_bar": true,
+        "show_progress_bar": false,
+        "prioritize_in_stock": true,
         "products_count": 8,
         "products_per_row_mobile": "2",
-        "products_per_row_desktop": 4,
+        "products_per_row_desktop": 5,
         "subheading": "",
         "title": "ACCESSOIRES",
-        "content": "<p>Classeurs, toploaders, sleeves et protections acryliques pour garder vos cartes en parfait état.</p>",
+        "content": "",
         "link_url": "shopify://collections/accessoires",
         "link_text": "Voir tout",
         "background": "#f7f9f9",
@@ -274,33 +396,11 @@
         "product_card_text_color": "#1a1a1a"
       }
     },
-    "collection_promotions": {
-      "type": "featured-collection",
-      "settings": {
-        "collection": "promotions",
-        "products": [],
-        "full_width": false,
-        "stack_products": false,
-        "show_progress_bar": true,
-        "products_count": 8,
-        "products_per_row_mobile": "2",
-        "products_per_row_desktop": 4,
-        "subheading": "",
-        "title": "PROMOTIONS",
-        "content": "",
-        "link_url": "shopify://collections/promotions",
-        "link_text": "Voir toutes les promotions",
-        "background": "#f7f9f9",
-        "background_gradient": "",
-        "text_color": "",
-        "heading_color": "",
-        "heading_gradient": "",
-        "product_card_background": "#ffffff",
-        "product_card_text_color": "#1a1a1a"
-      }
-    },
     "reassurance": {
       "type": "text-with-icons",
+      "custom_css": [
+        "@media screen and (min-width: 1000px) {.text-with-icons__text-wrapper .prose > p:first-child {min-height: 3lh;}}"
+      ],
       "blocks": {
         "item_expedition": {
           "type": "item",
@@ -498,7 +598,7 @@
         "text_alignment": "center",
         "impact_text_style": "fill",
         "text_divider": "diamond",
-        "impact_text_size_ratio": 1,
+        "impact_text_size_ratio": 0.5,
         "background": "#1a1a1a",
         "background_gradient": "",
         "heading_text_color": "#5a8de2",
@@ -607,11 +707,12 @@
   },
   "order": [
     "banniere_drops",
-    "new_releases",
-    "featured-collection",
     "image-link-blocks",
+    "collection_japonais",
+    "collection_chinois",
+    "featured-collection",
+    "new_releases",
     "scrolling_text_kgTrei",
-    "collection_promotions",
     "reassurance",
     "video_presentation",
     "press",

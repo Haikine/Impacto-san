@@ -268,3 +268,24 @@
     top: calc(var(--sticky-area-height) + 20px);
   }
 }
+
+
+/* ---------------------------------------------------------------------------
+ * Home: tighter vertical rhythm between sections
+ * ---------------------------------------------------------------------------
+ * The theme's smallest "section spacing" setting still leaves roughly 56 to
+ * 64px of padding above and below each section, so the homepage read as a long
+ * stack of widely spaced blocks. These two variables are the context the theme
+ * feeds into its `min(48px/64px, ...)` spacing formula, both for full-width
+ * sections and for the padding inside boxed ones; lowering them halves the gap
+ * uniformly without touching `--grid-gutter`, which also drives the horizontal
+ * gaps inside product grids and must stay as is.
+ *
+ * Scoped to the homepage via the template class added on <body>, so collection,
+ * product and content pages keep the theme's default breathing room.
+ */
+.template-index .shopify-section {
+  --section-outer-spacing-block: 28px;
+  --section-inner-max-spacing-block: 28px;
+}
+

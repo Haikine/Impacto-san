@@ -33,6 +33,25 @@
       --product-list-carousel-item-width: calc(var(--container-inner-width) / {{ section.settings.products_per_row_desktop }} - (var(--product-list-column-gap) / {{ section.settings.products_per_row_desktop }} * {{ section.settings.products_per_row_desktop | minus: 1 }}));
     }
   }
+
+  {%- comment -%}
+    vcollect: compact vertical rhythm on desktop so more than one product carousel is visible at once.
+    Only the section's own top/bottom padding and the gap under the heading are trimmed; the product card
+    itself is untouched, so nothing looks cramped. Scoped to this section id, desktop only.
+  {%- endcomment -%}
+  @media screen and (min-width: 1000px) {
+    #shopify-section-{{ section.id }} .section {
+      padding-block: var(--spacing-8);
+    }
+
+    #shopify-section-{{ section.id }} .section-stack {
+      gap: var(--spacing-5);
+    }
+
+    #shopify-section-{{ section.id }} .product-card__info {
+      padding-block: var(--spacing-4) var(--spacing-5);
+    }
+  }
 </style>
 
 <div {% render 'section-properties' %}>
@@ -46,7 +65,16 @@
       <scroll-carousel selector="product-card" id="{{ scroll_area_id }}" class="scroll-area bleed {% if section.settings.products_count > section.settings.products_per_row_desktop %}is-scrollable{% endif %}">
         <reveal-items selector=".product-list > *">
           <product-list class="product-list">
-            {%- assign products = section.settings.products | default: section.settings.collection.products -%}
+            {%- liquid
+              assign products = section.settings.products | default: section.settings.collection.products
+
+              # vcollect: push sold-out products to the end so the carousel leads with what can be bought
+              if section.settings.prioritize_in_stock
+                assign in_stock_products = products | where: 'available', true
+                assign sold_out_products = products | where: 'available', false
+                assign products = in_stock_products | concat: sold_out_products
+              endif
+            -%}
 
             {%- for product in products limit: section.settings.products_count -%}
               {%- render 'product-card', product: product, stacked: section.settings.stack_products, background: section.settings.product_card_background, text_color: section.settings.product_card_text_color, show_badges: true -%}
@@ -117,6 +145,13 @@
       "type": "checkbox",
       "id": "show_progress_bar",
       "label": "Show carousel progress bar",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "prioritize_in_stock",
+      "label": "Show in-stock products first",
+      "info": "Sold-out products are moved to the end of the list.",
       "default": false
     },
     {

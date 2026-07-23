@@ -14,23 +14,6 @@
 </style>
 {%- endif -%}
 
-{%- comment -%}
-  Impact core override: the "text" block is much taller than the menus, so keeping it on the same
-  row leaves a large empty area under the newsletter. Move it to its own full-width row below.
-{%- endcomment -%}
-<style>
-  @media screen and (min-width: 700px) {
-    #shopify-section-{{ section.id }} .footer__block-list {
-      flex-wrap: wrap;
-    }
-
-    #shopify-section-{{ section.id }} .footer__block--text {
-      order: 1;
-      flex-basis: 100%;
-    }
-  }
-</style>
-
 <div class="footer">
   <div class="container">
     <div class="footer__wrapper">

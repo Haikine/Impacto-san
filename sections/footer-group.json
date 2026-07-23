@@ -88,10 +88,8 @@
     "footer": {
       "type": "footer",
       "custom_css": [
-        ".footer__block--text {background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(90, 141, 226, 0.4); border-radius: var(--rounded-sm); padding: var(--spacing-5);}",
-        ".footer__block--text > p.bold {color: #5a8de2; font-size: var(--text-h5); letter-spacing: -0.01em; margin-block-end: var(--spacing-2);}",
-        ".footer__block--text .text-subdued {color: rgb(var(--text-color));}",
-        "@media screen and (max-width: 699px) {.footer__block--text {padding: var(--spacing-4);}}"
+        ".footer {--footer-block-list-gap: var(--spacing-10) var(--spacing-12);}",
+        "@media screen and (min-width: 700px) {.footer__block--text {flex-basis: 30%; min-width: 19rem;}}"
       ],
       "blocks": {
         "newsletter": {
@@ -107,7 +105,7 @@
           "type": "text",
           "settings": {
             "title": "À propos",
-            "content": "<p>Située à <strong>Caen</strong>, <strong>VCOLLECT </strong>est la boutique incontournable pour tous les passionnés de cartes Pokémon. <br/>Que vous soyez collectionneur, joueur ou simplement fan de l’univers Pokémon, vous y trouverez un large choix de produits : boosters, displays, coffrets, accessoires et bien plus encore !</p><p>Avec <strong>des dizaines de milliers de followers sur les réseaux sociaux</strong>, VCOLLECT s’est imposée comme une véritable référence dans le monde du Pokémon en France. L’équipe, passionnée et experte, partage quotidiennement nouveautés, conseils et contenus exclusifs avec une communauté fidèle et engagée.</p>",
+            "content": "<p><strong>VCOLLECT</strong>, boutique Pokémon basée à <strong>Caen</strong>. Displays japonais et chinois, coffrets et accessoires, 100 % officiels et scellés, expédiés depuis la France.</p><p>Suivie par des dizaines de milliers de passionnés sur les réseaux sociaux.</p>",
             "enable_follow_on_shop": false
           }
         },
