@@ -46,8 +46,10 @@ or change the format of some info
     unweighed catalogue and single-item orders). Per zone, the cheapest option:
     FR 3.90 / BE 5.90 / ES-PT 7.90 / IT 7.90 (Mondial Relay point-relais), DE
     11.50 (home only, no relay in that zone). transitTime 2-3 days comes straight
-    from the method names ("48-72h"); handlingTime is left out because the
-    profile does not state a dispatch delay and we will not invent one.
+    from the method names ("48-72h"). handlingTime 0-2 days comes from the
+    published shipping policy ("Les envois sont effectués en moins de 48h",
+    read on the Admin API, 24/07/2026); if that promise changes, change it here
+    too so the markup keeps matching the policy page.
 
     All rates are EUR: shop.shipsToCountries is the 6 EU countries below, none in
     a non-EUR market. If a rate, a delay or a shipping country changes in the
@@ -71,6 +73,12 @@ or change the format of some info
           },
           "deliveryTime": {
             "@type": "ShippingDeliveryTime",
+            "handlingTime": {
+              "@type": "QuantitativeValue",
+              "minValue": 0,
+              "maxValue": 2,
+              "unitCode": "DAY"
+            },
             "transitTime": {
               "@type": "QuantitativeValue",
               "minValue": 2,
