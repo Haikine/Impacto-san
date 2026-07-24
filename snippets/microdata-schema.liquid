@@ -186,6 +186,38 @@ or change the format of some info
         "bestRating": "{{ product.metafields.reviews.rating.value.scale_max }}"
       },
     {%- endif -%}
+    {%- comment -%}
+      Individual reviews come from Judge.me's own metafield: it is the only place
+      the review text lives, since Shopify's reviews.* metafields carry the
+      aggregate alone. We publish exactly the reviews Judge.me already renders on
+      the page, so the markup never claims more than a visitor can read. Judge.me
+      writes the first widget page here, hence the short list.
+    {%- endcomment -%}
+    {%- assign judgeme_reviews = product.metafields.judgeme.review_widget_data.value.reviews -%}
+    {%- if judgeme_reviews.size > 0 -%}
+      "review": [
+        {%- for judgeme_review in judgeme_reviews -%}
+          {
+            "@type": "Review",
+            {%- if judgeme_review.title != blank -%}
+              "name": {{ judgeme_review.title | json }},
+            {%- endif -%}
+            "reviewBody": {{ judgeme_review.body | json }},
+            "datePublished": {{ judgeme_review.created_at | date: '%Y-%m-%d' | json }},
+            "reviewRating": {
+              "@type": "Rating",
+              "ratingValue": "{{ judgeme_review.rating }}",
+              "worstRating": "1",
+              "bestRating": "5"
+            },
+            "author": {
+              "@type": "Person",
+              "name": {{ judgeme_review.reviewer_name | default: 'Anonyme' | json }}
+            }
+          }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ],
+    {%- endif -%}
     "brand": {
       "@type": "Brand",
       "name": {{ product.vendor | json }}
