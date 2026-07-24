@@ -15,15 +15,10 @@
         "navigation": {
           "type": "navigation",
           "settings": {}
-        },
-        "comments": {
-          "type": "comments",
-          "settings": {}
         }
       },
       "block_order": [
-        "navigation",
-        "comments"
+        "navigation"
       ],
       "settings": {}
     }
