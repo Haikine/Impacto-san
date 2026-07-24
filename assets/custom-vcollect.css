@@ -697,3 +697,17 @@
   font-size: 0.85em;
 }
 
+/* The theme underlines .prose links with a background gradient at specificity
+ * (0,2,1), which paints a stray 1px line across our block-shaped links. These
+ * selectors match that specificity and this file loads later, so they win. */
+.guide-page a.guide-product-card {
+  background: rgb(var(--background, 255 255 255));
+}
+
+.guide-page a.guide-chip,
+.guide-page .guide-sommaire a,
+.guide-page .guide-related__grid a,
+.guide-page .guide-verdict a {
+  background-image: none;
+}
+
