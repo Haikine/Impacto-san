@@ -931,5 +931,16 @@
         "info": "180 x 180px .png recommended"
       }
     ]
+  },
+  {
+    "name": "Social sharing image",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "social_sharing_image",
+        "label": "Image",
+        "info": "Custom (not Impact): used as the og:image / Twitter card image on pages without their own featured image (homepage, cart, generic pages). Prevents the shared preview from falling back to the shop-level social image. 1200 x 630px recommended."
+      }
+    ]
   }
 ]

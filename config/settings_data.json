@@ -56,6 +56,7 @@
     "social_instagram": "https://www.instagram.com/vcollect14/",
     "social_tiktok": "https://www.tiktok.com/@vcollect_",
     "favicon": "shopify://shop_images/logo-Vcollect.png",
+    "social_sharing_image": "shopify://shop_images/logo-Vcollect.png",
     "checkout_accent_color": "#002d78",
     "checkout_button_color": "#1a1a1a",
     "content_for_index": [],
