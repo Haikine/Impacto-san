@@ -610,14 +610,14 @@
           "type": "item",
           "settings": {
             "title": "Quels sont les modes d'expédition proposés ?",
-            "content": "<p>Nous proposons des livraisons en <strong>point relais Chronopost </strong>ainsi qu'à<strong> domicile avec Colissimo.</strong></p>"
+            "content": "<p>Nous proposons des livraisons en <strong>point relais Mondial Relay </strong>ainsi qu'à<strong> domicile.</strong></p>"
           }
         },
         "166442457738b23caf-2": {
           "type": "item",
           "settings": {
             "title": "Quel est le délai de livraison de ma commande ?",
-            "content": "<p>Le délai d’expédition est d’environ 24h et recevez votre commande en <strong>48h avec Chronopost</strong> !*</p>"
+            "content": "<p>Le délai d’expédition est d’environ 48h et recevez votre commande en <strong>48h-72h avec Mondial Relay</strong> !</p>"
           }
         },
         "item_D6cFU9": {
