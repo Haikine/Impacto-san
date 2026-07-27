@@ -68,9 +68,9 @@
             "text_color": "#ffffff",
             "overlay_color": "#000000",
             "overlay_opacity": 45,
-            "countdown_background": "#ffffff",
-            "countdown_opacity": 15,
-            "countdown_text_color": "#5a8de2",
+            "countdown_background": "#000000",
+            "countdown_opacity": 60,
+            "countdown_text_color": "#ffffff",
             "button_background": "#002d78",
             "button_text_color": "#ffffff"
           }
@@ -127,9 +127,9 @@
             "text_color": "#ffffff",
             "overlay_color": "#000000",
             "overlay_opacity": 40,
-            "countdown_background": "#ffffff",
-            "countdown_opacity": 15,
-            "countdown_text_color": "#5a8de2",
+            "countdown_background": "#000000",
+            "countdown_opacity": 60,
+            "countdown_text_color": "#ffffff",
             "button_background": "#002d78",
             "button_text_color": "#ffffff"
           }
