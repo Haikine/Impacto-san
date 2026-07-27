@@ -67,9 +67,9 @@
             "background_gradient": "",
             "text_color": "#ffffff",
             "overlay_color": "#000000",
-            "overlay_opacity": 45,
+            "overlay_opacity": 15,
             "countdown_background": "#000000",
-            "countdown_opacity": 60,
+            "countdown_opacity": 30,
             "countdown_text_color": "#ffffff",
             "button_background": "#002d78",
             "button_text_color": "#ffffff"
@@ -126,9 +126,9 @@
             "background_gradient": "linear-gradient(140deg, rgba(26, 26, 26, 1), rgba(0, 58, 112, 1) 100%)",
             "text_color": "#ffffff",
             "overlay_color": "#000000",
-            "overlay_opacity": 40,
+            "overlay_opacity": 15,
             "countdown_background": "#000000",
-            "countdown_opacity": 60,
+            "countdown_opacity": 30,
             "countdown_text_color": "#ffffff",
             "button_background": "#002d78",
             "button_text_color": "#ffffff"
