@@ -12,6 +12,36 @@
  */
 
 /* ---------------------------------------------------------------------------
+ * Header: never paint the bar while it sits on a banner
+ * ---------------------------------------------------------------------------
+ * On pages that open with a banner the header sits transparent over the image,
+ * but the theme paints it with its solid background (#1a1a1a) the moment
+ * anything inside opens: a desktop dropdown on hover, the mobile menu drawer,
+ * the language/country popovers. A black band snaps over the banner. Worse,
+ * the `is-filled` class doing that can outlive the menu: closed after a small
+ * scroll it stays until the next mouseenter, leaving the bar black for no
+ * visible reason. The open panels carry their own surface, so the bar itself
+ * never needed one.
+ *
+ * The header on this store is not sticky: whenever it is on screen at all it
+ * is at the top of the page, over the banner. So in transparent mode there is
+ * no state, open, closed or stale, in which the fill is wanted, and the rule
+ * simply pins the transparent values for every state. That neutralises both
+ * mechanisms at once (`is-filled` and the theme's own `.header:has([open])`
+ * bump), which all resolve through these custom properties.
+ *
+ * Scoped to `[allow-transparency]`: on pages that do not start with a banner
+ * the attribute is absent and the header keeps its opaque background. If the
+ * header ever becomes sticky again, revisit this: a scrolled sticky header
+ * does need its fill back once it leaves the banner.
+ */
+.js .header[allow-transparency] {
+  --header-background-opacity: 0;
+  --header-background-blur-radius: 0px;
+  --text-color: var(--header-transparent-text-color);
+}
+
+/* ---------------------------------------------------------------------------
  * Carousels: fade the overflowing edges
  * ---------------------------------------------------------------------------
  * A horizontal carousel cuts the last card mid-image at the edge of the
