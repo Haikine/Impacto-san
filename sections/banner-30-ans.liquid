@@ -97,8 +97,15 @@ date shows the slide immediately, for the same reason an unreadable deadline nev
       --slideshow-controls-background: {{ controls_background.rgb }};
       --slideshow-controls-color: {{ controls_color.rgb }};
 
+      {%- comment -%}
+        vcollect: 1px more than the theme's own formula. The height-observer rounds
+        --header-height to a whole pixel while the real header height is fractional,
+        so pulling up by exactly var(--header-height) can leave a sub-pixel line of
+        page background between the announcement bar and the banner. The extra pixel
+        tucks the banner under the opaque bar, where the overlap is invisible.
+      {%- endcomment -%}
       {%- if section.settings.allow_transparent_header -%}
-        margin-block-start: calc(-1 * var(--header-height) * var(--section-is-first));
+        margin-block-start: calc(-1 * (var(--header-height) + 1px) * var(--section-is-first));
       {%- endif -%}
     }
 
