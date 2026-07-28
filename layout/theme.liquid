@@ -135,11 +135,14 @@ NOTE TO DEVELOPERS: welcome to Impact theme! We hope that you will enjoy editing
       <script>
         (() => {
           /* Skip SCRIPT/STYLE nodes: app configs (Judge.me and friends) embed JSON there */
+          /* The contact address stays pokeseller14@gmail.com (decision of 28/07/2026):
+             tokenise it so the brand replaces below cannot mangle it, then restore it */
           const rebrand = (value) =>
             value
-              .replace(/pokeseller\s*14\s*@gmail\.com/gi, 'vcollect@gmail.com')
+              .replace(/pokeseller\s*14\s*@gmail\.com/gi, '@@contact-email@@')
               .replace(/pokeseller\s*14/gi, 'VCOLLECT')
-              .replace(/pokeseller/gi, 'VCOLLECT');
+              .replace(/pokeseller/gi, 'VCOLLECT')
+              .replace(/@@contact-email@@/g, 'pokeseller14@gmail.com');
 
           const clean = () => {
             const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
