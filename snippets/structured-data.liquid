@@ -79,12 +79,30 @@ from the shop resource. Every key is conditioned: an empty setting emits no key 
     {%- if settings.entity_founding_date != blank -%}
       "foundingDate": {{ settings.entity_founding_date | json }},
     {%- endif -%}
+    {%- comment -%}
+      Legal identifiers. SIREN identifies the company, SIRET the establishment, and the VAT number is the one a buyer
+      or a marketplace can check against the EU VIES register. Together they are what makes the entity verifiable by a
+      third party rather than merely self-declared, which is the whole point of publishing them.
+
+      All three were carried over from the JSON-LD that used to live inside the "À propos" page body, itself checked
+      against the company register on 30/07/2026. That block was removed once these keys existed here, so the facts
+      are now published from a single place.
+    {%- endcomment -%}
     {%- if settings.entity_siren != blank -%}
       "identifier": {
         "@type": "PropertyValue",
         "name": "SIREN",
         "value": {{ settings.entity_siren | json }}
       },
+    {%- endif -%}
+    {%- if settings.entity_siret != blank -%}
+      "taxID": {{ settings.entity_siret | json }},
+    {%- endif -%}
+    {%- if settings.entity_vat_id != blank -%}
+      "vatID": {{ settings.entity_vat_id | json }},
+    {%- endif -%}
+    {%- if settings.entity_telephone != blank -%}
+      "telephone": {{ settings.entity_telephone | json }},
     {%- endif -%}
     {%- if settings.entity_founder != blank -%}
       "founder": {

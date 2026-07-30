@@ -977,6 +977,27 @@
       },
       {
         "type": "text",
+        "id": "entity_siret",
+        "label": "Establishment number (SIRET)",
+        "default": "94831640100017",
+        "info": "Emitted as schema.org taxID."
+      },
+      {
+        "type": "text",
+        "id": "entity_vat_id",
+        "label": "Intra-community VAT number",
+        "default": "FR34948316401",
+        "info": "Emitted as schema.org vatID. No spaces."
+      },
+      {
+        "type": "text",
+        "id": "entity_telephone",
+        "label": "Phone, international format",
+        "default": "+33 7 68 46 51 88",
+        "info": "Must be the same line as Settings > General. Written here in international format, which is what schema.org expects and which Shopify's own field does not store."
+      },
+      {
+        "type": "text",
         "id": "entity_founder",
         "label": "Founder",
         "default": "Valentin Lantez"
