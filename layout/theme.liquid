@@ -159,17 +159,20 @@ NOTE TO DEVELOPERS: welcome to Impact theme! We hope that you will enjoy editing
         (() => {
           /**
            * Rewrite the legacy brand out of a string, while preserving the contact address.
+           * The brand is written "Vcollect", matching shop.name and the graphie decided for the whole theme. Do not
+           * switch it to all caps: the page would then disagree with the structured data, which is exactly what stops
+           * a search engine from consolidating one entity.
            * The address deliberately stays pokeseller14@gmail.com (decision of 28/07/2026, reconfirmed on 30/07/2026:
            * the contact@vcollect.fr mailbox does not receive mail yet). Because it contains the brand name, it is
-           * tokenised before the brand replaces run and restored after, otherwise it would become VCOLLECT@gmail.com.
+           * tokenised before the brand replaces run and restored after, otherwise it would become Vcollect@gmail.com.
            * @param {string} value - Raw text or href, as authored in the policy source
            * @returns {string} The same text under the current brand, contact address untouched
            */
           const rebrand = (value) =>
             value
               .replace(/pokeseller\s*14\s*@gmail\.com/gi, '@@contact-email@@')
-              .replace(/pokeseller\s*14/gi, 'VCOLLECT')
-              .replace(/pokeseller/gi, 'VCOLLECT')
+              .replace(/pokeseller\s*14/gi, 'Vcollect')
+              .replace(/pokeseller/gi, 'Vcollect')
               .replace(/@@contact-email@@/g, 'pokeseller14@gmail.com');
 
           /**
