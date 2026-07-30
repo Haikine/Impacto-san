@@ -16,6 +16,20 @@ or change the format of some info
   {%- assign product_brand = product.vendor | downcase -%}
 
   {%- comment -%}
+    Custom (not Impact): the unreleased state is read through the same two
+    snippets the page itself uses ('coming-soon-check' / 'pre-order-check'), so
+    the markup can never promise a purchase the buy-buttons slot does not offer.
+    Pre-order open means the shopper really can order today (PreOrder); coming
+    soon without an open pre-order means the slot shows the waitlist form and
+    nothing can be bought (OutOfStock until the release date).
+  {%- endcomment -%}
+  {%- capture is_coming_soon -%}{%- render 'coming-soon-check', product: product -%}{%- endcapture -%}
+  {%- assign is_coming_soon = is_coming_soon | strip -%}
+  {%- capture is_pre_order -%}{%- render 'pre-order-check', product: product -%}{%- endcapture -%}
+  {%- assign is_pre_order = is_pre_order | strip -%}
+  {%- assign release_date_iso = product.metafields.vcollect.date_sortie.value | date: '%Y-%m-%d' -%}
+
+  {%- comment -%}
     Custom (not Impact): Google's merchant-listing report asks for a return
     policy on every offer. The store ships only to EU countries (BE, DE, ES, FR,
     IT, PT, read from shop.shipsToCountries on the Admin API, 23/07/2026), where
@@ -119,7 +133,15 @@ or change the format of some info
         {
           "@type": "Offer",
           "name": {% if product.has_only_default_variant %}{{ product.title | json }}{% else %}{{ variant.title | json }}{% endif %},
-          "availability": {%- if variant.available -%}"https://schema.org/InStock"{%- elsif variant.incoming -%}"https://schema.org/BackOrder"{% else %}"https://schema.org/OutOfStock"{%- endif -%},
+          "availability": {%- if is_pre_order == 'true' and variant.available -%}"https://schema.org/PreOrder"{%- elsif is_coming_soon == 'true' -%}"https://schema.org/OutOfStock"{%- elsif variant.available -%}"https://schema.org/InStock"{%- elsif variant.incoming -%}"https://schema.org/BackOrder"{% else %}"https://schema.org/OutOfStock"{%- endif -%},
+          {%- comment -%}
+            availabilityStarts bounds the unreleased states above: it tells
+            Google when the PreOrder ships or when the OutOfStock ends, which is
+            what keeps a waitlisted product from reading as a dead listing.
+          {%- endcomment -%}
+          {%- if is_coming_soon == 'true' and release_date_iso != blank -%}
+            "availabilityStarts": {{ release_date_iso | json }},
+          {%- endif -%}
           {%- comment -%}
             Custom (not Impact): itemCondition is required by Google for merchant
             listings, and Impact emitted none.
@@ -227,6 +249,15 @@ or change the format of some info
     "name": {{ product.title | json }},
     "description": {{ product.description | strip_html | json }},
     "category": {{ product.type | json }},
+    {%- comment -%}
+      Custom (not Impact): the official release date, from the same
+      vcollect.date_sortie metafield that drives the coming-soon behaviour.
+      Emitted whenever the date is known, past releases included: the date of an
+      already released set is still a true and useful fact about the product.
+    {%- endcomment -%}
+    {%- if release_date_iso != blank -%}
+      "releaseDate": {{ release_date_iso | json }},
+    {%- endif -%}
     "url": "{{ shop.url }}{{ product.url }}",
     {%- comment -%}
       Impact core override: Impact emitted this sku unconditionally, so a product
@@ -392,10 +423,39 @@ If an Impact update brings this block back, delete it again: two BreadcrumbList 
     },
     {
       "@context": "https://schema.org",
-      "@type": "Organization",
+      {%- comment -%}
+        Impact core override: Impact emitted a bare Organization fed only by the
+        admin brand assets (Settings > Brand), so on this store the block carried
+        little more than a name and a url. OnlineStore is the schema.org subtype
+        of Organization for e-commerce, and alternateName is the bridge between
+        the old Pokeseller14 identity and the VCOLLECT rebranding of July 2026:
+        it is what lets Google connect the reputation of the former name to this
+        site instead of treating it as a brand-new unknown shop.
+
+        legalName, foundingDate and founder repeat what the "À propos" page
+        (pages/a-propos) publishes in its own AboutPage markup, verified against
+        the official company register on 30/07/2026: POKESELLER14 SASU, created
+        on 21/01/2023 by Valentin Lantez. If one of these facts ever changes,
+        change it on both the page and here, so the two nodes never disagree.
+      {%- endcomment -%}
+      "@type": "OnlineStore",
       "name": {{ shop.name | json }},
+      "alternateName": "Pokeseller14",
+      "legalName": "POKESELLER14",
+      "foundingDate": "2023-01-21",
+      "founder": {
+        "@type": "Person",
+        "name": "Valentin Lantez"
+      },
+      {%- comment -%}
+        Logo: the admin brand asset first, falling back to the sharing image of
+        the theme settings (logo-Vcollect.png, set since the rebranding), so the
+        key survives whichever of the two the merchant maintains.
+      {%- endcomment -%}
       {%- if shop.brand.logo -%}
         "logo": {{ shop.brand.logo | image_url: width: shop.brand.logo.width | prepend: "https:" | json }},
+      {%- elsif settings.social_sharing_image -%}
+        "logo": {{ settings.social_sharing_image | image_url: width: settings.social_sharing_image.width | prepend: "https:" | json }},
       {%- endif -%}
       {%- if shop.brand.short_description -%}
         "description": {{ shop.brand.short_description | json }},
@@ -403,13 +463,46 @@ If an Impact update brings this block back, delete it again: two BreadcrumbList 
       {%- if shop.brand.slogan -%}
         "slogan": {{ shop.brand.slogan | json }},
       {%- endif -%}
-      {%- if shop.brand.metafields.social_links.size > 0 -%}
+      {%- comment -%}
+        Custom (not Impact): sameAs is read from the theme's social settings
+        instead of the brand metafields Impact used, because the settings are
+        what the footer icons render: the markup can never claim a profile the
+        site does not link. Every social setting of the theme is scanned, so a
+        profile added later in the theme editor joins the list by itself.
+        Whatnot has no theme setting; append its URL here the day the channel
+        link is confirmed.
+      {%- endcomment -%}
+      {%- assign social_links = '' -%}
+      {%- assign social_setting_ids = 'social_facebook,social_twitter,social_threads,social_pinterest,social_instagram,social_vimeo,social_whatsapp,social_tumblr,social_youtube,social_tiktok,social_linkedin,social_snapchat,social_fancy,social_wechat,social_reddit,social_line,social_spotify,social_21buttons' | split: ',' -%}
+      {%- for setting_id in social_setting_ids -%}
+        {%- assign social_url = settings[setting_id] -%}
+        {%- if social_url != blank -%}
+          {%- assign social_links = social_links | append: social_url | append: '|' -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- assign social_links = social_links | split: '|' -%}
+      {%- if social_links.size > 0 -%}
         "sameAs": [
-          {%- for social_link in shop.brand.metafields.social_links -%}
-            {{- social_link.last.value | json -}}{%- unless forloop.last -%},{%- endunless -%}
+          {%- for social_url in social_links -%}
+            {{ social_url | json }}{%- unless forloop.last -%},{%- endunless -%}
           {%- endfor -%}
         ],
       {%- endif -%}
+      {%- comment -%}
+        Contact identity, read from the shop resource so a change in the admin
+        propagates here without a code edit. The email is the one the store
+        displays everywhere since 28/07/2026 (decision Lucas); the address is
+        the one registered in Settings > General, already published on the
+        legal pages.
+      {%- endcomment -%}
+      "email": {{ shop.email | json }},
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": {{ shop.address.address1 | json }},
+        "addressLocality": {{ shop.address.city | json }},
+        "postalCode": {{ shop.address.zip | json }},
+        "addressCountry": {{ shop.address.country_code | json }}
+      },
       "url": {{ shop.url | append: page.url | json }}
     }
   ]

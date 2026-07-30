@@ -35,6 +35,28 @@
   }
 
   {%- comment -%}
+    vcollect: optional background image behind the section (used by the "drop 30 ans" carousel on the
+    home page). The image sits on top of the background color; a scrim of that same color, with
+    adjustable opacity, keeps the heading and arrows readable over busy artwork.
+  {%- endcomment -%}
+  {%- if section.settings.background_image -%}
+    {%- assign scrim_opacity = section.settings.background_image_overlay | divided_by: 100.0 -%}
+    #shopify-section-{{ section.id }} .section {
+      background-image: linear-gradient(rgb(var(--background) / {{ scrim_opacity }}), rgb(var(--background) / {{ scrim_opacity }})), url('{{ section.settings.background_image | image_url: width: 2400 }}');
+      background-size: cover;
+      background-position: center;
+    }
+
+    {%- if section.settings.mobile_background_image -%}
+      @media screen and (max-width: 699px) {
+        #shopify-section-{{ section.id }} .section {
+          background-image: linear-gradient(rgb(var(--background) / {{ scrim_opacity }}), rgb(var(--background) / {{ scrim_opacity }})), url('{{ section.settings.mobile_background_image | image_url: width: 1000 }}');
+        }
+      }
+    {%- endif -%}
+  {%- endif -%}
+
+  {%- comment -%}
     vcollect: compact vertical rhythm on desktop so more than one product carousel is visible at once.
     Only the section's own top/bottom padding and the gap under the heading are trimmed; the product card
     itself is untouched, so nothing looks cramped. Scoped to this section id, desktop only.
@@ -213,6 +235,33 @@
       "id": "link_text",
       "label": "Link text",
       "default": "View all"
+    },
+    {
+      "type": "header",
+      "content": "Background image"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Image",
+      "info": "Shown behind the products, on top of the background color."
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_background_image",
+      "label": "Mobile image",
+      "info": "Default to the desktop image."
+    },
+    {
+      "type": "range",
+      "id": "background_image_overlay",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Image overlay opacity",
+      "info": "Darkens the image with the background color to keep text readable.",
+      "default": 0
     },
     {
       "type": "header",

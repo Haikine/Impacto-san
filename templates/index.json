@@ -167,6 +167,9 @@
         "content": "",
         "link_url": "shopify://collections/30-ans-pokemon",
         "link_text": "Voir les 25 produits",
+        "background_image": "shopify://shop_images/banner-30-ans-desktop.png",
+        "mobile_background_image": "shopify://shop_images/banner-30-ans-mobile.png",
+        "background_image_overlay": 40,
         "background": "#1a1a1a",
         "background_gradient": "",
         "text_color": "#ffffff",
@@ -488,7 +491,7 @@
             "icon": "none",
             "icon_width": 40,
             "subheading": "",
-            "title": "VCOLLECT EN VIDÉO",
+            "title": "Vcollect en vidéo",
             "content": "<p>Ouvertures, arrivages et coulisses de la boutique.</p>",
             "link_text": "Nous suivre sur TikTok",
             "link_url": "https://www.tiktok.com/@vcollect_",
@@ -518,7 +521,7 @@
           "settings": {
             "logo_width": 100,
             "author": "Julien Dumont",
-            "content": "Je n’ai jamais été déçu de mes commandes chez VCOLLECT !",
+            "content": "Je n’ai jamais été déçu de mes commandes chez Vcollect !",
             "show_rating": true,
             "rating": 5
           }
