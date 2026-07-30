@@ -1,4 +1,18 @@
-{%- if section.blocks.size > 0 -%}
+{%- liquid
+  # Impact customization (vcollect): skip the reviews section entirely when the
+  # product has no review yet, so the "no reviews" empty widget never shows.
+  # Judge.me keeps the reviews.rating_count metafield in sync, the same source
+  # the structured data relies on.
+  assign hide_empty_reviews = false
+  if request.page_type == 'product' and section.settings.enable_review_integration
+    assign product_review_count = product.metafields.reviews.rating_count.value | default: 0
+    if product_review_count == 0
+      assign hide_empty_reviews = true
+    endif
+  endif
+-%}
+
+{%- if section.blocks.size > 0 and hide_empty_reviews == false -%}
   {%- render 'section-spacing-collapsing' -%}
 
   {%- if request.page_type == 'product' and section.settings.enable_review_integration -%}
