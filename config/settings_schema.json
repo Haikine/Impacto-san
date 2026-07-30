@@ -1017,6 +1017,13 @@
         "info": "schema.org priceRange. A currency-symbol band (€, €€, €€€) or a range such as \"5 € - 400 €\"."
       },
       {
+        "type": "text",
+        "id": "entity_about_page_handle",
+        "label": "Handle of the entity page",
+        "default": "a-propos",
+        "info": "The page that describes the company. It is marked up as AboutPage and linked to the Organization, whichever template renders it. The handle is the part of the address after /pages/."
+      },
+      {
         "type": "textarea",
         "id": "entity_same_as",
         "label": "Additional profile URLs",

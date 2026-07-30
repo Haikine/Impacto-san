@@ -223,7 +223,13 @@ from the shop resource. Every key is conditioned: an empty setting emits no key 
         before this snippet existed), so the two can never compete.
       endcomment
       unless page.content contains 'AboutPage'
-        if page.template_suffix == 'a-propos'
+        comment
+          The entity page is recognised by its handle, not by its template. Tying it to the template suffix looked
+          tidier but was wrong in practice: the page kept rendering through the default page template, so it was typed
+          WebPage and lost its link to the Organization. What makes a page the entity page is which page it is, not
+          which template happens to render it.
+        endcomment
+        if page.handle == settings.entity_about_page_handle and settings.entity_about_page_handle != blank
           assign page_node_type = 'AboutPage'
         else
           assign page_node_type = 'WebPage'
