@@ -261,7 +261,8 @@
         ".image-link-blocks {align-items: stretch;}",
         ".image-link-blocks__item {height: 100%;}",
         ".image-link-blocks__inner {height: 100%; grid-template-rows: minmax(0, 1fr) auto;}",
-        ".image-link-blocks__image {width: 100%; height: 100%; min-height: 0; object-fit: contain;}"
+        ".image-link-blocks__image {width: 100%; height: 100%; min-height: 0; object-fit: contain;}",
+        ".section {background-image: var(--vc-pokemon-pattern-on-dark);}"
       ],
       "blocks": {
         "1664424046b00c932c-0": {
@@ -562,6 +563,9 @@
     },
     "impact-text": {
       "type": "impact-text",
+      "custom_css": [
+        ".section {background-image: var(--vc-pokemon-pattern-on-dark);}"
+      ],
       "blocks": {
         "item_WUxHaT": {
           "type": "item",
@@ -610,6 +614,9 @@
     },
     "faq": {
       "type": "faq",
+      "custom_css": [
+        ".section {background-image: var(--vc-pokemon-pattern-on-light);}"
+      ],
       "blocks": {
         "166442457738b23caf-0": {
           "type": "item",
