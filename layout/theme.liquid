@@ -37,6 +37,8 @@ NOTE TO DEVELOPERS: welcome to Impact theme! We hope that you will enjoy editing
     <link rel="canonical" href="{{ canonical_url }}">
 
     {%- if settings.favicon -%}
+      {%- comment -%} Impact core override: modern rel="icon" (96px = multiple of 48 required by Google Search) alongside Impact's legacy shortcut icon. {%- endcomment -%}
+      <link rel="icon" href="{{ settings.favicon | image_url: width: 96 }}" type="image/png" sizes="96x96">
       <link rel="shortcut icon" href="{{ settings.favicon | image_url: width: 96 }}">
       <link rel="apple-touch-icon" href="{{ settings.favicon | image_url: width: 180 }}">
     {%- endif -%}
