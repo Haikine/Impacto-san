@@ -466,5 +466,26 @@
     "links": {
       "powered_by_shopify": " "
     }
+  },
+  "calendar": {
+    "date_unannounced": "Non annoncée",
+    "columns": {
+      "set": "Extension",
+      "language": "Langue",
+      "release_date": "Date de sortie",
+      "products": "Produits"
+    }
+  },
+  "about": {
+    "last_updated": "Mise à jour le",
+    "published_on": "Publié le",
+    "legal": {
+      "company_name": "Raison sociale",
+      "siren": "Numéro SIREN",
+      "founded": "Société créée le",
+      "founder": "Fondateur",
+      "address": "Siège social",
+      "contact": "Contact"
+    }
   }
 }

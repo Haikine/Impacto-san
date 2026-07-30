@@ -1,0 +1,312 @@
+{%- comment -%}
+------------------------------------------------------------------------------------------------------------------------
+ABOUT / ENTITY PAGE (custom vcollect)
+
+Custom (not Impact): the canonical entity page. This is the page a generative engine reads when it is asked whether the
+shop is trustworthy, so the order of the blocks is the point of the section, not its decoration:
+
+  1. an answer-first paragraph. Two or three sentences naming the shop, what it sells, where it ships from and since
+     when. Engines extract the opening of an entity page almost verbatim, so nothing else may come before it.
+  2. the brand history, including the former name, stated openly rather than hidden.
+  3. the legal identity, read from the "Entity and SEO" theme settings so this page and the Organization JSON-LD of
+     snippets/structured-data.liquid can never state different facts.
+  4. verifiable figures, as blocks. None ship by default: an invented figure on this page discredits every other one.
+  5. the social profiles, read from the same theme settings the footer icons and the sameAs array use.
+  6. shipping and customer service.
+
+The AboutPage JSON-LD is deliberately NOT emitted here. snippets/structured-data.liquid emits it for the whole page,
+linked to the Organization node by mainEntity, which is what a single @graph makes possible. Emitting a second one here
+would put two nodes with the same @id on the page.
+
+Editorial texts are section settings holding explicit placeholders: the final copy is the client's to write.
+------------------------------------------------------------------------------------------------------------------------
+{%- endcomment -%}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    --page-max-width: {{ section.settings.content_width }};
+  }
+
+  #shopify-section-{{ section.id }} .about-lede {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-medium);
+  }
+
+  #shopify-section-{{ section.id }} .about-meta {
+    color: rgb(var(--text-color) / 0.6);
+    font-size: var(--text-sm);
+  }
+
+  #shopify-section-{{ section.id }} .about-figures {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    gap: var(--spacing-6);
+    margin-block: var(--spacing-8);
+    padding: 0;
+    list-style: none;
+  }
+
+  #shopify-section-{{ section.id }} .about-figure-value {
+    display: block;
+    font-size: var(--text-h3);
+    font-weight: var(--font-weight-bold);
+  }
+</style>
+
+<div class="container">
+  <div class="page-spacer">
+    <div class="page">
+      <h1 class="h1">{{ page.title | escape }}</h1>
+
+      {%- comment -%} Answer-first. This paragraph is what gets extracted, so it stays first and stays short. {%- endcomment -%}
+      {%- if section.settings.lede != blank -%}
+        <div class="prose about-lede">{{ section.settings.lede }}</div>
+      {%- endif -%}
+
+      <div class="about-meta">{%- render 'content-freshness' -%}</div>
+
+      {%- if section.settings.history != blank -%}
+        <h2 class="h2">{{ section.settings.history_title | escape }}</h2>
+        <div class="prose">{{ section.settings.history }}</div>
+      {%- endif -%}
+
+      {%- comment -%}
+        Legal identity. Every value comes from the theme settings, never from a section setting, so the day the
+        registered name or the SIREN changes there is exactly one field to edit.
+      {%- endcomment -%}
+      <h2 class="h2">{{ section.settings.legal_title | escape }}</h2>
+      <dl class="prose">
+        {%- if settings.entity_legal_name != blank -%}
+          <dt>{{ 'about.legal.company_name' | t }}</dt>
+          <dd>{{ settings.entity_legal_name | escape }}</dd>
+        {%- endif -%}
+        {%- if settings.entity_siren != blank -%}
+          <dt>{{ 'about.legal.siren' | t }}</dt>
+          <dd>{{ settings.entity_siren | escape }}</dd>
+        {%- endif -%}
+        {%- if settings.entity_founding_date != blank -%}
+          <dt>{{ 'about.legal.founded' | t }}</dt>
+          <dd>
+            <time datetime="{{ settings.entity_founding_date }}">{{ settings.entity_founding_date | date: '%d/%m/%Y' }}</time>
+          </dd>
+        {%- endif -%}
+        {%- if settings.entity_founder != blank -%}
+          <dt>{{ 'about.legal.founder' | t }}</dt>
+          <dd>{{ settings.entity_founder | escape }}</dd>
+        {%- endif -%}
+        {%- if shop.address.address1 != blank -%}
+          <dt>{{ 'about.legal.address' | t }}</dt>
+          <dd>
+            {{ shop.address.address1 | escape }},
+            {{ shop.address.zip | escape }} {{ shop.address.city | escape }},
+            {%- comment -%}
+              address.country is a country object, not a string (verified against
+              shopify.dev/docs/api/liquid/objects/address, 30/07/2026), so its name is read explicitly rather than
+              relying on the object's own string rendering.
+            {%- endcomment -%}
+            {{ shop.address.country.name | default: shop.address.country_code | escape }}
+          </dd>
+        {%- endif -%}
+        {%- if shop.email != blank -%}
+          <dt>{{ 'about.legal.contact' | t }}</dt>
+          <dd><a href="mailto:{{ shop.email }}">{{ shop.email }}</a></dd>
+        {%- endif -%}
+      </dl>
+
+      {%- comment -%}
+        Verifiable figures. Blocks rather than a rich text field so each one is a discrete, quotable statement, and so an
+        unfilled figure is simply an absent block rather than an empty sentence.
+      {%- endcomment -%}
+      {%- if section.blocks.size > 0 -%}
+        <h2 class="h2">{{ section.settings.figures_title | escape }}</h2>
+        <ul class="about-figures">
+          {%- for block in section.blocks -%}
+            <li {{ block.shopify_attributes }}>
+              <span class="about-figure-value">{{ block.settings.value | escape }}</span>
+              <span>{{ block.settings.label | escape }}</span>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- comment -%}
+        Social profiles, read from the theme settings so this list, the footer icons and the sameAs array of the
+        Organization node are always the same set of profiles.
+      {%- endcomment -%}
+      {%- liquid
+        assign social_profiles = ''
+        assign social_setting_ids = 'social_facebook,social_instagram,social_tiktok,social_youtube,social_twitter,social_threads,social_pinterest,social_linkedin' | split: ','
+
+        for setting_id in social_setting_ids
+          assign social_url = settings[setting_id]
+          if social_url != blank
+            assign social_label = setting_id | remove_first: 'social_' | capitalize
+            assign social_profiles = social_profiles | append: social_label | append: '::' | append: social_url | append: '|'
+          endif
+        endfor
+
+        assign social_profiles = social_profiles | split: '|'
+      -%}
+
+      {%- if social_profiles.size > 0 -%}
+        <h2 class="h2">{{ section.settings.social_title | escape }}</h2>
+        <ul class="prose">
+          {%- for social_profile in social_profiles -%}
+            {%- assign profile_parts = social_profile | split: '::' -%}
+            <li>
+              <a href="{{ profile_parts[1] }}" rel="me noopener" target="_blank">{{ profile_parts[0] }}</a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if section.settings.service != blank -%}
+        <h2 class="h2">{{ section.settings.service_title | escape }}</h2>
+        <div class="prose">{{ section.settings.service }}</div>
+      {%- endif -%}
+
+      {%- comment -%}
+        The page body stays renderable underneath, so the copy already written in the admin is not lost the day this
+        template is assigned to the page.
+      {%- endcomment -%}
+      {%- if page.content != empty and section.settings.show_page_content -%}
+        <div class="prose">{{ page.content }}</div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "About page",
+  "class": "shopify-section--main-about",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Custom (not Impact). Entity page. The legal identity, the founding date and the social profiles are NOT edited here: they come from Theme settings > Entity and SEO and from Settings > General, so this page and the structured data always agree."
+    },
+    {
+      "type": "select",
+      "id": "content_width",
+      "label": "Content width",
+      "options": [
+        { "value": "60ch", "label": "Small" },
+        { "value": "80ch", "label": "Medium" },
+        { "value": "100ch", "label": "Large" }
+      ],
+      "default": "80ch"
+    },
+    {
+      "type": "header",
+      "content": "Answer-first paragraph"
+    },
+    {
+      "type": "richtext",
+      "id": "lede",
+      "label": "Opening paragraph",
+      "info": "Two to three sentences, no more. Name the shop, what it sells, where it ships from and since when. This is the block search engines and AI assistants extract, so it must answer \"what is this shop\" on its own, without the rest of the page.",
+      "default": "<p>[À REMPLIR : deux à trois phrases. Nom de la boutique, ce qu'elle vend, d'où elle expédie, depuis quand. Exemple de structure, à réécrire avec les faits validés : « X est une boutique en ligne spécialisée dans ... basée à ... et expédiant depuis ... depuis ... ».]</p>"
+    },
+    {
+      "type": "header",
+      "content": "Brand history"
+    },
+    {
+      "type": "text",
+      "id": "history_title",
+      "label": "Heading",
+      "default": "Notre histoire"
+    },
+    {
+      "type": "richtext",
+      "id": "history",
+      "label": "Text",
+      "info": "State the former name openly. A name change that is explained reads as a rebranding; a name change that is hidden reads as a shop covering its tracks.",
+      "default": "<p>[À REMPLIR : historique de la marque. Mentionner explicitement l'ancien nom et la date du changement de nom, puis ce qui n'a pas changé (même équipe, mêmes fournisseurs, mêmes clients).]</p>"
+    },
+    {
+      "type": "header",
+      "content": "Legal information"
+    },
+    {
+      "type": "text",
+      "id": "legal_title",
+      "label": "Heading",
+      "default": "Informations légales"
+    },
+    {
+      "type": "header",
+      "content": "Verifiable figures"
+    },
+    {
+      "type": "text",
+      "id": "figures_title",
+      "label": "Heading",
+      "default": "En chiffres"
+    },
+    {
+      "type": "header",
+      "content": "Social profiles"
+    },
+    {
+      "type": "text",
+      "id": "social_title",
+      "label": "Heading",
+      "default": "Nous suivre"
+    },
+    {
+      "type": "header",
+      "content": "Shipping and customer service"
+    },
+    {
+      "type": "text",
+      "id": "service_title",
+      "label": "Heading",
+      "default": "Expédition et service client"
+    },
+    {
+      "type": "richtext",
+      "id": "service",
+      "label": "Text",
+      "info": "Must not contradict the shipping and refund policies. Copy the delays and the conditions from them rather than restating them from memory.",
+      "default": "<p>[À REMPLIR : délai de préparation, transporteurs, zones livrées, délai de réponse du service client, conditions de retour. Reprendre les valeurs exactes des pages Politique d'expédition et Politique de remboursement.]</p>"
+    },
+    {
+      "type": "header",
+      "content": "Page body"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_page_content",
+      "label": "Also show the page body below",
+      "default": false,
+      "info": "Leave off once the copy above replaces the text written in the admin. Turn on temporarily to avoid losing the existing body when this template is first assigned."
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Figure",
+      "type": "figure",
+      "settings": [
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Figure",
+          "info": "Only a figure you can prove. No estimate, no rounding up."
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "About page"
+    }
+  ]
+}
+{% endschema %}

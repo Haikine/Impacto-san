@@ -1,0 +1,273 @@
+{%- comment -%}
+------------------------------------------------------------------------------------------------------------------------
+STRUCTURED DATA (custom vcollect)
+
+Custom (not Impact): the site-wide entity graph. Rendered once from layout/theme.liquid, on every page.
+
+Why this snippet exists next to 'microdata-schema':
+  - 'microdata-schema' describes the *resource* of the page (Product, ItemList, BlogPosting). It stays the owner of
+    that markup, comments and verified values included.
+  - this snippet describes the *publisher* (Organization) and the *site* (WebSite), plus the page-level wrapper for
+    collections and pages. Those nodes used to live inside 'microdata-schema' but were emitted on the homepage only,
+    so every other URL of the store told search engines nothing about who publishes it.
+
+Everything is emitted as a single @graph with stable @id values, so the nodes reference each other instead of repeating
+themselves. That is what makes the store read as one entity rather than one anonymous page per URL.
+
+No value is hardcoded here. Editorial facts come from the "Entity and SEO" theme settings, contact and postal identity
+from the shop resource. Every key is conditioned: an empty setting emits no key rather than an empty string.
+------------------------------------------------------------------------------------------------------------------------
+{%- endcomment -%}
+
+{%- liquid
+  assign organization_id = shop.url | append: '#organization'
+  assign website_id = shop.url | append: '#website'
+  assign webpage_id = canonical_url | append: '#webpage'
+
+  comment
+    The logo is the admin brand asset first (Settings > Brand), falling back to the theme's sharing image so the key
+    survives whichever of the two the merchant maintains. `image` prefers the 1200 x 630 sharing image, which is the
+    landscape visual meant to be shown next to a citation.
+  endcomment
+  assign entity_logo = shop.brand.logo | default: settings.social_sharing_image
+  assign entity_image = settings.social_sharing_image | default: shop.brand.logo
+  assign entity_description = shop.brand.short_description | default: shop.description
+-%}
+
+{%- comment -%}
+  sameAs is read from the theme's own social settings, because those are exactly what the footer icons render: the
+  markup can never claim a profile the site does not link. Every social setting is scanned, so a profile added later in
+  the theme editor joins the list by itself. The "Additional profile URLs" setting covers the channels the theme has no
+  field for (Whatnot and friends).
+{%- endcomment -%}
+{%- liquid
+  assign same_as = ''
+  assign social_setting_ids = 'social_facebook,social_twitter,social_threads,social_pinterest,social_instagram,social_vimeo,social_whatsapp,social_tumblr,social_youtube,social_tiktok,social_linkedin,social_snapchat,social_fancy,social_wechat,social_reddit,social_line,social_spotify,social_21buttons' | split: ','
+
+  for setting_id in social_setting_ids
+    assign social_url = settings[setting_id]
+    if social_url != blank
+      assign same_as = same_as | append: social_url | append: '|'
+    endif
+  endfor
+
+  if settings.entity_same_as != blank
+    assign extra_profiles = settings.entity_same_as | strip | newline_to_br | split: '<br />'
+    for extra_profile in extra_profiles
+      assign extra_profile = extra_profile | strip
+      if extra_profile != blank
+        assign same_as = same_as | append: extra_profile | append: '|'
+      endif
+    endfor
+  endif
+
+  assign same_as = same_as | split: '|'
+-%}
+
+{%- comment -%} Node 1: the publisher. Every other node points back at this @id. {%- endcomment -%}
+{%- capture organization_node -%}
+  {
+    "@type": "OnlineStore",
+    "@id": {{ organization_id | json }},
+    "name": {{ shop.name | json }},
+    {%- if settings.entity_alternate_name != blank -%}
+      "alternateName": {{ settings.entity_alternate_name | json }},
+    {%- endif -%}
+    {%- if settings.entity_legal_name != blank -%}
+      "legalName": {{ settings.entity_legal_name | json }},
+    {%- endif -%}
+    {%- if settings.entity_founding_date != blank -%}
+      "foundingDate": {{ settings.entity_founding_date | json }},
+    {%- endif -%}
+    {%- if settings.entity_siren != blank -%}
+      "identifier": {
+        "@type": "PropertyValue",
+        "name": "SIREN",
+        "value": {{ settings.entity_siren | json }}
+      },
+    {%- endif -%}
+    {%- if settings.entity_founder != blank -%}
+      "founder": {
+        "@type": "Person",
+        "name": {{ settings.entity_founder | json }}
+      },
+    {%- endif -%}
+    {%- if entity_logo != blank -%}
+      "logo": {{ entity_logo | image_url: width: entity_logo.width | prepend: 'https:' | json }},
+    {%- endif -%}
+    {%- if entity_image != blank -%}
+      "image": {{ entity_image | image_url: width: entity_image.width | prepend: 'https:' | json }},
+    {%- endif -%}
+    {%- if entity_description != blank -%}
+      "description": {{ entity_description | strip_html | strip | json }},
+    {%- endif -%}
+    {%- if shop.brand.slogan != blank -%}
+      "slogan": {{ shop.brand.slogan | json }},
+    {%- endif -%}
+    {%- if settings.entity_price_range != blank -%}
+      "priceRange": {{ settings.entity_price_range | json }},
+    {%- endif -%}
+    {%- if shop.email != blank -%}
+      "email": {{ shop.email | json }},
+    {%- endif -%}
+    {%- if shop.address.address1 != blank or shop.address.city != blank -%}
+      "address": {
+        "@type": "PostalAddress",
+        {%- if shop.address.address1 != blank -%}
+          "streetAddress": {{ shop.address.address1 | json }},
+        {%- endif -%}
+        {%- if shop.address.city != blank -%}
+          "addressLocality": {{ shop.address.city | json }},
+        {%- endif -%}
+        {%- if shop.address.province != blank -%}
+          "addressRegion": {{ shop.address.province | json }},
+        {%- endif -%}
+        {%- if shop.address.zip != blank -%}
+          "postalCode": {{ shop.address.zip | json }},
+        {%- endif -%}
+        {%- comment -%}
+          Deliberately the last key and the only unconditional one, so the object always closes without a trailing
+          comma whichever of the optional keys above are present. It is safe to make it unconditional: a Shopify store
+          always has a country in Settings > General, it is required to create the store.
+
+          country_code is the ISO 3166-1 alpha-2 form schema.org expects, verified against
+          shopify.dev/docs/api/liquid/objects/address on 30/07/2026.
+        {%- endcomment -%}
+        "addressCountry": {{ shop.address.country_code | json }}
+      },
+    {%- endif -%}
+    {%- if same_as.size > 0 -%}
+      "sameAs": [
+        {%- for profile_url in same_as -%}
+          {{ profile_url | json }}{%- unless forloop.last -%},{%- endunless -%}
+        {%- endfor -%}
+      ],
+    {%- endif -%}
+    "url": {{ shop.url | json }}
+  }
+{%- endcapture -%}
+
+{%- comment -%}
+  Node 2: the site, with the search action that powers a sitelinks search box.
+
+  The search target is built with `assign` rather than inline in the output tag below. That is not a style choice: the
+  template contains a literal `{search_term_string}` placeholder, and Liquid's parser fails on the braces when they sit
+  inside an output tag ("Liquid syntax error: Variable is not terminated", raised by Shopify on push). Assigning first
+  keeps the braces out of the expression being parsed.
+{%- endcomment -%}
+{%- liquid
+  assign search_target = request.origin | append: routes.search_url | append: '?q={search_term_string}'
+-%}
+{%- capture website_node -%}
+  {
+    "@type": "WebSite",
+    "@id": {{ website_id | json }},
+    "name": {{ shop.name | json }},
+    "url": {{ shop.url | json }},
+    "inLanguage": {{ request.locale.iso_code | json }},
+    "publisher": { "@id": {{ organization_id | json }} },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": {{ search_target | json }}
+      },
+      "query-input": "required name=search_term_string"
+    }
+  }
+{%- endcapture -%}
+
+{%- comment -%}
+  Node 3: the page wrapper, for the page types no other snippet describes.
+
+  Products and articles are deliberately excluded: 'microdata-schema' already emits a Product and a BlogPosting for
+  them, and wrapping those in a second page-level node adds nothing while risking a conflicting statement.
+
+  On pages, Shopify's Liquid `page` object exposes `published_at` but no `updated_at` (verified against
+  shopify.dev/docs/api/liquid/objects/page, 30/07/2026), so dateModified has to come from a metafield. Freshness is a
+  selection criterion for generative engines, so an absent date is better than a frozen one: the key is only emitted
+  when the metafield really holds a value.
+{%- endcomment -%}
+{%- liquid
+  assign page_node_type = ''
+
+  case request.page_type
+    when 'collection'
+      if collection != blank
+        assign page_node_type = 'CollectionPage'
+        assign page_node_name = collection.title
+        assign page_node_description = collection.description | strip_html | strip
+      endif
+    when 'page'
+      comment
+        The "À propos" page is the entity page: it gets AboutPage and is linked to the Organization by mainEntity.
+        Skipped when the page body already carries its own AboutPage block (the version published in the page content
+        before this snippet existed), so the two can never compete.
+      endcomment
+      unless page.content contains 'AboutPage'
+        if page.template_suffix == 'a-propos'
+          assign page_node_type = 'AboutPage'
+        else
+          assign page_node_type = 'WebPage'
+        endif
+        assign page_node_name = page.title
+        assign page_node_description = page.content | strip_html | truncatewords: 40
+      endunless
+      assign page_date_published = page.published_at
+      assign page_date_modified = page.metafields.vcollect.date_maj.value
+  endcase
+-%}
+
+{%- capture page_node -%}
+  {%- if page_node_type != blank -%}
+    {
+      "@type": {{ page_node_type | json }},
+      "@id": {{ webpage_id | json }},
+      "url": {{ canonical_url | json }},
+      "name": {{ page_node_name | json }},
+      {%- if page_node_description != blank -%}
+        "description": {{ page_node_description | json }},
+      {%- endif -%}
+      {%- if page_date_published != blank -%}
+        "datePublished": {{ page_date_published | date: '%Y-%m-%d' | json }},
+      {%- endif -%}
+      {%- if page_date_modified != blank -%}
+        "dateModified": {{ page_date_modified | date: '%Y-%m-%d' | json }},
+      {%- endif -%}
+      {%- if page_node_type == 'AboutPage' -%}
+        "mainEntity": { "@id": {{ organization_id | json }} },
+      {%- endif -%}
+      "inLanguage": {{ request.locale.iso_code | json }},
+      "isPartOf": { "@id": {{ website_id | json }} },
+      "publisher": { "@id": {{ organization_id | json }} }
+    }
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- comment -%}
+  Assembled through a delimited list so the separating commas are driven by forloop rather than written by hand: a node
+  that turns out empty drops out without leaving an orphan comma behind.
+{%- endcomment -%}
+{%- liquid
+  assign graph_nodes = ''
+  assign graph_nodes = graph_nodes | append: organization_node | append: '@@node@@'
+  assign graph_nodes = graph_nodes | append: website_node | append: '@@node@@'
+
+  assign trimmed_page_node = page_node | strip
+  if trimmed_page_node != blank
+    assign graph_nodes = graph_nodes | append: trimmed_page_node | append: '@@node@@'
+  endif
+
+  assign graph_nodes = graph_nodes | split: '@@node@@'
+-%}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {%- for graph_node in graph_nodes -%}
+      {{ graph_node }}{%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  ]
+}
+</script>

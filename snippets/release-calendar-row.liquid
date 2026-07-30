@@ -1,0 +1,35 @@
+{%- comment -%}
+------------------------------------------------------------------------------------------------------------------------
+RELEASE CALENDAR ROW (custom vcollect)
+
+One row of the release calendar. Extracted into a snippet because sections/release-calendar.liquid renders its rows from
+two separate ordered lists (dated first, then undated), and a duplicated row template is a duplicated bug.
+
+  block - the section block of type "release"
+
+The set name is a <th scope="row">: it is what identifies the row, and a machine reading the table needs to know that.
+The release date carries data-sort-value in ISO form so the visible French date can still sort chronologically, and a
+<time datetime> so the date is machine-readable in the served HTML rather than only in the JSON-LD.
+------------------------------------------------------------------------------------------------------------------------
+{%- endcomment -%}
+
+<tr {{ block.shopify_attributes }}>
+  <th scope="row">{{ block.settings.set_name | escape }}</th>
+  <td>{{ block.settings.language | escape }}</td>
+  <td data-sort-value="{{ block.settings.release_date }}">
+    {%- if block.settings.release_date != blank -%}
+      <time datetime="{{ block.settings.release_date }}">{{ block.settings.release_date | date: '%d/%m/%Y' }}</time>
+    {%- else -%}
+      {{- 'calendar.date_unannounced' | t -}}
+    {%- endif -%}
+  </td>
+  <td>
+    {%- if block.settings.products != blank -%}
+      <ul class="citable-table__links">
+        {%- for product in block.settings.products -%}
+          <li><a href="{{ product.url }}">{{ product.title | escape }}</a></li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </td>
+</tr>

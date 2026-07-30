@@ -36,11 +36,26 @@ NOTE TO DEVELOPERS: welcome to Impact theme! We hope that you will enjoy editing
 
     <link rel="canonical" href="{{ canonical_url }}">
 
-    {%- if settings.favicon -%}
-      {%- comment -%} Impact core override: modern rel="icon" (96px = multiple of 48 required by Google Search) alongside Impact's legacy shortcut icon. {%- endcomment -%}
-      <link rel="icon" href="{{ settings.favicon | image_url: width: 96 }}" type="image/png" sizes="96x96">
-      <link rel="shortcut icon" href="{{ settings.favicon | image_url: width: 96 }}">
-      <link rel="apple-touch-icon" href="{{ settings.favicon | image_url: width: 180 }}">
+    {%- comment -%}
+      Impact core override: favicon and touch icons, resolved from theme settings.
+
+      Google's requirements, read on developers.google.com/search/docs/appearance/favicon-in-search on 30/07/2026: the
+      icon must be square, at least 8x8px, and larger than 48x48px is recommended. rel="icon", rel="shortcut icon" and
+      rel="apple-touch-icon" are all accepted, so the single rel="shortcut icon" Impact shipped was already a valid
+      declaration. There is NO "multiple of 48" rule: an earlier version of this comment claimed there was.
+
+      rel="icon" is added because it is the form defined by the HTML standard, which browsers and every other consumer
+      read first: relying on the historical alias alone works for Google and works less well everywhere else. Both 48
+      and 96 are emitted so the browser tab and the search result each get an exact-size file rather than a downscale,
+      and height is passed alongside width so a non-square source is cropped square rather than declared square while
+      being served oblong.
+    {%- endcomment -%}
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" sizes="48x48" href="{{ settings.favicon | image_url: width: 48, height: 48 }}">
+      <link rel="icon" type="image/png" sizes="96x96" href="{{ settings.favicon | image_url: width: 96, height: 96 }}">
+      <link rel="apple-touch-icon" sizes="180x180" href="{{ settings.favicon | image_url: width: 180, height: 180 }}">
+      {%- comment -%} Kept for the older browsers that only look at this one. {%- endcomment -%}
+      <link rel="shortcut icon" href="{{ settings.favicon | image_url: width: 96, height: 96 }}">
     {%- endif -%}
 
     {%- comment -%}Few prefetch to increase performance on commonly used third-parties{%- endcomment -%}
@@ -58,6 +73,12 @@ NOTE TO DEVELOPERS: welcome to Impact theme! We hope that you will enjoy editing
 
     {%- render 'social-meta-tags' -%}
     {%- render 'microdata-schema' -%}
+    {%- comment -%}
+      Custom (not Impact): the site-wide entity graph (Organization + WebSite, plus the page-level node for collections
+      and pages). Rendered on every page, unlike the resource markup of 'microdata-schema'. See that snippet's tail for
+      why the two are separate.
+    {%- endcomment -%}
+    {%- render 'structured-data' -%}
     {%- render 'css-variables' -%}
     {%- render 'js-variables' -%}
 
@@ -136,16 +157,26 @@ NOTE TO DEVELOPERS: welcome to Impact theme! We hope that you will enjoy editing
     {%- if request.path contains '/policies/' -%}
       <script>
         (() => {
-          /* Skip SCRIPT/STYLE nodes: app configs (Judge.me and friends) embed JSON there */
-          /* The contact address stays pokeseller14@gmail.com (decision of 28/07/2026):
-             tokenise it so the brand replaces below cannot mangle it, then restore it */
+          /**
+           * Rewrite the legacy brand out of a string, while preserving the contact address.
+           * The address deliberately stays pokeseller14@gmail.com (decision of 28/07/2026, reconfirmed on 30/07/2026:
+           * the contact@vcollect.fr mailbox does not receive mail yet). Because it contains the brand name, it is
+           * tokenised before the brand replaces run and restored after, otherwise it would become VCOLLECT@gmail.com.
+           * @param {string} value - Raw text or href, as authored in the policy source
+           * @returns {string} The same text under the current brand, contact address untouched
+           */
           const rebrand = (value) =>
             value
               .replace(/pokeseller\s*14\s*@gmail\.com/gi, '@@contact-email@@')
-              .replace(/pokeseller\s*14/gi, 'Vcollect')
-              .replace(/pokeseller/gi, 'Vcollect')
+              .replace(/pokeseller\s*14/gi, 'VCOLLECT')
+              .replace(/pokeseller/gi, 'VCOLLECT')
               .replace(/@@contact-email@@/g, 'pokeseller14@gmail.com');
 
+          /**
+           * Walk the rendered policy body and rebrand every text node and every link that still names the old shop.
+           * SCRIPT/STYLE/NOSCRIPT are skipped: app configs (Judge.me and friends) embed JSON there.
+           * @returns {void}
+           */
           const clean = () => {
             const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
               acceptNode: (node) =>

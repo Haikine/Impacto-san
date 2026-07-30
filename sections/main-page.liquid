@@ -11,8 +11,16 @@
 
       {%- if page.content != empty -%}
         <div class="prose">
-          {%- comment -%} Impact core override: legacy brand cleanup at render time. Page bodies still mention Pokeseller14 and are not editable until admin rights are granted. The contact address stays pokeseller14@gmail.com on purpose (decision of 28/07/2026), so it is tokenised before the brand replaces then restored. Remove these filters once the page contents are fixed in admin. {%- endcomment -%}
-          {{ page.content | replace: 'Pokeseller14@gmail.com', '@@contact-email@@' | replace: 'pokeseller14@gmail.com', '@@contact-email@@' | replace: 'Pokeseller14', 'Vcollect' | replace: 'pokeseller14', 'Vcollect' | replace: '@@contact-email@@', 'pokeseller14@gmail.com' }}
+          {%- comment -%}
+            Impact core override: legacy brand cleanup at render time. Some page bodies still name Pokeseller14, and
+            fixing them at the source means editing every page in the admin.
+
+            The contact address deliberately stays pokeseller14@gmail.com (decision of 28/07/2026, reconfirmed on
+            30/07/2026): the contact@vcollect.fr mailbox does not receive mail yet. Since the address contains the brand
+            name, it is tokenised before the brand replaces run and restored afterwards, otherwise it would be rewritten
+            to VCOLLECT@gmail.com. Remove these filters once the page contents are fixed in admin.
+          {%- endcomment -%}
+          {{ page.content | replace: 'Pokeseller14@gmail.com', '@@contact-email@@' | replace: 'pokeseller14@gmail.com', '@@contact-email@@' | replace: 'Pokeseller14', 'VCOLLECT' | replace: 'pokeseller14', 'VCOLLECT' | replace: '@@contact-email@@', 'pokeseller14@gmail.com' }}
         </div>
       {%- endif -%}
     </div>

@@ -1,0 +1,129 @@
+{%- comment -%}
+------------------------------------------------------------------------------------------------------------------------
+GLOSSARY (custom vcollect)
+
+Custom (not Impact): a glossary as a definition list, with one anchor per term.
+
+Three things make a glossary citable rather than merely readable:
+  - <dl>/<dt>/<dd>, so the pairing of a term with its definition is structural instead of visual;
+  - an id on every term, so a search result or an assistant can link to the exact definition rather than the page;
+  - a DefinedTermSet in JSON-LD, which is the schema.org type for precisely this content, and which lets each term be
+    referenced by its own URL.
+
+Terms are emitted in the order of the blocks: the merchant controls it, alphabetically or by theme.
+------------------------------------------------------------------------------------------------------------------------
+{%- endcomment -%}
+
+<div class="container">
+  <div class="page-spacer">
+    <div class="page">
+      <h1 class="h1">{{ page.title | escape }}</h1>
+
+      {%- render 'content-freshness' -%}
+
+      {%- if section.settings.lede != blank -%}
+        <div class="prose citable-lede">{{ section.settings.lede }}</div>
+      {%- endif -%}
+
+      {%- if section.blocks.size > 0 -%}
+        <dl class="citable-glossary prose">
+          {%- for block in section.blocks -%}
+            {%- assign term_anchor = block.settings.term | handleize -%}
+            <dt id="{{ term_anchor }}" {{ block.shopify_attributes }}>{{ block.settings.term | escape }}</dt>
+            <dd>{{ block.settings.definition }}</dd>
+          {%- endfor -%}
+        </dl>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{%- comment -%}
+  DefinedTermSet. Only terms that actually carry both a name and a definition are emitted: a term with an empty
+  definition is noise in the markup and tells an engine nothing.
+{%- endcomment -%}
+{%- liquid
+  assign defined_terms = ''
+  for block in section.blocks
+    if block.settings.term != blank and block.settings.definition != blank
+      assign defined_terms = defined_terms | append: forloop.index0 | append: '|'
+    endif
+  endfor
+  assign defined_terms = defined_terms | split: '|'
+-%}
+
+{%- if defined_terms.size > 0 -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "DefinedTermSet",
+    "@id": {{ canonical_url | append: '#glossary' | json }},
+    "name": {{ page.title | json }},
+    "url": {{ canonical_url | json }},
+    "inLanguage": {{ request.locale.iso_code | json }},
+    "hasDefinedTerm": [
+      {%- comment -%}
+        `| plus: 0` converts the split result back to a number: an array lookup in Liquid needs one, and
+        section.blocks["3"] would resolve to nil.
+      {%- endcomment -%}
+      {%- for term_index in defined_terms -%}
+        {%- assign block_index = term_index | plus: 0 -%}
+        {%- assign block = section.blocks[block_index] -%}
+        {%- assign term_anchor = block.settings.term | handleize -%}
+        {
+          "@type": "DefinedTerm",
+          "name": {{ block.settings.term | json }},
+          "description": {{ block.settings.definition | strip_html | strip | json }},
+          "url": {{ canonical_url | append: '#' | append: term_anchor | json }},
+          "inDefinedTermSet": { "@id": {{ canonical_url | append: '#glossary' | json }} }
+        }{%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    ]
+  }
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Glossary",
+  "class": "shopify-section--glossary",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Custom (not Impact). One block per term. Each term gets its own anchor, built from the term itself: renaming a term therefore changes its anchor and breaks links pointing at it."
+    },
+    {
+      "type": "richtext",
+      "id": "lede",
+      "label": "Opening paragraph",
+      "info": "Two to three sentences saying what this glossary covers and who it is for. This is the block an AI assistant extracts.",
+      "default": "<p>[À REMPLIR : deux à trois phrases. Ce que couvre ce lexique et à qui il s'adresse.]</p>"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Term",
+      "type": "term",
+      "settings": [
+        {
+          "type": "text",
+          "id": "term",
+          "label": "Term"
+        },
+        {
+          "type": "richtext",
+          "id": "definition",
+          "label": "Definition",
+          "info": "Open with the definition itself, in one sentence, before any nuance or example. A definition that starts with context is a definition an engine cannot quote."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Glossary"
+    }
+  ]
+}
+{% endschema %}

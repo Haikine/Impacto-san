@@ -1,0 +1,195 @@
+{%- comment -%}
+------------------------------------------------------------------------------------------------------------------------
+COMPARISON TABLE (custom vcollect)
+
+Custom (not Impact): a reusable comparison table. Built for the "display japonais / chinois / français" comparison, but
+the columns are settings rather than hardcoded, so the same section serves any other comparison without a code change.
+
+Rows are criteria, columns are the things compared. That orientation is deliberate: it is the one that stays readable
+when a machine flattens the table into "criterion: value for A, value for B", and it survives a fourth column being
+added without the layout collapsing.
+
+An empty column label removes the column entirely, header and cells, so an unused fourth column leaves no empty
+<th>/<td> pair behind for an engine to misread.
+------------------------------------------------------------------------------------------------------------------------
+{%- endcomment -%}
+
+<script type="module" src="{{ 'custom-sortable-table.js' | asset_url }}"></script>
+
+{%- liquid
+  comment
+    The active columns are resolved once, as a list of "index::label" entries, and both the header row and every body row
+    iterate over that same list. That is what keeps the number of <td> in a row equal to the number of <th> in the
+    header: a table where the two disagree is invalid and unreadable to a machine, however it looks on screen.
+  endcomment
+  assign active_columns = ''
+  assign column_labels = section.settings.column_1_label | append: '@@' | append: section.settings.column_2_label | append: '@@' | append: section.settings.column_3_label | append: '@@' | append: section.settings.column_4_label | split: '@@'
+
+  for column_label in column_labels
+    assign column_label = column_label | strip
+    if column_label != blank
+      assign active_columns = active_columns | append: forloop.index | append: '::' | append: column_label | append: '|'
+    endif
+  endfor
+
+  assign active_columns = active_columns | split: '|'
+-%}
+
+<div class="container">
+  <div class="page-spacer">
+    <div class="page">
+      <h1 class="h1">{{ page.title | escape }}</h1>
+
+      {%- render 'content-freshness' -%}
+
+      {%- if section.settings.lede != blank -%}
+        <div class="prose citable-lede">{{ section.settings.lede }}</div>
+      {%- endif -%}
+
+      {%- if section.blocks.size > 0 and active_columns.size > 0 -%}
+        {%- comment -%} tabindex makes the horizontal scroll of a wide table reachable without a pointer {%- endcomment -%}
+        <sortable-table class="citable-table-wrapper" tabindex="0">
+          <table class="citable-table">
+            <caption>{{ section.settings.table_caption | escape }}</caption>
+            <thead>
+              <tr>
+                <th scope="col" data-sort-type="text">{{ section.settings.criterion_label | escape }}</th>
+                {%- for column in active_columns -%}
+                  {%- assign column_parts = column | split: '::' -%}
+                  <th scope="col">{{ column_parts[1] | escape }}</th>
+                {%- endfor -%}
+              </tr>
+            </thead>
+            <tbody>
+              {%- for block in section.blocks -%}
+                <tr {{ block.shopify_attributes }}>
+                  <th scope="row">{{ block.settings.criterion | escape }}</th>
+                  {%- for column in active_columns -%}
+                    {%- assign column_parts = column | split: '::' -%}
+                    {%- assign value_key = 'value_' | append: column_parts[0] -%}
+                    <td>{{ block.settings[value_key] | escape }}</td>
+                  {%- endfor -%}
+                </tr>
+              {%- endfor -%}
+            </tbody>
+          </table>
+        </sortable-table>
+      {%- endif -%}
+
+      {%- if section.settings.conclusion != blank -%}
+        <div class="prose">{{ section.settings.conclusion }}</div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Comparison table",
+  "class": "shopify-section--comparison-table",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Custom (not Impact). Columns are the things compared, blocks are the criteria. Leave a column label empty to remove that column completely."
+    },
+    {
+      "type": "richtext",
+      "id": "lede",
+      "label": "Opening paragraph",
+      "info": "Two to three sentences giving the answer before the table: which option suits whom, and on what criterion. This is the block an AI assistant extracts, and a comparison table without a stated conclusion gets quoted without one.",
+      "default": "<p>[À REMPLIR : deux à trois phrases. Donner la réponse d'abord : quel choix pour quel profil d'acheteur, et sur quel critère principal.]</p>"
+    },
+    {
+      "type": "text",
+      "id": "table_caption",
+      "label": "Table caption",
+      "info": "Read by screen readers and used by search engines to label the table. Say what is being compared.",
+      "default": "[À REMPLIR : ex. Comparaison des displays japonais, chinois et français]"
+    },
+    {
+      "type": "text",
+      "id": "criterion_label",
+      "label": "Label of the first column",
+      "default": "Critère"
+    },
+    {
+      "type": "header",
+      "content": "Columns"
+    },
+    {
+      "type": "text",
+      "id": "column_1_label",
+      "label": "Column 1",
+      "default": "Japonais"
+    },
+    {
+      "type": "text",
+      "id": "column_2_label",
+      "label": "Column 2",
+      "default": "Chinois"
+    },
+    {
+      "type": "text",
+      "id": "column_3_label",
+      "label": "Column 3",
+      "default": "Français"
+    },
+    {
+      "type": "text",
+      "id": "column_4_label",
+      "label": "Column 4",
+      "info": "Leave empty if you are comparing three options only."
+    },
+    {
+      "type": "header",
+      "content": "Conclusion"
+    },
+    {
+      "type": "richtext",
+      "id": "conclusion",
+      "label": "Text below the table",
+      "info": "The recommendation, and what it depends on. Do not restate the table."
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Criterion",
+      "type": "criterion",
+      "settings": [
+        {
+          "type": "text",
+          "id": "criterion",
+          "label": "Criterion",
+          "info": "One measurable thing per row (price per pack, number of cards, availability in France). A row mixing two criteria cannot be quoted."
+        },
+        {
+          "type": "text",
+          "id": "value_1",
+          "label": "Value for column 1"
+        },
+        {
+          "type": "text",
+          "id": "value_2",
+          "label": "Value for column 2"
+        },
+        {
+          "type": "text",
+          "id": "value_3",
+          "label": "Value for column 3"
+        },
+        {
+          "type": "text",
+          "id": "value_4",
+          "label": "Value for column 4"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Comparison table"
+    }
+  ]
+}
+{% endschema %}

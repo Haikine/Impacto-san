@@ -782,3 +782,116 @@
   background-size: 240px;
 }
 
+
+
+/* ==========================================================================
+   Citable content: entity page, release calendar, glossary, comparison tables
+   ==========================================================================
+   Styling for the data-first templates (sections/release-calendar.liquid,
+   sections/glossary.liquid, sections/comparison-table.liquid,
+   sections/main-about.liquid). Deliberately plain: these pages exist to be
+   read and quoted, and a table that is easy for a machine to parse is a table
+   that is legible rather than decorated.
+
+   Kept here rather than in each section's <style> block because the four
+   sections share it, and a triplicated rule is a triplicated bug. */
+
+.citable-lede {
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-medium);
+  margin-block-end: var(--spacing-6);
+}
+
+.content-freshness {
+  color: rgb(var(--text-color) / 0.6);
+  font-size: var(--text-sm);
+  margin-block-end: var(--spacing-4);
+}
+
+/* A wide table must scroll inside its own box: letting it widen the page
+   breaks the layout on a phone and hides the rightmost columns entirely. The
+   element carries tabindex="0" in the markup so this scrolling region can be
+   reached and scrolled with the keyboard. */
+.citable-table-wrapper {
+  display: block;
+  overflow-x: auto;
+  margin-block: var(--spacing-6);
+}
+
+.citable-table {
+  border-collapse: collapse;
+  inline-size: 100%;
+  min-inline-size: 30rem;
+  text-align: start;
+}
+
+.citable-table caption {
+  caption-side: top;
+  font-weight: var(--font-weight-bold);
+  margin-block-end: var(--spacing-3);
+  text-align: start;
+}
+
+.citable-table th,
+.citable-table td {
+  border-block-end: 1px solid rgb(var(--border-color));
+  padding: var(--spacing-3) var(--spacing-4);
+  text-align: start;
+  vertical-align: top;
+}
+
+.citable-table thead th {
+  font-weight: var(--font-weight-bold);
+  white-space: nowrap;
+}
+
+/* The sort control is a real button, so it arrives with the browser's button
+   styling: strip it back to the header text it replaced. */
+.sortable-table__button {
+  appearance: none;
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+  text-align: start;
+}
+
+.sortable-table__button::after {
+  /* Neutral glyph until the column becomes the sorted one */
+  content: " \2195";
+  display: inline-block;
+  margin-inline-start: 0.4em;
+  opacity: 0.4;
+}
+
+.citable-table th[aria-sort="ascending"] .sortable-table__button::after {
+  content: " \2191";
+  opacity: 1;
+}
+
+.citable-table th[aria-sort="descending"] .sortable-table__button::after {
+  content: " \2193";
+  opacity: 1;
+}
+
+.citable-table__links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* A definition list only reads as term/definition pairs if the pairs are
+   visually separated. Without this the <dt> and its <dd> run together and the
+   page stops being scannable, which is the whole point of a glossary. */
+.citable-glossary dt {
+  font-weight: var(--font-weight-bold);
+  margin-block-start: var(--spacing-5);
+  /* Anchored terms: keep the heading clear of a sticky header when linked to */
+  scroll-margin-block-start: var(--spacing-16);
+}
+
+.citable-glossary dd {
+  margin-inline-start: 0;
+}

@@ -1,0 +1,170 @@
+{%- comment -%}
+------------------------------------------------------------------------------------------------------------------------
+RELEASE CALENDAR (custom vcollect)
+
+Custom (not Impact): a release calendar as a real data table.
+
+Generative engines extract tables close to verbatim, so the value of this section is the markup, not the styling:
+<caption> naming the table, <thead> separated from <tbody>, and a scope on every header cell. That is what lets a machine
+tell which value belongs to which column without guessing from the layout.
+
+The rows are emitted in chronological order server-side, so the order a crawler reads is the useful one even though it
+never runs the sorting script. assets/custom-sortable-table.js only lets a human reorder what is already there.
+
+Editorial content lives entirely in the blocks: nothing about a release is hardcoded here.
+------------------------------------------------------------------------------------------------------------------------
+{%- endcomment -%}
+
+<script type="module" src="{{ 'custom-sortable-table.js' | asset_url }}"></script>
+
+{%- liquid
+  comment
+    Chronological default order. Liquid's `sort` filter cannot sort blocks on a nested settings path, so each block is
+    reduced to a "date::index" entry and the list of entries is sorted instead. ISO dates sort lexicographically in
+    exactly the same order as chronologically, which is the whole reason the setting is stored as YYYY-MM-DD.
+
+    A block with no date sorts first as an empty string, so those are rendered after the dated ones on purpose: an
+    undated row at the top would read as the next release.
+  endcomment
+  assign dated_rows = ''
+  assign undated_rows = ''
+
+  for block in section.blocks
+    if block.settings.release_date != blank
+      assign dated_rows = dated_rows | append: block.settings.release_date | append: '::' | append: forloop.index0 | append: '|'
+    else
+      assign undated_rows = undated_rows | append: forloop.index0 | append: '|'
+    endif
+  endfor
+
+  assign dated_rows = dated_rows | split: '|' | sort
+  assign undated_rows = undated_rows | split: '|'
+-%}
+
+<div class="container">
+  <div class="page-spacer">
+    <div class="page">
+      <h1 class="h1">{{ page.title | escape }}</h1>
+
+      {%- render 'content-freshness' -%}
+
+      {%- if section.settings.lede != blank -%}
+        <div class="prose citable-lede">{{ section.settings.lede }}</div>
+      {%- endif -%}
+
+      {%- if section.blocks.size > 0 -%}
+        {%- comment -%} tabindex makes the horizontal scroll of a wide table reachable without a pointer {%- endcomment -%}
+        <sortable-table class="citable-table-wrapper" tabindex="0">
+          <table class="citable-table">
+            <caption>{{ section.settings.table_caption | escape }}</caption>
+            <thead>
+              <tr>
+                <th scope="col" data-sort-type="text">{{ 'calendar.columns.set' | t }}</th>
+                <th scope="col" data-sort-type="text">{{ 'calendar.columns.language' | t }}</th>
+                <th scope="col" data-sort-type="date">{{ 'calendar.columns.release_date' | t }}</th>
+                <th scope="col">{{ 'calendar.columns.products' | t }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {%- comment -%}
+                `| plus: 0` is not cosmetic: splitting a string yields strings, and an array lookup in Liquid needs a
+                number. Without the conversion section.blocks["3"] resolves to nil and the row renders empty.
+              {%- endcomment -%}
+              {%- for entry in dated_rows -%}
+                {%- assign entry_parts = entry | split: '::' -%}
+                {%- assign block_index = entry_parts[1] | plus: 0 -%}
+                {%- render 'release-calendar-row', block: section.blocks[block_index] -%}
+              {%- endfor -%}
+              {%- for entry in undated_rows -%}
+                {%- assign block_index = entry | plus: 0 -%}
+                {%- render 'release-calendar-row', block: section.blocks[block_index] -%}
+              {%- endfor -%}
+            </tbody>
+          </table>
+        </sortable-table>
+      {%- endif -%}
+
+      {%- if section.settings.notes != blank -%}
+        <div class="prose">{{ section.settings.notes }}</div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Release calendar",
+  "class": "shopify-section--release-calendar",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Custom (not Impact). One block per release. Rows are ordered by release date automatically: the order of the blocks in this list does not matter. The last-review date shown on the page comes from the page's \"Date de mise à jour\" field, not from a setting here."
+    },
+    {
+      "type": "richtext",
+      "id": "lede",
+      "label": "Opening paragraph",
+      "info": "Two to three sentences answering directly what this calendar covers and how often it is updated. This is the block an AI assistant extracts.",
+      "default": "<p>[À REMPLIR : deux à trois phrases. Ce que couvre ce calendrier (langues, types de produits), la source des dates, et à quelle fréquence la page est revue.]</p>"
+    },
+    {
+      "type": "text",
+      "id": "table_caption",
+      "label": "Table caption",
+      "info": "Read by screen readers and used by search engines to label the table. Say what the table lists, not \"tableau\".",
+      "default": "[À REMPLIR : ex. Dates de sortie officielles des extensions, par langue]"
+    },
+    {
+      "type": "richtext",
+      "id": "notes",
+      "label": "Notes below the table",
+      "info": "Where the dates come from, and what happens when an official date moves."
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Release",
+      "type": "release",
+      "settings": [
+        {
+          "type": "text",
+          "id": "set_name",
+          "label": "Set name",
+          "info": "The official name of the extension, exactly as the publisher writes it."
+        },
+        {
+          "type": "select",
+          "id": "language",
+          "label": "Language",
+          "options": [
+            { "value": "Japonais", "label": "Japonais" },
+            { "value": "Chinois", "label": "Chinois" },
+            { "value": "Français", "label": "Français" },
+            { "value": "Anglais", "label": "Anglais" },
+            { "value": "Coréen", "label": "Coréen" }
+          ],
+          "default": "Japonais"
+        },
+        {
+          "type": "text",
+          "id": "release_date",
+          "label": "Release date",
+          "info": "ISO format YYYY-MM-DD. Only an officially announced date: leave empty rather than writing an estimate, the row will then be listed after the confirmed ones."
+        },
+        {
+          "type": "product_list",
+          "id": "products",
+          "label": "Products for this release",
+          "limit": 4
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Release calendar"
+    }
+  ]
+}
+{% endschema %}

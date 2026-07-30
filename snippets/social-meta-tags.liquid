@@ -49,11 +49,38 @@ Validate your Pinterest rich pins
   endunless
 -%}
 
-{%- if og_image -%}
-  <meta property="og:image" content="https:{{ og_image | image_url: width: 2048 }}">
-  <meta property="og:image:secure_url" content="https:{{ og_image | image_url: width: 2048 }}">
-  <meta property="og:image:width" content="{{ og_image.width }}">
-  <meta property="og:image:height" content="{{ og_image.height }}">
+{%- comment -%}
+  Custom (not Impact): the served size and the declared size are computed from the same two variables, so they can never
+  drift apart. Impact declared the source dimensions while requesting a 2048px render: correct only as long as the
+  source happens to be narrower than 2048, wrong the moment it is not.
+
+  1200px is the width Open Graph consumers expect for a large card. Shopify's image_url never upscales, so a narrower
+  source is requested at its own width instead, and the height follows the real aspect ratio rather than a guess.
+{%- endcomment -%}
+{%- if og_image != blank -%}
+  {%- liquid
+    assign og_width = 1200
+    if og_image.width > 0 and og_image.width < og_width
+      assign og_width = og_image.width
+    endif
+
+    if og_image.aspect_ratio > 0
+      assign og_height = og_width | divided_by: og_image.aspect_ratio | round
+    endif
+
+    assign og_image_url = og_image | image_url: width: og_width | prepend: 'https:'
+  -%}
+  <meta property="og:image" content="{{ og_image_url }}">
+  <meta property="og:image:secure_url" content="{{ og_image_url }}">
+  <meta property="og:image:width" content="{{ og_width }}">
+  {%- if og_height -%}
+    <meta property="og:image:height" content="{{ og_height }}">
+  {%- endif -%}
+  {%- comment -%}
+    An empty alt is worse than no alt: it tells assistive technology the image is decorative. Fall back to the page
+    title, then to the shop name, so the card always says what it shows.
+  {%- endcomment -%}
+  <meta property="og:image:alt" content="{{ og_image.alt | default: page_title | default: shop.name | escape }}">
 {%- endif -%}
 
 {%- if page_description -%}
@@ -90,11 +117,12 @@ More information:
   <meta name="twitter:description" content="{{ page_description | default: page_title | escape }}">
 {%- endif -%}
 
-{%- if og_image -%}
+{%- if og_image != blank -%}
   {%- comment -%}
-    No square crop: summary_large_image expects roughly 2:1, and cropping a
-    1200 x 630 sharing image to a square would truncate it to 630 x 630.
+    No square crop: summary_large_image expects roughly 2:1, and cropping a 1200 x 630 sharing image to a square would
+    truncate it to 630 x 630. Reuses the URL and the alt computed for Open Graph above, so the two cards can never show
+    a different image or describe it differently.
   {%- endcomment -%}
-  <meta name="twitter:image" content="https:{{ og_image | image_url: width: 1200 }}">
-  <meta name="twitter:image:alt" content="{{ og_image.alt | escape }}">
+  <meta name="twitter:image" content="{{ og_image_url }}">
+  <meta name="twitter:image:alt" content="{{ og_image.alt | default: page_title | default: shop.name | escape }}">
 {%- endif -%}

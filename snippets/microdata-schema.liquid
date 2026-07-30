@@ -405,106 +405,14 @@ If an Impact update brings this block back, delete it again: two BreadcrumbList 
 {% endif %}
 
 
-{%- if request.page_type == 'index' -%}
-  {%- assign potential_action_target = request.origin | append: routes.search_url | append: "?q={search_term_string}" -%}
+{%- comment -%}
+Impact core override: the WebSite and Organization nodes that used to be built here, on the homepage only, were moved to
+snippets/structured-data.liquid, which layout/theme.liquid renders on every page. Two reasons:
 
-  <script type="application/ld+json">
-  [
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": {{ shop.name | json }},
-      "url": {{ shop.url | append: page.url | json }},
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": {{ potential_action_target | json }},
-        "query-input": "required name=search_term_string"
-      }
-    },
-    {
-      "@context": "https://schema.org",
-      {%- comment -%}
-        Impact core override: Impact emitted a bare Organization fed only by the
-        admin brand assets (Settings > Brand), so on this store the block carried
-        little more than a name and a url. OnlineStore is the schema.org subtype
-        of Organization for e-commerce, and alternateName is the bridge between
-        the old Pokeseller14 identity and the VCOLLECT rebranding of July 2026:
-        it is what lets Google connect the reputation of the former name to this
-        site instead of treating it as a brand-new unknown shop.
+  - emitted on 'index' alone, they left every product, collection and page URL with no publisher at all, which is
+    exactly the information a generative engine needs to attribute a citation to the shop;
+  - the editorial facts (former name, registered name, founding date, founder, price range, extra profiles) were
+    hardcoded in Liquid. They are now theme settings, under "Entity and SEO".
 
-        legalName, foundingDate and founder repeat what the "À propos" page
-        (pages/a-propos) publishes in its own AboutPage markup, verified against
-        the official company register on 30/07/2026: POKESELLER14 SASU, created
-        on 21/01/2023 by Valentin Lantez. If one of these facts ever changes,
-        change it on both the page and here, so the two nodes never disagree.
-      {%- endcomment -%}
-      "@type": "OnlineStore",
-      "name": {{ shop.name | json }},
-      "alternateName": "Pokeseller14",
-      "legalName": "POKESELLER14",
-      "foundingDate": "2023-01-21",
-      "founder": {
-        "@type": "Person",
-        "name": "Valentin Lantez"
-      },
-      {%- comment -%}
-        Logo: the admin brand asset first, falling back to the sharing image of
-        the theme settings (logo-Vcollect.png, set since the rebranding), so the
-        key survives whichever of the two the merchant maintains.
-      {%- endcomment -%}
-      {%- if shop.brand.logo -%}
-        "logo": {{ shop.brand.logo | image_url: width: shop.brand.logo.width | prepend: "https:" | json }},
-      {%- elsif settings.social_sharing_image -%}
-        "logo": {{ settings.social_sharing_image | image_url: width: settings.social_sharing_image.width | prepend: "https:" | json }},
-      {%- endif -%}
-      {%- if shop.brand.short_description -%}
-        "description": {{ shop.brand.short_description | json }},
-      {%- endif -%}
-      {%- if shop.brand.slogan -%}
-        "slogan": {{ shop.brand.slogan | json }},
-      {%- endif -%}
-      {%- comment -%}
-        Custom (not Impact): sameAs is read from the theme's social settings
-        instead of the brand metafields Impact used, because the settings are
-        what the footer icons render: the markup can never claim a profile the
-        site does not link. Every social setting of the theme is scanned, so a
-        profile added later in the theme editor joins the list by itself.
-        Whatnot has no theme setting; append its URL here the day the channel
-        link is confirmed.
-      {%- endcomment -%}
-      {%- assign social_links = '' -%}
-      {%- assign social_setting_ids = 'social_facebook,social_twitter,social_threads,social_pinterest,social_instagram,social_vimeo,social_whatsapp,social_tumblr,social_youtube,social_tiktok,social_linkedin,social_snapchat,social_fancy,social_wechat,social_reddit,social_line,social_spotify,social_21buttons' | split: ',' -%}
-      {%- for setting_id in social_setting_ids -%}
-        {%- assign social_url = settings[setting_id] -%}
-        {%- if social_url != blank -%}
-          {%- assign social_links = social_links | append: social_url | append: '|' -%}
-        {%- endif -%}
-      {%- endfor -%}
-      {%- assign social_links = social_links | split: '|' -%}
-      {%- if social_links.size > 0 -%}
-        "sameAs": [
-          {%- for social_url in social_links -%}
-            {{ social_url | json }}{%- unless forloop.last -%},{%- endunless -%}
-          {%- endfor -%}
-        ],
-      {%- endif -%}
-      {%- comment -%}
-        Contact identity, read from the shop resource so a change in the admin
-        propagates here without a code edit. The email is the one the store
-        displays everywhere since 28/07/2026 (decision Lucas); the address is
-        the one registered in Settings > General, already published on the
-        legal pages.
-      {%- endcomment -%}
-      "email": {{ shop.email | json }},
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": {{ shop.address.address1 | json }},
-        "addressLocality": {{ shop.address.city | json }},
-        "postalCode": {{ shop.address.zip | json }},
-        "addressCountry": {{ shop.address.country_code | json }}
-      },
-      "url": {{ shop.url | append: page.url | json }}
-    }
-  ]
-  </script>
-{%- endif -%}
+If an Impact update brings this block back, delete it again: two Organization nodes on the same page compete.
+{%- endcomment -%}

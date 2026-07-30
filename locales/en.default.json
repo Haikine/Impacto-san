@@ -461,5 +461,26 @@
         "other": "It has received {{ count }} reviews."
       }
     }
+  },
+  "calendar": {
+    "date_unannounced": "Not announced",
+    "columns": {
+      "set": "Set",
+      "language": "Language",
+      "release_date": "Release date",
+      "products": "Products"
+    }
+  },
+  "about": {
+    "last_updated": "Last updated on",
+    "published_on": "Published on",
+    "legal": {
+      "company_name": "Registered company name",
+      "siren": "Company registration number (SIREN)",
+      "founded": "Company created on",
+      "founder": "Founder",
+      "address": "Registered address",
+      "contact": "Contact"
+    }
   }
 }

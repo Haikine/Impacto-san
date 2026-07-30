@@ -1,0 +1,35 @@
+{%- comment -%}
+------------------------------------------------------------------------------------------------------------------------
+CONTENT FRESHNESS (custom vcollect)
+
+Renders the visible publication / last-review line of an editorial page, and nothing else.
+
+Why it exists: freshness is a selection criterion for generative engines, and the date they read has to be the same one
+a human reads on the page. This snippet is the single renderer of that line, so the entity page, the release calendar,
+the glossary and the comparison tables can never format or source it differently.
+
+Source of the date: Shopify's Liquid `page` object exposes `published_at` but no `updated_at` (verified against
+shopify.dev/docs/api/liquid/objects/page, 30/07/2026), so the review date is stored in the `vcollect.date_maj`
+metafield. snippets/structured-data.liquid reads that same metafield for the dateModified of the WebPage node: one
+source, no drift between the markup and the page.
+
+When the metafield is empty, the publication date is shown and no "updated on" claim is made. A date that quietly stops
+moving is worse than no date at all.
+------------------------------------------------------------------------------------------------------------------------
+{%- endcomment -%}
+
+{%- liquid
+  assign date_modified = page.metafields.vcollect.date_maj.value
+-%}
+
+{%- if date_modified != blank -%}
+  <p class="content-freshness">
+    {{ 'about.last_updated' | t }}
+    <time datetime="{{ date_modified | date: '%Y-%m-%d' }}">{{ date_modified | date: '%d/%m/%Y' }}</time>
+  </p>
+{%- elsif page.published_at != blank -%}
+  <p class="content-freshness">
+    {{ 'about.published_on' | t }}
+    <time datetime="{{ page.published_at | date: '%Y-%m-%d' }}">{{ page.published_at | date: '%d/%m/%Y' }}</time>
+  </p>
+{%- endif -%}

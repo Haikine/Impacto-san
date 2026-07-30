@@ -942,5 +942,65 @@
         "info": "Custom (not Impact): used as the og:image / Twitter card image on pages without their own featured image (homepage, cart, generic pages). Prevents the shared preview from falling back to the shop-level social image. 1200 x 630px recommended."
       }
     ]
+  },
+  {
+    "name": "Entity and SEO",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Structured data identity"
+      },
+      {
+        "type": "paragraph",
+        "content": "Custom (not Impact). These values feed the Organization node emitted by snippets/structured-data.liquid on every page. They are the facts search engines and generative engines use to recognise the shop as one single, citable entity. Leave a field empty and the corresponding key is simply not emitted: never fill one with a guess."
+      },
+      {
+        "type": "text",
+        "id": "entity_alternate_name",
+        "label": "Former or alternate name",
+        "default": "Pokeseller14",
+        "info": "The bridge between the old identity and the current one. This is what lets an engine connect the former name's reputation to this site instead of treating it as an unknown new shop."
+      },
+      {
+        "type": "text",
+        "id": "entity_legal_name",
+        "label": "Registered company name",
+        "default": "POKESELLER14",
+        "info": "Exactly as filed at the company register. Must match the \"À propos\" page."
+      },
+      {
+        "type": "text",
+        "id": "entity_siren",
+        "label": "Company registration number (SIREN)",
+        "default": "948316401",
+        "info": "Verified at the company register on 30/07/2026. Emitted as a schema.org identifier and displayed on the \"À propos\" page, from this single field, so the two can never disagree."
+      },
+      {
+        "type": "text",
+        "id": "entity_founder",
+        "label": "Founder",
+        "default": "Valentin Lantez"
+      },
+      {
+        "type": "text",
+        "id": "entity_founding_date",
+        "label": "Founding date",
+        "default": "2023-01-21",
+        "info": "ISO format YYYY-MM-DD. Verified at the company register on 30/07/2026."
+      },
+      {
+        "type": "text",
+        "id": "entity_price_range",
+        "label": "Price range",
+        "default": "€€",
+        "info": "schema.org priceRange. A currency-symbol band (€, €€, €€€) or a range such as \"5 € - 400 €\"."
+      },
+      {
+        "type": "textarea",
+        "id": "entity_same_as",
+        "label": "Additional profile URLs",
+        "info": "One URL per line. The Facebook, Instagram, TikTok and other profiles already filled in the Social media settings are added automatically: only list here the profiles the theme has no setting for, such as Whatnot. Never list a profile that does not exist."
+      }
+    ]
   }
 ]
