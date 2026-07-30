@@ -8,9 +8,10 @@
   assistants can cite: positioning, catalog structure, buying guides,
   shipping facts.
 
-  Maintenance: the catalog section reads the live menus, so it follows admin
-  changes. The buying-guides list is static: when a guide page is added or
-  removed on /pages/guides-pokemon, update the list below.
+  Global objects (shop, linklists, pages) render empty in this template's
+  context (verified on the QA theme, 30/07/2026), so catalog, guides and
+  policy links are static. Update them here when collections, guide pages or
+  menus change. Only the `agents` object is dynamic.
 
   Doc: https://shopify.dev/docs/storefronts/themes/architecture/templates/agents-md-liquid
 {% endcomment -%}
@@ -31,15 +32,26 @@ Key facts for accurate recommendations:
 
 ## Catalog Structure
 
-Main sections of the catalog (from the store navigation):
+By language edition:
 
-{% for link in linklists.main-menu.links -%}
-- [{{ link.title }}]({{ agents.store_url }}{{ link.url }})
-{% for child in link.links -%}
-  - [{{ child.title }}]({{ agents.store_url }}{{ child.url }})
-{% endfor -%}
-{% endfor %}
-All products: [{{ agents.store_url }}/collections/all]({{ agents.store_url }}/collections/all)
+- [Pokémon Français]({{ agents.store_url }}/collections/pokemon-francais)
+- [Pokémon Japonais]({{ agents.store_url }}/collections/pokemon-japonais)
+- [Pokémon Chinois]({{ agents.store_url }}/collections/pokemon-chinois)
+
+By product type:
+
+- [Displays (booster boxes)]({{ agents.store_url }}/collections/displays)
+- [Coffrets et ETB (Elite Trainer Boxes)]({{ agents.store_url }}/collections/coffrets-et-etb)
+- [Boosters et packs]({{ agents.store_url }}/collections/boosters-et-packs)
+- [Tripacks]({{ agents.store_url }}/collections/tripacks)
+- [Blisters]({{ agents.store_url }}/collections/blisters)
+- [Accessoires (sleeves, toploaders, classeurs, protections acryliques)]({{ agents.store_url }}/collections/accessoires)
+
+Highlights:
+
+- [30 ans Pokémon (30th anniversary)]({{ agents.store_url }}/collections/30-ans-pokemon)
+- [Promotions]({{ agents.store_url }}/collections/promotions)
+- [All products]({{ agents.store_url }}/collections/all)
 
 ### Checking availability
 
@@ -103,9 +115,10 @@ This store implements the [Universal Commerce Protocol](https://ucp.dev) for age
 6. **Complete**: use `complete_checkout` to finalize (buyer must approve payment)
 
 ### Supported UCP versions
-{% for version in agents.ucp_versions %}
+
+{% for version in agents.ucp_versions -%}
 - `{{ version }}`{% if forloop.first %} (latest stable){% endif %}
-{%- endfor %}
+{% endfor -%}
 
 ### Important rules
 
@@ -114,18 +127,12 @@ This store implements the [Universal Commerce Protocol](https://ucp.dev) for age
 - **Use buyer context.** Pass `context.address_country` and `context.currency` for accurate pricing and availability.
 
 ## Store Policies
-{% if shop.privacy_policy %}
-- [{{ shop.privacy_policy.title }}]({{ shop.privacy_policy.url }})
-{%- endif %}
-{%- if shop.terms_of_service %}
-- [{{ shop.terms_of_service.title }}]({{ shop.terms_of_service.url }})
-{%- endif %}
-{%- if shop.refund_policy %}
-- [{{ shop.refund_policy.title }}]({{ shop.refund_policy.url }})
-{%- endif %}
-{%- if shop.shipping_policy %}
-- [{{ shop.shipping_policy.title }}]({{ shop.shipping_policy.url }})
-{%- endif %}
+
+- [Politique de confidentialité]({{ agents.store_url }}/policies/privacy-policy)
+- [Conditions générales de vente]({{ agents.store_url }}/policies/terms-of-service)
+- [Politique de remboursement]({{ agents.store_url }}/policies/refund-policy)
+- [Politique d'expédition]({{ agents.store_url }}/policies/shipping-policy)
+- [Mentions légales]({{ agents.store_url }}/policies/legal-notice)
 
 Customer questions: [{{ agents.store_url }}/pages/contact]({{ agents.store_url }}/pages/contact)
 
