@@ -1,0 +1,30 @@
+{%- comment -%}
+  Custom robots.txt.
+
+  Renders Shopify's default rule groups untouched (they are updated regularly
+  by Shopify, so they must not be replaced by plain text), then appends one
+  rule to the catch-all group.
+
+  Why the extra rule: Shopify exposes an Atom feed for every collection and
+  blog (/collections/<handle>.atom). Google crawled several of them and filed
+  them under "Crawled - currently not indexed" in Search Console, which is the
+  expected outcome for a feed but spends crawl budget that the product pages
+  still need on this young domain.
+
+  Reference: https://shopify.dev/docs/storefronts/themes/seo/robots-txt
+{%- endcomment -%}
+{% for group in robots.default_groups %}
+  {{- group.user_agent }}
+
+  {% for rule in group.rules %}
+    {{- rule }}
+  {% endfor -%}
+
+  {%- if group.user_agent.value == '*' -%}
+    {{ 'Disallow: /*.atom' }}
+  {%- endif -%}
+
+  {%- if group.sitemap != blank -%}
+    {{ group.sitemap }}
+  {%- endif -%}
+{% endfor %}
