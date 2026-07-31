@@ -15,16 +15,17 @@
             Impact core override: legacy brand cleanup at render time. Some page bodies still name Pokeseller14, and
             fixing them at the source means editing every page in the admin.
 
-            The brand is written "Vcollect", which is the graphie decided for the whole theme and the value of
-            shop.name. Do not switch it to all caps: the markup would then disagree with shop.name, which is what
-            prevents a search engine from consolidating a single entity.
+            The brand is written "VCOLLECT" (decision of 30/07/2026). Keep it in sync with Settings > General: as long
+            as the store name there reads "Vcollect", shop.name and therefore og:site_name, Organization.name and the
+            article publisher will disagree with this text. That disagreement is what stops a search engine from
+            consolidating a single entity, so the rename is not cosmetic.
 
             The contact address deliberately stays pokeseller14@gmail.com (decision of 28/07/2026, reconfirmed on
             30/07/2026): the contact@vcollect.fr mailbox does not receive mail yet. Since the address contains the brand
             name, it is tokenised before the brand replaces run and restored afterwards, otherwise it would be rewritten
-            to Vcollect@gmail.com. Remove these filters once the page contents are fixed in admin.
+            to VCOLLECT@gmail.com. Remove these filters once the page contents are fixed in admin.
           {%- endcomment -%}
-          {{ page.content | replace: 'Pokeseller14@gmail.com', '@@contact-email@@' | replace: 'pokeseller14@gmail.com', '@@contact-email@@' | replace: 'Pokeseller14', 'Vcollect' | replace: 'pokeseller14', 'Vcollect' | replace: '@@contact-email@@', 'pokeseller14@gmail.com' }}
+          {{ page.content | replace: 'Pokeseller14@gmail.com', '@@contact-email@@' | replace: 'pokeseller14@gmail.com', '@@contact-email@@' | replace: 'Pokeseller14', 'VCOLLECT' | replace: 'pokeseller14', 'VCOLLECT' | replace: '@@contact-email@@', 'pokeseller14@gmail.com' }}
         </div>
       {%- endif -%}
     </div>
