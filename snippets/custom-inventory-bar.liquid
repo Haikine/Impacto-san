@@ -39,15 +39,23 @@ Supported variables
 
     {%- assign quantity = variant.inventory_quantity -%}
 
+    {%- comment -%}
+      The high state intentionally shows neither the exact quantity nor the gauge: above the low threshold the
+      remaining count is competitive information, and a partially filled green bar would contradict the plain
+      "in stock" message. The gauge only appears once scarcity becomes a sales argument.
+    {%- endcomment -%}
     {%- if quantity > low_threshold -%}
       {%- assign state_color = block.settings.high_color -%}
       {%- assign state_text = block.settings.high_text -%}
+      {%- assign show_track = false -%}
     {%- elsif quantity > critical_threshold -%}
       {%- assign state_color = block.settings.low_color -%}
       {%- assign state_text = block.settings.low_text -%}
+      {%- assign show_track = true -%}
     {%- else -%}
       {%- assign state_color = block.settings.critical_color -%}
       {%- assign state_text = block.settings.critical_text -%}
+      {%- assign show_track = true -%}
     {%- endif -%}
 
     {%- assign fill_percent = quantity | times: 100 | divided_by: max_quantity | at_most: 100 | at_least: 1 -%}
@@ -62,9 +70,11 @@ Supported variables
         {{- state_text | replace: '%IC%', quantity -}}
       </span>
 
-      <div class="custom-inventory-bar__track">
-        <div class="custom-inventory-bar__fill" style="width: {{ fill_percent }}%;"></div>
-      </div>
+      {%- if show_track -%}
+        <div class="custom-inventory-bar__track">
+          <div class="custom-inventory-bar__fill" style="width: {{ fill_percent }}%;"></div>
+        </div>
+      {%- endif -%}
     </div>
   {%- endfor -%}
 </variant-inventory>
