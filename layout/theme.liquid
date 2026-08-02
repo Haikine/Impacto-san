@@ -28,7 +28,24 @@ NOTE TO DEVELOPERS: welcome to Impact theme! We hope that you will enjoy editing
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="{{ settings.header_background }}">
 
-    <title>{% if page_title == blank %}{{ shop.name }}{% else %}{{ page_title }}{% if current_page != 1 %} &ndash; {{ 'general.page' | t: page: current_page }}{% endif %}{% endif %}</title>
+    {%- comment -%}
+      Custom vcollect: give the homepage a title that contains what people search for.
+
+      Shopify falls back to the shop name when the homepage title field in Online Store > Preferences is left empty,
+      which shipped a <title> of exactly "VCOLLECT". No product word, no category word, so the homepage could not
+      compete on anything but the brand itself, and Search Console confirmed it: every non-brand query landed
+      elsewhere on the site.
+
+      The override only applies while that admin field is still empty. Fill it in the admin and it wins again, so
+      nobody has to come back and edit this file to change the wording.
+    {%- endcomment -%}
+    {%- assign seo_title = page_title -%}
+
+    {%- if request.page_type == 'index' and page_title == shop.name -%}
+      {%- assign seo_title = 'VCOLLECT - Boutique Pokémon : displays, boosters et coffrets' -%}
+    {%- endif -%}
+
+    <title>{% if seo_title == blank %}{{ shop.name }}{% else %}{{ seo_title }}{% if current_page != 1 %} &ndash; {{ 'general.page' | t: page: current_page }}{% endif %}{% endif %}</title>
 
     {%- if page_description -%}
       <meta name="description" content="{{ page_description | escape }}">
