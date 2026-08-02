@@ -12,45 +12,13 @@
     "banniere_drops": {
       "type": "banner-30-ans",
       "blocks": {
-        "banner_promo_accessoires": {
-          "type": "banner",
-          "settings": {
-            "image": "",
-            "mobile_image": "",
-            "product_image": "shopify://shop_images/logo-Vcollect.png",
-            "product_image_size": 70,
-            "visible_from": "",
-            "show_countdown": false,
-            "target_date": "2026-08-08",
-            "hide_when_expired": true,
-            "expired_message": "",
-            "subheading": "DU 1ER AU 7 AOÛT",
-            "title": "-10% SUR TOUT LE SITE",
-            "heading_tag": "h0",
-            "content": "<p>Utilisez le code <strong>VCOLLECT10</strong> au panier. Il se cumule avec le booster offert dès 80 € d'achat.</p>",
-            "button_text": "Découvrir la boutique",
-            "button_url": "/collections/all",
-            "mobile_text_position": "place-self-center text-center",
-            "desktop_text_position": "sm:place-self-center-start sm:text-start",
-            "background": "#1a1a1a",
-            "background_gradient": "linear-gradient(140deg, rgba(26, 26, 26, 1), rgba(0, 58, 112, 1) 100%)",
-            "text_color": "#ffffff",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "countdown_background": "#ffffff",
-            "countdown_opacity": 15,
-            "countdown_text_color": "#5a8de2",
-            "button_background": "#002d78",
-            "button_text_color": "#ffffff"
-          }
-        },
         "banner_m6": {
           "type": "banner",
           "settings": {
             "image": "shopify://shop_images/banner-M6-desktop.png",
             "mobile_image": "shopify://shop_images/banner-M6-mobile.png",
-            "product_image": "",
             "product_image_size": 76,
+            "visible_from": "",
             "show_countdown": true,
             "target_date": "2026-07-31",
             "hide_when_expired": false,
@@ -79,12 +47,13 @@
           "type": "banner",
           "settings": {
             "image": "shopify://shop_images/bandeau-csv10c-desktop.webp",
-            "mobile_image": "",
             "product_image": "shopify://shop_images/display-csv10c-detoure.webp",
             "product_image_size": 76,
+            "visible_from": "",
             "show_countdown": false,
             "target_date": "",
             "hide_when_expired": false,
+            "expired_message": "Disponible dès maintenant",
             "subheading": "DÉJÀ DISPONIBLE",
             "title": "CHASING GLORY CSV10C",
             "heading_tag": "h0",
@@ -110,6 +79,8 @@
           "settings": {
             "image": "shopify://shop_images/banner-30-ans-desktop.png",
             "mobile_image": "shopify://shop_images/banner-30-ans-mobile.png",
+            "product_image_size": 76,
+            "visible_from": "",
             "show_countdown": true,
             "target_date": "2026-09-16",
             "hide_when_expired": false,
@@ -133,6 +104,36 @@
             "button_background": "#002d78",
             "button_text_color": "#ffffff"
           }
+        },
+        "banner_promo_accessoires": {
+          "type": "banner",
+          "settings": {
+            "product_image": "shopify://shop_images/logo-Vcollect.png",
+            "product_image_size": 70,
+            "visible_from": "",
+            "show_countdown": false,
+            "target_date": "2026-08-08",
+            "hide_when_expired": true,
+            "expired_message": "",
+            "subheading": "DU 1ER AU 7 AOÛT",
+            "title": "-10% SUR TOUT LE SITE",
+            "heading_tag": "h0",
+            "content": "<p>Utilisez le code <strong>VCOLLECT10</strong> au panier. Il se cumule avec le booster offert dès 80 € d'achat.</p>",
+            "button_text": "Découvrir la boutique",
+            "button_url": "/collections/all",
+            "mobile_text_position": "place-self-center text-center",
+            "desktop_text_position": "sm:place-self-center-start sm:text-start",
+            "background": "#1a1a1a",
+            "background_gradient": "linear-gradient(140deg, rgba(26, 26, 26, 1), rgba(0, 58, 112, 1) 100%)",
+            "text_color": "#ffffff",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0,
+            "countdown_background": "#ffffff",
+            "countdown_opacity": 15,
+            "countdown_text_color": "#5a8de2",
+            "button_background": "#002d78",
+            "button_text_color": "#ffffff"
+          }
         }
       },
       "block_order": [
@@ -151,32 +152,102 @@
         "cycle_speed": 6
       }
     },
-    "collection_30_ans": {
-      "type": "featured-collection",
+    "image-link-blocks": {
+      "type": "image-link-blocks",
+      "blocks": {
+        "e4a0ef18-1856-4ddd-83d8-871a60d7acac": {
+          "type": "item",
+          "settings": {
+            "image": "shopify://shop_images/a68b8e9d-6aaa-4ec2-86e8-bf6b1e3321e4.jpg",
+            "stretch_image": false,
+            "link_text": "ACCESSOIRES & PROTECTIONS",
+            "link_url": "shopify://collections/accessoires",
+            "background": "#ffffff",
+            "text_color": "#000000",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          }
+        },
+        "1664424046b00c932c-0": {
+          "type": "item",
+          "settings": {
+            "image": "shopify://shop_images/1_cd72721d-28fb-46cb-9f85-8b9205bf5013.png",
+            "stretch_image": false,
+            "link_text": "POKÉMON JAPONAIS",
+            "link_url": "shopify://collections/pokemon-japonais",
+            "background": "#ffffff",
+            "text_color": "#000000",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          }
+        },
+        "1664424046b00c932c-2": {
+          "type": "item",
+          "settings": {
+            "image": "shopify://shop_images/2_20e71674-5a3e-4430-a712-006b996cdbbb.png",
+            "stretch_image": false,
+            "link_text": "POKÉMON CHINOIS",
+            "link_url": "shopify://collections/pokemon-chinois",
+            "background": "#ffffff",
+            "text_color": "#000000",
+            "overlay_color": "#e9f6f9",
+            "overlay_opacity": 0
+          }
+        },
+        "1664424046b00c932c-3": {
+          "type": "item",
+          "settings": {
+            "image": "shopify://shop_images/5.png",
+            "stretch_image": false,
+            "link_text": "BOOSTERS & PACKS",
+            "link_url": "shopify://collections/boosters-et-packs",
+            "background": "#ffffff",
+            "text_color": "#000000",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          }
+        },
+        "1664424046b00c932c-1": {
+          "type": "item",
+          "settings": {
+            "image": "shopify://shop_images/3_6960f2f6-cfb0-4247-bb9e-bfe45d77c497.png",
+            "stretch_image": false,
+            "link_text": "POKÉMON FRANÇAIS",
+            "link_url": "shopify://collections/pokemon-francais",
+            "background": "#ffffff",
+            "text_color": "#000000",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          }
+        }
+      },
+      "block_order": [
+        "e4a0ef18-1856-4ddd-83d8-871a60d7acac",
+        "1664424046b00c932c-0",
+        "1664424046b00c932c-2",
+        "1664424046b00c932c-3",
+        "1664424046b00c932c-1"
+      ],
+      "custom_css": [
+        ".image-link-blocks {align-items: stretch;}",
+        ".image-link-blocks__item {height: 100%;}",
+        ".image-link-blocks__inner {height: 100%; grid-template-rows: minmax(0, 1fr) auto;}",
+        ".image-link-blocks__image {width: 100%; height: 100%; min-height: 0; object-fit: contain;}",
+        ".section {background-image: var(--vc-pokemon-pattern-on-dark);}"
+      ],
       "settings": {
-        "collection": "30-ans-pokemon",
-        "products": [],
         "full_width": false,
-        "stack_products": false,
-        "show_progress_bar": false,
-        "products_count": 8,
-        "products_per_row_mobile": "2",
-        "products_per_row_desktop": 5,
+        "block_size": "large",
         "subheading": "",
-        "title": "LE DROP 30 ANS",
+        "title": "NOS UNIVERS",
         "content": "",
-        "link_url": "shopify://collections/30-ans-pokemon",
-        "link_text": "Voir les 25 produits",
-        "background_image": "shopify://shop_images/banner-30-ans-desktop.png",
-        "mobile_background_image": "shopify://shop_images/banner-30-ans-mobile.png",
-        "background_image_overlay": 40,
+        "link_url": "",
+        "link_text": "",
         "background": "#1a1a1a",
         "background_gradient": "",
         "text_color": "#ffffff",
         "heading_color": "#5a8de2",
-        "heading_gradient": "",
-        "product_card_background": "#ffffff",
-        "product_card_text_color": "#1a1a1a"
+        "heading_gradient": ""
       }
     },
     "collection_japonais": {
@@ -196,6 +267,7 @@
         "content": "",
         "link_url": "shopify://collections/pokemon-japonais",
         "link_text": "Voir tout le Pokémon japonais",
+        "background_image_overlay": 0,
         "background": "#f7f9f9",
         "background_gradient": "",
         "text_color": "",
@@ -222,6 +294,34 @@
         "content": "",
         "link_url": "shopify://collections/pokemon-chinois",
         "link_text": "Voir tout le Pokémon chinois",
+        "background_image_overlay": 0,
+        "background": "#f7f9f9",
+        "background_gradient": "",
+        "text_color": "",
+        "heading_color": "",
+        "heading_gradient": "",
+        "product_card_background": "#ffffff",
+        "product_card_text_color": "#1a1a1a"
+      }
+    },
+    "featured-collection": {
+      "type": "featured-collection",
+      "settings": {
+        "collection": "accessoires",
+        "products": [],
+        "full_width": false,
+        "stack_products": false,
+        "show_progress_bar": false,
+        "prioritize_in_stock": true,
+        "products_count": 8,
+        "products_per_row_mobile": "2",
+        "products_per_row_desktop": 5,
+        "subheading": "",
+        "title": "ACCESSOIRES",
+        "content": "",
+        "link_url": "shopify://collections/accessoires",
+        "link_text": "Voir tout",
+        "background_image_overlay": 0,
         "background": "#f7f9f9",
         "background_gradient": "",
         "text_color": "",
@@ -258,118 +358,6 @@
         "product_card_text_color": "#1a1a1a"
       }
     },
-    "image-link-blocks": {
-      "type": "image-link-blocks",
-      "custom_css": [
-        ".image-link-blocks {align-items: stretch;}",
-        ".image-link-blocks__item {height: 100%;}",
-        ".image-link-blocks__inner {height: 100%; grid-template-rows: minmax(0, 1fr) auto;}",
-        ".image-link-blocks__image {width: 100%; height: 100%; min-height: 0; object-fit: contain;}",
-        ".section {background-image: var(--vc-pokemon-pattern-on-dark);}"
-      ],
-      "blocks": {
-        "tuile_booster_m6_x100": {
-          "type": "item",
-          "settings": {
-            "image": "shopify://shop_images/tuile-booster-m6-x100.jpg",
-            "stretch_image": false,
-            "link_text": "LOT DE 100 BOOSTERS M6 : 420 €",
-            "link_url": "/products/booster-m6-storm-emeralda-japonais?variant=53635663790408",
-            "background": "#ffffff",
-            "text_color": "#000000",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0
-          }
-        },
-        "1664424046b00c932c-0": {
-          "type": "item",
-          "settings": {
-            "image": "shopify://shop_images/1_cd72721d-28fb-46cb-9f85-8b9205bf5013.png",
-            "stretch_image": false,
-            "link_text": "POKÉMON JAPONAIS",
-            "link_url": "shopify://collections/pokemon-japonais",
-            "background": "#ffffff",
-            "text_color": "#000000",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0
-          }
-        },
-        "1664424046b00c932c-1": {
-          "type": "item",
-          "settings": {
-            "image": "shopify://shop_images/3_6960f2f6-cfb0-4247-bb9e-bfe45d77c497.png",
-            "stretch_image": false,
-            "link_text": "POKÉMON FRANÇAIS",
-            "link_url": "shopify://collections/pokemon-francais",
-            "background": "#ffffff",
-            "text_color": "#000000",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0
-          }
-        },
-        "1664424046b00c932c-2": {
-          "type": "item",
-          "settings": {
-            "image": "shopify://shop_images/2_20e71674-5a3e-4430-a712-006b996cdbbb.png",
-            "stretch_image": false,
-            "link_text": "POKÉMON CHINOIS",
-            "link_url": "shopify://collections/pokemon-chinois",
-            "background": "#ffffff",
-            "text_color": "#000000",
-            "overlay_color": "#e9f6f9",
-            "overlay_opacity": 0
-          }
-        },
-        "1664424046b00c932c-3": {
-          "type": "item",
-          "settings": {
-            "image": "shopify://shop_images/5.png",
-            "stretch_image": false,
-            "link_text": "BOOSTERS & PACKS",
-            "link_url": "shopify://collections/boosters-et-packs",
-            "background": "#ffffff",
-            "text_color": "#000000",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0
-          }
-        },
-        "e4a0ef18-1856-4ddd-83d8-871a60d7acac": {
-          "type": "item",
-          "settings": {
-            "image": "shopify://shop_images/a68b8e9d-6aaa-4ec2-86e8-bf6b1e3321e4.jpg",
-            "stretch_image": false,
-            "link_text": "ACCESSOIRES & PROTECTIONS",
-            "link_url": "shopify://collections/accessoires",
-            "background": "#ffffff",
-            "text_color": "#000000",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0
-          }
-        }
-      },
-      "block_order": [
-        "tuile_booster_m6_x100",
-        "e4a0ef18-1856-4ddd-83d8-871a60d7acac",
-        "1664424046b00c932c-0",
-        "1664424046b00c932c-2",
-        "1664424046b00c932c-3",
-        "1664424046b00c932c-1"
-      ],
-      "settings": {
-        "full_width": false,
-        "block_size": "large",
-        "subheading": "",
-        "title": "NOS UNIVERS",
-        "content": "",
-        "link_url": "",
-        "link_text": "",
-        "background": "#1a1a1a",
-        "background_gradient": "",
-        "text_color": "#ffffff",
-        "heading_color": "#5a8de2",
-        "heading_gradient": ""
-      }
-    },
     "scrolling_text_kgTrei": {
       "type": "scrolling-text",
       "custom_css": [
@@ -388,37 +376,8 @@
         "text_gradient": ""
       }
     },
-    "featured-collection": {
-      "type": "featured-collection",
-      "settings": {
-        "collection": "accessoires",
-        "products": [],
-        "full_width": false,
-        "stack_products": false,
-        "show_progress_bar": false,
-        "prioritize_in_stock": true,
-        "products_count": 8,
-        "products_per_row_mobile": "2",
-        "products_per_row_desktop": 5,
-        "subheading": "",
-        "title": "ACCESSOIRES",
-        "content": "",
-        "link_url": "shopify://collections/accessoires",
-        "link_text": "Voir tout",
-        "background": "#f7f9f9",
-        "background_gradient": "",
-        "text_color": "",
-        "heading_color": "",
-        "heading_gradient": "",
-        "product_card_background": "#ffffff",
-        "product_card_text_color": "#1a1a1a"
-      }
-    },
     "reassurance": {
       "type": "text-with-icons",
-      "custom_css": [
-        "@media screen and (min-width: 1000px) {.text-with-icons__text-wrapper .prose > p:first-child {min-height: 3lh;}}"
-      ],
       "blocks": {
         "item_expedition": {
           "type": "item",
@@ -478,6 +437,9 @@
         "item_douane",
         "item_authenticite",
         "item_service"
+      ],
+      "custom_css": [
+        "@media screen and (min-width: 1000px) {.text-with-icons__text-wrapper .prose > p:first-child {min-height: 3lh; }}"
       ],
       "settings": {
         "full_width": true,
@@ -580,9 +542,6 @@
     },
     "impact-text": {
       "type": "impact-text",
-      "custom_css": [
-        ".section {background-image: var(--vc-pokemon-pattern-on-dark);}"
-      ],
       "blocks": {
         "item_WUxHaT": {
           "type": "item",
@@ -613,6 +572,9 @@
         "item_WUxHaT",
         "1664424181b38582d5-0"
       ],
+      "custom_css": [
+        ".section {background-image: var(--vc-pokemon-pattern-on-dark);}"
+      ],
       "settings": {
         "full_width": true,
         "stack_mobile": true,
@@ -631,9 +593,6 @@
     },
     "faq": {
       "type": "faq",
-      "custom_css": [
-        ".section {background-image: var(--vc-pokemon-pattern-on-light);}"
-      ],
       "blocks": {
         "166442457738b23caf-0": {
           "type": "item",
@@ -686,6 +645,9 @@
         "item_j8gKzK",
         "item_precommande"
       ],
+      "custom_css": [
+        ".section {background-image: var(--vc-pokemon-pattern-on-light);}"
+      ],
       "settings": {
         "full_width": false,
         "subheading": "",
@@ -706,6 +668,35 @@
         "button_text_color": "",
         "accordion_background": "",
         "accordion_text_color": ""
+      }
+    },
+    "collection_30_ans": {
+      "type": "featured-collection",
+      "settings": {
+        "collection": "30-ans-pokemon",
+        "products": [],
+        "full_width": false,
+        "stack_products": false,
+        "show_progress_bar": false,
+        "prioritize_in_stock": false,
+        "products_count": 8,
+        "products_per_row_mobile": "2",
+        "products_per_row_desktop": 5,
+        "subheading": "",
+        "title": "LE DROP 30 ANS",
+        "content": "",
+        "link_url": "shopify://collections/30-ans-pokemon",
+        "link_text": "Voir les 25 produits",
+        "background_image": "shopify://shop_images/banner-30-ans-desktop.png",
+        "mobile_background_image": "shopify://shop_images/banner-30-ans-mobile.png",
+        "background_image_overlay": 40,
+        "background": "#1a1a1a",
+        "background_gradient": "",
+        "text_color": "#ffffff",
+        "heading_color": "#5a8de2",
+        "heading_gradient": "",
+        "product_card_background": "#ffffff",
+        "product_card_text_color": "#1a1a1a"
       }
     },
     "newsletter_drop": {
