@@ -294,7 +294,15 @@ date shows the slide immediately, for the same reason an unreadable deadline nev
       <span class="slideshow__slide-background"></span>
     {%- endunless -%}
 
-    <slideshow-carousel id="{{ carousel_id }}" class="slideshow__carousel" reveal-on-scroll="true" selector=".slideshow__slide" transition="{{ section.settings.transition_type }}" {% if section.settings.autoplay and visible_count > 1 %}autoplay="{{ section.settings.cycle_speed }}"{% endif %} role="region">
+    {%- comment -%}
+      vcollect: no reveal-on-scroll here, on purpose. That attribute matches the theme rule
+      `.js [reveal-on-scroll="true"] { opacity: 0 }`, which keeps the whole hero invisible until the JS
+      bundles have booted. This section is the LCP of the home page: measured on mobile, the banner image
+      finished downloading in 59 ms but stayed hidden for 3 more seconds waiting for JavaScript. Without
+      the attribute the server-rendered first slide paints as soon as the HTML arrives, and the carousel
+      script still takes over for the slide rotation afterwards.
+    {%- endcomment -%}
+    <slideshow-carousel id="{{ carousel_id }}" class="slideshow__carousel" selector=".slideshow__slide" transition="{{ section.settings.transition_type }}" {% if section.settings.autoplay and visible_count > 1 %}autoplay="{{ section.settings.cycle_speed }}"{% endif %} role="region">
       {%- assign rendered_count = 0 -%}
 
       {%- for block in section.blocks -%}
@@ -350,10 +358,25 @@ date shows the slide immediately, for the same reason an unreadable deadline nev
               {%- capture fetch_priority -%}{% if is_first %}high{% else %}low{% endif %}{%- endcapture -%}
               {%- capture image_class -%}{% if block.settings.mobile_image != blank %}hidden sm:block{% endif %}{%- endcapture -%}
 
-              {{- block.settings.image | image_url: width: block.settings.image.width | image_tag: loading: loading_strategy, fetchpriority: fetch_priority, sizes: sizes, widths: '400,600,800,1000,1200,1400,1600,1800,2000,2400,2800,3200', class: image_class -}}
+              {%- comment -%}
+                vcollect: when a slide carries both a desktop and a mobile image, the two <img> stay in the
+                DOM (the theme grid requires them as direct children of .content-over-media, a <picture>
+                wrapper would break the layout) and CSS hides one of them. Hidden or not, an eager <img>
+                is downloaded: measured on mobile, the full-size desktop banner (58 KB) was fetched next to
+                the mobile one. The `sizes` below declare the image 1px wide on the breakpoint where it is
+                hidden, so the browser only fetches the smallest candidate instead of the full-size file.
+              {%- endcomment -%}
+              {%- if block.settings.mobile_image != blank -%}
+                {%- capture desktop_sizes -%}(max-width: 699.98px) 1px, {{ sizes }}{%- endcapture -%}
+                {%- capture mobile_sizes -%}(min-width: 700px) 1px, {{ sizes }}{%- endcapture -%}
+              {%- else -%}
+                {%- assign desktop_sizes = sizes -%}
+              {%- endif -%}
+
+              {{- block.settings.image | image_url: width: block.settings.image.width | image_tag: loading: loading_strategy, fetchpriority: fetch_priority, sizes: desktop_sizes, widths: '400,600,800,1000,1200,1400,1600,1800,2000,2400,2800,3200', class: image_class -}}
 
               {%- if block.settings.mobile_image != blank -%}
-                {{- block.settings.mobile_image | image_url: width: block.settings.mobile_image.width | image_tag: loading: loading_strategy, fetchpriority: fetch_priority, sizes: sizes, widths: '400,600,800,1000,1200,1400,1600', class: 'sm:hidden' -}}
+                {{- block.settings.mobile_image | image_url: width: block.settings.mobile_image.width | image_tag: loading: loading_strategy, fetchpriority: fetch_priority, sizes: mobile_sizes, widths: '400,600,800,1000,1200,1400,1600', class: 'sm:hidden' -}}
               {%- endif -%}
             {%- endif -%}
 
