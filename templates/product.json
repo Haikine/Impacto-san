@@ -28,7 +28,7 @@
             "max_quantity": 100,
             "low_threshold": 40,
             "critical_threshold": 20,
-            "high_text": "<strong>%IC%</strong> en stock - <strong>livraison en 48h</strong>",
+            "high_text": "<strong>En stock</strong> - <strong>livraison en 48h</strong>",
             "low_text": "<strong>%IC%</strong> en stock - <strong>Stock bas</strong>",
             "critical_text": "<strong>%IC%</strong> en stock - <strong>Stock très bas</strong>",
             "high_color": "#00bf4d",
