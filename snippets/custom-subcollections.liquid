@@ -1,0 +1,31 @@
+{%- comment -%}
+----------------------------------------------------------------------------------------------------------------------
+CUSTOM SUBCOLLECTIONS
+----------------------------------------------------------------------------------------------------------------------
+
+Custom addition (not part of Impact core). Renders a row of chip links towards related collections at the top of a
+collection page, driven by the vcollect.sous_collections collection metafield (list of collection references) so the
+internal linking can be curated from the admin without touching the theme.
+
+SEO purpose: the theme's facet form only exposes filters as checkboxes inside a GET form, which crawlers never follow
+and whose filtered URLs canonicalize back to the base collection. These plain <a> links are the crawlable path between
+sibling and parent collections (e.g. Displays -> Display Japonais), so keep them as regular anchors.
+
+The label is hardcoded in French like the other custom snippets: the storefront sells in French only.
+
+********************************************
+Supported variables
+********************************************
+
+* collection: the collection whose metafield is read (required)
+{%- endcomment -%}
+
+{%- assign sub_collections = collection.metafields.vcollect.sous_collections.value -%}
+
+{%- if sub_collections != blank -%}
+  <nav class="custom-subcollections" aria-label="Catégories associées">
+    {%- for linked_collection in sub_collections -%}
+      <a class="custom-subcollections__chip" href="{{ linked_collection.url }}">{{ linked_collection.title | escape }}</a>
+    {%- endfor -%}
+  </nav>
+{%- endif -%}

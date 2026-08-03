@@ -917,3 +917,36 @@
 .citable-glossary dd {
   margin-inline-start: 0;
 }
+
+/* ==========================================================================
+   Subcollection chips (snippets/custom-subcollections.liquid)
+   ==========================================================================
+   Row of pill links between related collections, rendered at the top of
+   collection pages. Plain anchors on purpose: they are the crawlable
+   counterpart of the facet checkboxes, which search engines cannot follow. */
+.custom-subcollections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-block-end: 20px;
+}
+
+.custom-subcollections__chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 18px;
+  border: 1px solid rgb(var(--text-color, 26 26 26) / 0.25);
+  border-radius: 60px;
+  color: rgb(var(--text-color, 26 26 26));
+  font-size: 0.88em;
+  font-weight: 500;
+  line-height: 1.2;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.custom-subcollections__chip:hover {
+  background: rgb(var(--text-color, 26 26 26));
+  color: rgb(var(--background, 255 255 255));
+  border-color: rgb(var(--text-color, 26 26 26));
+}

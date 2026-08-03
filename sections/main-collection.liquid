@@ -61,6 +61,9 @@
 </style>
 
 <div class="container">
+  {%- comment -%}Custom addition (not part of Impact core): crawlable links between related collections, see snippets/custom-subcollections.liquid{%- endcomment -%}
+  {%- render 'custom-subcollections', collection: collection -%}
+
   {%- if collection.all_products_count == 0 -%}
     <div class="empty-state">
       <div class="empty-state__icon-wrapper">
