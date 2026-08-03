@@ -927,26 +927,47 @@
 .custom-subcollections {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-block-end: 20px;
+  justify-content: center;
+  gap: 10px;
+  margin-block-end: 28px;
 }
 
+/* Brand blue (#0043b5 = 0 67 181, charte couleur) on a soft tinted pill, so the
+ * row reads as navigation rather than as buttons competing with add-to-cart. */
 .custom-subcollections__chip {
   display: inline-flex;
   align-items: center;
-  padding: 8px 18px;
-  border: 1px solid rgb(var(--text-color, 26 26 26) / 0.25);
+  gap: 6px;
+  padding: 9px 20px;
+  background: rgb(0 67 181 / 0.07);
+  border: 1px solid rgb(0 67 181 / 0.18);
   border-radius: 60px;
-  color: rgb(var(--text-color, 26 26 26));
+  color: #0043b5;
   font-size: 0.88em;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.2;
   text-decoration: none;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+.custom-subcollections__chip::after {
+  content: "";
+  width: 12px;
+  height: 12px;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8h9m-4-4 4 4-4 4' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8h9m-4-4 4 4-4 4' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
 .custom-subcollections__chip:hover {
-  background: rgb(var(--text-color, 26 26 26));
-  color: rgb(var(--background, 255 255 255));
-  border-color: rgb(var(--text-color, 26 26 26));
+  background: #0043b5;
+  border-color: #0043b5;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgb(0 67 181 / 0.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .custom-subcollections__chip {
+    transition: none;
+  }
 }
