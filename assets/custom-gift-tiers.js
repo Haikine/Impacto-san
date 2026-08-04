@@ -60,6 +60,16 @@ let config = null;
 let reconciling = false;
 
 /**
+ * A cart:change landed while a reconciliation was in flight. Dropping it
+ * corrupts the gift durably: the missed change can move the entitlement, and
+ * the lastSubtotal guard then blocks every later probe because the subtotal no
+ * longer grows. Reproduced with two quantity edits 150 ms apart: 174 EUR in the
+ * cart, zero gift, forever. So the drop is remembered and the reconciler runs
+ * again on a freshly fetched cart once the current pass settles.
+ */
+let rerunNeeded = false;
+
+/**
  * Eligible subtotal at the last completed reconciliation, so we only pay for a
  * probe when the shopper spent more than they had before.
  */
@@ -158,10 +168,46 @@ const setGiftQuantity = async (cart, quantity, sections) => {
  * @returns {Promise<void>}
  */
 const reconcile = async (cart) => {
-  if (reconciling || !config) {
+  if (!config) {
     return;
   }
 
+  if (reconciling) {
+    rerunNeeded = true;
+    return;
+  }
+
+  reconciling = true;
+
+  try {
+    /* After a dropped change the settled snapshot is stale, so the pass must not
+       trust its lastSubtotal guard */
+    let force = false;
+
+    do {
+      rerunNeeded = false;
+      await reconcilePass(cart, force);
+
+      if (rerunNeeded) {
+        cart = await (await fetch(CART_URL)).json();
+        force = true;
+      }
+    } while (rerunNeeded);
+  } catch (error) {
+    console.warn('[gift-tiers] reconciliation failed:', error);
+  } finally {
+    reconciling = false;
+    rerunNeeded = false;
+  }
+};
+
+/**
+ * One reconciliation round: decide, probe, trim, then tell the theme.
+ * @param {Object} cart - Cart payload from the Ajax API
+ * @param {boolean} force - Probe even when the guards see nothing new
+ * @returns {Promise<void>}
+ */
+const reconcilePass = async (cart, force) => {
   const subtotal = eligibleSubtotal(cart);
   const { total, free } = giftUnits(cart);
 
@@ -171,91 +217,83 @@ const reconcile = async (cart) => {
   const needsTrim = total > free;
   const mightEarnMore = lastSubtotal === null || subtotal > lastSubtotal;
 
-  if (!needsTrim && !mightEarnMore) {
+  if (!needsTrim && !mightEarnMore && !force) {
     return;
   }
-
-  reconciling = true;
 
   /* The theme's delayed write is scheduled from the event we are reacting to, not
      from our own requests, so count the window from here */
   const windowOpenedAt = performance.now();
   const giftsOnEntry = total;
 
-  try {
-    /* Let the drawer declare which sections it needs re-rendered, exactly as the
-       theme's own line-item quantity handler does */
-    const sections = [];
-    document.documentElement.dispatchEvent(
-      new CustomEvent('cart:prepare-bundled-sections', { bubbles: true, detail: { sections } })
-    );
+  /* Let the drawer declare which sections it needs re-rendered, exactly as the
+     theme's own line-item quantity handler does */
+  const sections = [];
+  document.documentElement.dispatchEvent(
+    new CustomEvent('cart:prepare-bundled-sections', { bubbles: true, detail: { sections } })
+  );
 
-    let current = cart;
-    let settled = false;
+  let current = cart;
+  let settled = false;
 
-    for (let probe = 0; probe < MAX_PROBES && !settled; probe += 1) {
-      const units = giftUnits(current);
+  for (let probe = 0; probe < MAX_PROBES && !settled; probe += 1) {
+    const units = giftUnits(current);
 
-      if (units.total > units.free) {
-        /* Shopify is charging for the surplus: keep exactly what it gave away */
-        if (units.total !== units.free) {
-          const trimmed = await setGiftQuantity(current, units.free, sections);
-          if (!trimmed) return;
-          current = trimmed;
-        }
-        settled = true;
-        break;
-      }
-
-      /* Everything in the cart is free, so ask whether more would be */
-      const asked = await setGiftQuantity(current, units.total + PROBE_HEADROOM, sections);
-      if (!asked) return;
-      current = asked;
-
-      const answer = giftUnits(current);
-
-      if (answer.free < answer.total) {
-        const trimmed = await setGiftQuantity(current, answer.free, sections);
+    if (units.total > units.free) {
+      /* Shopify is charging for the surplus: keep exactly what it gave away */
+      if (units.total !== units.free) {
+        const trimmed = await setGiftQuantity(current, units.free, sections);
         if (!trimmed) return;
         current = trimmed;
-        settled = true;
       }
-      /* Otherwise every probed unit came back free: loop and ask for more */
+      settled = true;
+      break;
     }
 
-    lastSubtotal = eligibleSubtotal(current);
+    /* Everything in the cart is free, so ask whether more would be */
+    const asked = await setGiftQuantity(current, units.total + PROBE_HEADROOM, sections);
+    if (!asked) return;
+    current = asked;
 
-    const giftsChanged = giftUnits(current).total !== giftsOnEntry;
+    const answer = giftUnits(current);
 
-    /* The cart page changes a quantity by navigating to /cart/change, so it renders
-       before we have touched the gift and then has no way to update itself: it does
-       not listen for cart:refresh, only the drawer does. Reloading is the honest
-       fix there. Guarded on an actual change so the probe's own round trip, which
-       ends where it started, cannot loop the page. */
-    if (giftsChanged && window.themeVariables?.settings?.pageType === 'cart') {
-      window.location.reload();
-      return;
+    if (answer.free < answer.total) {
+      const trimmed = await setGiftQuantity(current, answer.free, sections);
+      if (!trimmed) return;
+      current = trimmed;
+      settled = true;
     }
-
-    document.documentElement.dispatchEvent(
-      new CustomEvent('cart:change', {
-        bubbles: true,
-        detail: { baseEvent: 'gift-tiers:reconcile', cart: current },
-      })
-    );
-
-    /* Have the drawer re-fetch itself once the theme's delayed write has passed.
-       This is also what keeps the probe's over-shoot off the screen. */
-    const remaining = Math.max(0, STALE_RENDER_WINDOW - (performance.now() - windowOpenedAt));
-
-    setTimeout(() => {
-      document.documentElement.dispatchEvent(new CustomEvent('cart:refresh', { bubbles: true }));
-    }, remaining);
-  } catch (error) {
-    console.warn('[gift-tiers] reconciliation failed:', error);
-  } finally {
-    reconciling = false;
+    /* Otherwise every probed unit came back free: loop and ask for more */
   }
+
+  lastSubtotal = eligibleSubtotal(current);
+
+  const giftsChanged = giftUnits(current).total !== giftsOnEntry;
+
+  /* The cart page changes a quantity by navigating to /cart/change, so it renders
+     before we have touched the gift and then has no way to update itself: it does
+     not listen for cart:refresh, only the drawer does. Reloading is the honest
+     fix there. Guarded on an actual change so the probe's own round trip, which
+     ends where it started, cannot loop the page. */
+  if (giftsChanged && window.themeVariables?.settings?.pageType === 'cart') {
+    window.location.reload();
+    return;
+  }
+
+  document.documentElement.dispatchEvent(
+    new CustomEvent('cart:change', {
+      bubbles: true,
+      detail: { baseEvent: 'gift-tiers:reconcile', cart: current },
+    })
+  );
+
+  /* Have the drawer re-fetch itself once the theme's delayed write has passed.
+     This is also what keeps the probe's over-shoot off the screen. */
+  const remaining = Math.max(0, STALE_RENDER_WINDOW - (performance.now() - windowOpenedAt));
+
+  setTimeout(() => {
+    document.documentElement.dispatchEvent(new CustomEvent('cart:refresh', { bubbles: true }));
+  }, remaining);
 };
 
 /**

@@ -38,7 +38,11 @@ Supported variables
 
   <div class="line-item__info">
     <div class="v-stack gap-0.5">
-      {%- if line_item.url != blank -%}
+      {%- comment -%}
+        Custom (not Impact): the gift product page redirects to the homepage (see layout/theme.liquid), so linking
+        the gift line there would only bounce the shopper out of the cart.
+      {%- endcomment -%}
+      {%- if line_item.url != blank and is_gift_line == false -%}
         <a href="{{ line_item.url }}" class="bold">
           <span class="reversed-link hover:show">{{ line_item.product.title | default: line_item.title }}</span>
         </a>

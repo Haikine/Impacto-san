@@ -29,6 +29,19 @@ NOTE TO DEVELOPERS: welcome to Impact theme! We hope that you will enjoy editing
     <meta name="theme-color" content="{{ settings.header_background }}">
 
     {%- comment -%}
+      Custom vcollect: the free gift product must stay ACTIVE and published so /cart/update.js can add it to the cart
+      (see snippets/gift-tiers-bar.liquid), which rules out an admin URL redirect: those only fire on 404 pages. Its
+      product page therefore redirects to the homepage from the theme. Keyed on the 'cadeau-offert' tag like the cart
+      gift lock, so adding another gift product needs no code change. The meta refresh covers no-JS visitors and is
+      treated by Google as a redirect; noindex keeps the page out of the index either way.
+    {%- endcomment -%}
+    {%- if request.page_type == 'product' and product.tags contains 'cadeau-offert' -%}
+      <meta name="robots" content="noindex">
+      <meta http-equiv="refresh" content="0; url={{ routes.root_url }}">
+      <script>window.location.replace({{ routes.root_url | json }});</script>
+    {%- endif -%}
+
+    {%- comment -%}
       Custom vcollect: give the homepage a title that contains what people search for.
 
       Shopify falls back to the shop name when the homepage title field in Online Store > Preferences is left empty,
