@@ -12,6 +12,36 @@
     "banniere_drops": {
       "type": "banner-30-ans",
       "blocks": {
+        "banner_op17": {
+          "type": "banner",
+          "settings": {
+            "product_image": "shopify://shop_images/banniere-op17-display.png",
+            "product_image_size": 66,
+            "visible_from": "",
+            "show_countdown": true,
+            "target_date": "2026-08-22",
+            "hide_when_expired": false,
+            "expired_message": "Sortie officielle passée, mise en vente imminente",
+            "subheading": "NOUVEAU : ONE PIECE CHEZ VCOLLECT",
+            "title": "ONE PIECE OP-17",
+            "heading_tag": "h0",
+            "content": "<p>Le display japonais de l'extension des 4 ans du jeu, The World's Strongest Warriors : 24 boosters, Elbaf et les Quatre Empereurs. Sortie le 22 août, inscrivez-vous à la liste d'attente pour être prévenu de la mise en vente.</p>",
+            "button_text": "Voir le display OP-17",
+            "button_url": "shopify://products/display-one-piece-op17-japonais",
+            "mobile_text_position": "place-self-center text-center",
+            "desktop_text_position": "sm:place-self-center-start sm:text-start",
+            "background": "#1a1a1a",
+            "background_gradient": "linear-gradient(140deg, rgba(26, 26, 26, 1), rgba(122, 84, 10, 1) 100%)",
+            "text_color": "#ffffff",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0,
+            "countdown_background": "#000000",
+            "countdown_opacity": 30,
+            "countdown_text_color": "#ffffff",
+            "button_background": "#002d78",
+            "button_text_color": "#ffffff"
+          }
+        },
         "banner_m6": {
           "type": "banner",
           "settings": {
@@ -137,6 +167,7 @@
         }
       },
       "block_order": [
+        "banner_op17",
         "banner_m6",
         "banner_csv10c",
         "banner_30_ans",
