@@ -7,15 +7,38 @@ Custom addition to the Impact theme, not part of Maestrooo's base code. Rendered
 page gets the same trail, instead of editing each main-* section and fighting them on the next theme update.
 
 ********************************************
-Where the hierarchy comes from
+Where the hierarchy comes from, on a product
 ********************************************
 
-Shopify collections are a flat list, there is no parent/child relation to read. The only place the catalogue is
-organised in levels is the navigation menu, so the parent level is looked up in the main menu: a collection that appears
-as a sub-item of "Boosters et packs" gets that entry inserted before it.
+Home > game and language > format > product. Both middle levels are derived from data already carried by the product,
+so the trail is identical whatever page the shopper came from, and identical to what Googlebot sees when it fetches the
+canonical URL with no referrer. That stability is the whole point: structured data that changes with the referrer is
+worse than no structured data.
 
-Consequence to keep in mind: re-organising the main menu re-organises the breadcrumb. That is intended, it keeps a
-single place to maintain. A collection absent from the menu simply has no parent level, which is the previous behaviour.
+  Level 2, the aisle    accessories       -> 'accessoires'
+                        anything else     -> '<game>-<language>', falling back to '<game>' alone
+  Level 3, the format   accessories       -> vcollect.type_accessoire
+                        anything else     -> product.type
+
+The slug tables below are the only place a value is translated into a collection handle. A game, language, accessory
+type or product type that is missing from them simply produces no crumb at that level, it never produces a wrong one.
+
+Both levels are then confirmed against product.collections before being rendered. That check does two things at once:
+it proves the product really belongs to the collection it points at, and, since product.collections excludes anything
+not published to the Online Store, it proves the URL is reachable. A candidate that fails is dropped and the next one
+is tried. So the One Piece display resolves to 'one-piece' at level 2 and to nothing at level 3, because the automated
+'displays' collection is scoped to Pokémon and does not contain it.
+
+********************************************
+Where the hierarchy comes from, elsewhere
+********************************************
+
+Shopify collections are a flat list, there is no parent/child relation to read. On a collection page the only place the
+catalogue is organised in levels is the navigation menu, so the parent level is looked up in the main menu: a collection
+that appears as a sub-item of "Boosters et packs" gets that entry inserted before it.
+
+Consequence to keep in mind: re-organising the main menu re-organises the breadcrumb of the collection pages. That is
+intended, it keeps a single place to maintain. A collection absent from the menu simply has no parent level.
 
 The menu handle is hardcoded to 'main-menu' because the header reads its menu from a section setting, which a layout
 snippet cannot access. Verified in sections/header-group.json: the header is set to "main-menu".
@@ -69,30 +92,126 @@ section is pulled up by the header height and covers it.
       assign current_title = page_title
   endcase
 
-  comment
-    The collection that leads to the current page: itself on a collection page, the one the shopper came from on a
-    product page. On a product reached from a search or a direct link it stays empty, and the trail is Home > product.
-  endcomment
+  assign crumb_aisle = null
+  assign crumb_format = null
 
-  assign trail_collection = null
+  if request.page_type == 'product'
+    assign product_game = product.metafields.vcollect.tcg.value
+    assign product_language = product.metafields.vcollect.langue.value
+    assign accessory_type = product.metafields.vcollect.type_accessoire.value
 
-  if request.page_type == 'collection' or request.page_type == 'product'
-    if collection.url != blank and collection.handle != 'all'
-      assign trail_collection = collection
+    assign game_slug = ''
+    case product_game
+      when 'Pokémon'
+        assign game_slug = 'pokemon'
+      when 'One Piece'
+        assign game_slug = 'one-piece'
+    endcase
+
+    assign language_slug = ''
+    case product_language
+      when 'Japonais'
+        assign language_slug = 'japonais'
+      when 'Français'
+        assign language_slug = 'francais'
+      when 'Chinois'
+        assign language_slug = 'chinois'
+      when 'Anglais'
+        assign language_slug = 'anglais'
+    endcase
+
+    comment
+      Candidates are ordered from the most specific to the least, joined into a string because Liquid cannot append to
+      an array. Accessories never carry a language, they get their own aisle.
+    endcomment
+
+    assign aisle_candidates = ''
+
+    if accessory_type != blank or product.type == 'Accessoire'
+      assign aisle_candidates = 'accessoires'
+    elsif game_slug != ''
+      assign aisle_candidates = game_slug
+      if language_slug != ''
+        assign aisle_candidates = game_slug | append: '-' | append: language_slug | append: ',' | append: game_slug
+      endif
+    endif
+
+    assign format_candidate = ''
+    case accessory_type
+      when 'Classeur'
+        assign format_candidate = 'classeurs'
+      when 'Toploaders'
+        assign format_candidate = 'toploaders'
+      when 'Sleeves'
+        assign format_candidate = 'sleeves'
+      when 'Protection acrylique'
+        assign format_candidate = 'protections-acryliques'
+    endcase
+
+    if format_candidate == ''
+      case product.type
+        when 'Display'
+          assign format_candidate = 'displays'
+        when 'Booster'
+          assign format_candidate = 'boosters'
+        when 'Coffret'
+          assign format_candidate = 'coffrets'
+        when 'ETB'
+          assign format_candidate = 'etb'
+        when 'Tripack'
+          assign format_candidate = 'tripacks'
+        when 'Blister'
+          assign format_candidate = 'blisters'
+      endcase
+    endif
+
+    comment
+      A candidate is kept only if the product actually belongs to it. product.collections lists the collections the
+      product is in that are published to the Online Store, so this validates the membership and the URL in one pass.
+    endcomment
+
+    if aisle_candidates != ''
+      assign aisle_candidates = aisle_candidates | split: ','
+
+      for candidate in aisle_candidates
+        for product_collection in product.collections
+          if product_collection.handle == candidate
+            assign crumb_aisle = product_collection
+            break
+          endif
+        endfor
+
+        if crumb_aisle != null
+          break
+        endif
+      endfor
+    endif
+
+    if format_candidate != '' and format_candidate != crumb_aisle.handle
+      for product_collection in product.collections
+        if product_collection.handle == format_candidate
+          assign crumb_format = product_collection
+          break
+        endif
+      endfor
     endif
   endif
+
+  comment
+    Collection pages keep their own rule: the parent level is the entry the collection sits under in the main menu.
+  endcomment
 
   assign parent_title = ''
   assign parent_url = ''
 
-  if trail_collection != null
+  if request.page_type == 'collection' and collection.url != blank and collection.handle != 'all'
     for top_link in linklists['main-menu'].links
-      if top_link.url == trail_collection.url
+      if top_link.url == collection.url
         break
       endif
 
       for child_link in top_link.links
-        if child_link.url == trail_collection.url
+        if child_link.url == collection.url
           assign parent_title = top_link.title
           assign parent_url = top_link.url
           break
@@ -165,11 +284,20 @@ section is pulled up by the header height and covers it.
         </li>
       {%- endif -%}
 
-      {%- if request.page_type == 'product' and trail_collection != null -%}
-        <li class="breadcrumb__item">
-          <a class="breadcrumb__link" href="{{ trail_collection.url }}">{{ trail_collection.title }}</a>
-          {%- render 'icon', icon: 'chevron-right-small', class: 'breadcrumb__separator', direction_aware: true -%}
-        </li>
+      {%- if request.page_type == 'product' -%}
+        {%- if crumb_aisle != null -%}
+          <li class="breadcrumb__item">
+            <a class="breadcrumb__link" href="{{ crumb_aisle.url }}">{{ crumb_aisle.title }}</a>
+            {%- render 'icon', icon: 'chevron-right-small', class: 'breadcrumb__separator', direction_aware: true -%}
+          </li>
+        {%- endif -%}
+
+        {%- if crumb_format != null -%}
+          <li class="breadcrumb__item">
+            <a class="breadcrumb__link" href="{{ crumb_format.url }}">{{ crumb_format.title }}</a>
+            {%- render 'icon', icon: 'chevron-right-small', class: 'breadcrumb__separator', direction_aware: true -%}
+          </li>
+        {%- endif -%}
       {%- elsif request.page_type == 'article' -%}
         <li class="breadcrumb__item">
           <a class="breadcrumb__link" href="{{ blog.url }}">{{ blog.title }}</a>
@@ -206,14 +334,26 @@ section is pulled up by the header height and covers it.
           }
         {%- endif -%}
 
-        {%- if request.page_type == 'product' and trail_collection != null -%}
-          {%- assign position = position | plus: 1 -%}
-          ,{
-            "@type": "ListItem",
-            "position": {{ position }},
-            "name": {{ trail_collection.title | json }},
-            "item": "{{ shop.url }}{{ trail_collection.url }}"
-          }
+        {%- if request.page_type == 'product' -%}
+          {%- if crumb_aisle != null -%}
+            {%- assign position = position | plus: 1 -%}
+            ,{
+              "@type": "ListItem",
+              "position": {{ position }},
+              "name": {{ crumb_aisle.title | json }},
+              "item": "{{ shop.url }}{{ crumb_aisle.url }}"
+            }
+          {%- endif -%}
+
+          {%- if crumb_format != null -%}
+            {%- assign position = position | plus: 1 -%}
+            ,{
+              "@type": "ListItem",
+              "position": {{ position }},
+              "name": {{ crumb_format.title | json }},
+              "item": "{{ shop.url }}{{ crumb_format.url }}"
+            }
+          {%- endif -%}
         {%- elsif request.page_type == 'article' -%}
           {%- assign position = position | plus: 1 -%}
           ,{
