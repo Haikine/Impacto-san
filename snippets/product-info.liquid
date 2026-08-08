@@ -338,6 +338,9 @@ bought. A product can be coming soon without being pre-orderable, which is exact
       {%- when 'custom_trust_badges' -%}
         {%- render 'custom-trust-badges', block: block -%}
 
+      {%- when 'custom_promotions' -%}
+        {%- render 'custom-promotions', product: product, form_id: product_form_id, block: block -%}
+
       {%- when 'custom_info_wrapper' -%}
         {%- comment -%}Styling only: the box is drawn by CSS in the main-product section.{%- endcomment -%}
         <div hidden {{ block.shopify_attributes }}></div>

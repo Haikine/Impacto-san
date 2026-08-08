@@ -1,0 +1,208 @@
+{%- comment -%}
+----------------------------------------------------------------------------------------------------------------------
+ELIGIBLE PROMOTIONS (custom vcollect)
+----------------------------------------------------------------------------------------------------------------------
+
+Lists the promotions that are running AND that cover the product being viewed.
+
+Liquid cannot read Shopify discounts: the storefront exposes no `discounts` object, and the Storefront API does not
+expose them either. The discount stays the source of truth; migrations/sync-promotions.mjs copies the ones flagged
+`vcollect.afficher_sur_fiche` into `vcollect_promotion` metaobject entries, which Liquid can read.
+
+The dates are compared here, at render time, so a promotion appears and drops off on its own at the hour it starts and
+ends. Nothing to push, no script to re-run, and no cache to wait for.
+
+********************************************
+The panel
+********************************************
+
+A solid panel in the logo blue with white type, on merchant request: the offer has to be the thing you cannot miss in
+the product column. It sits inside the tinted `custom_info_wrapper` panel, so it carries only its fill, no border and
+no shadow, and one flat colour with no gradient.
+
+Three lines, each carrying information rather than decoration:
+
+  1. What the offer is, and how long is left. The deadline is the store's own <countdown-timer>, the element the home
+     page banner already runs on, so the urgency is real and ticking rather than a static "hurry" label.
+  2. What this product costs under the offer, against what it costs without it.
+  3. The code, framed and centred at the foot of the panel. It is the only part meant to be acted on rather than
+     read, hence the only outline and the only centred block, and the button copies the code in one tap, which is
+     what saves a mobile shopper from typing it wrong.
+
+********************************************
+The discounted price
+********************************************
+
+Measured against a real cart on 08/08/2026, discount code VCOLLECT10: on a 0,99 € subtotal Shopify takes 0,09 € and
+not 0,10 €, and on 2,97 € it takes 0,29 € and not 0,30 €. Shopify truncates to the cent below, it does not round.
+Liquid's integer `divided_by` truncates the same way, so `price | times: percent | divided_by: 100` reproduces
+Shopify's own arithmetic to the cent. Do not "fix" this into a rounding, it would overstate the discount.
+
+The price is only printed for a percentage with no minimum purchase (`prix_barre`, decided by the sync script): under a
+minimum, the price shown would be one the shopper may well not get.
+
+********************************************
+Supported variables
+********************************************
+
+* product: the product whose eligibility is tested
+* form_id: the product form id, so the price follows the selected variant
+{%- endcomment -%}
+
+{%- comment -%}
+  A sold-out product cannot be bought, so a discount on it is noise at best and a tease at worst. `product.available`
+  is false only when NO variant is buyable, so a product with one sold-out size keeps its promotion.
+{%- endcomment -%}
+{%- if product.available -%}
+  {%- liquid
+    assign now_timestamp = 'now' | date: '%s' | plus: 0
+    assign price_already_shown = false
+  -%}
+
+  {%- capture promotions_markup -%}
+    {%- for promotion in metaobjects.vcollect_promotion.values -%}
+      {%- liquid
+        unless promotion.afficher_sur_fiche.value
+          continue
+        endunless
+
+        comment
+          A blank start means "already running", the same way a blank end means "no end date": an empty field must
+          never hide a promotion the merchant deliberately flagged.
+        endcomment
+        assign starts_at = promotion.date_debut.value | date: '%s' | plus: 0
+        if starts_at > now_timestamp
+          continue
+        endif
+
+        assign ends_at = promotion.date_fin.value | date: '%s' | plus: 0
+        if ends_at > 0 and ends_at <= now_timestamp
+          continue
+        endif
+
+        assign is_eligible = false
+
+        case promotion.portee.value
+          when 'collections'
+            for promotion_collection in promotion.collections.value
+              for product_collection in product.collections
+                if product_collection.id == promotion_collection.id
+                  assign is_eligible = true
+                  break
+                endif
+              endfor
+
+              if is_eligible
+                break
+              endif
+            endfor
+          when 'produits'
+            for promotion_product in promotion.produits.value
+              if promotion_product.id == product.id
+                assign is_eligible = true
+                break
+              endif
+            endfor
+          else
+            assign is_eligible = true
+        endcase
+
+        unless is_eligible
+          continue
+        endunless
+
+        comment
+          Only the first promotion prices the product. Two struck prices would each ignore the other, and nothing
+          guarantees two discounts combine, so the second one would be a promise the cart does not keep.
+        endcomment
+        assign show_price = false
+        if promotion.prix_barre.value and promotion.pourcentage.value > 0 and price_already_shown == false
+          assign show_price = true
+          assign price_already_shown = true
+        endif
+      -%}
+
+      <div class="promotion-offer">
+        <div class="promotion-offer__top">
+          <span class="promotion-offer__label">{{ promotion.titre.value | escape }}</span>
+
+          {%- if ends_at > 0 -%}
+            {%- comment -%}
+              Server-rendered first, then kept ticking by custom-countdown.js. A shopper who never receives the script
+              still reads how long is left instead of a row of zeros.
+            {%- endcomment -%}
+            {%- liquid
+              assign remaining = ends_at | minus: now_timestamp
+              assign remaining_days = remaining | divided_by: 86400
+              assign remaining_hours = remaining | modulo: 86400 | divided_by: 3600
+              assign remaining_minutes = remaining | modulo: 3600 | divided_by: 60
+            -%}
+
+            <countdown-timer class="promotion-offer__countdown" target="{{ promotion.date_fin.value | date: '%Y-%m-%dT%H:%M:%S%z' }}">
+              <span><b data-countdown-days>{{ remaining_days }}</b>{{ 'product.promotions.unit_days' | t }}</span>
+              <span><b data-countdown-hours>{{ remaining_hours }}</b>{{ 'product.promotions.unit_hours' | t }}</span>
+              <span><b data-countdown-minutes>{{ remaining_minutes }}</b>{{ 'product.promotions.unit_minutes' | t }}</span>
+            </countdown-timer>
+          {%- endif -%}
+        </div>
+
+        {%- if show_price -%}
+          {%- comment -%}
+            <variant-inventory> is the theme's own element: it hides every direct child whose data-variant-id is not
+            the selected one, so the price follows the variant picker without a line of JavaScript here.
+          {%- endcomment -%}
+          <variant-inventory {% if form_id %}form="{{ form_id }}"{% endif %} class="promotion-offer__prices">
+            {%- for variant in product.variants -%}
+              {%- unless variant.available -%}
+                {%- continue -%}
+              {%- endunless -%}
+
+              {%- liquid
+                assign discount_amount = variant.price | times: promotion.pourcentage.value | divided_by: 100
+                assign discounted_price = variant.price | minus: discount_amount
+              -%}
+
+              <span data-variant-id="{{ variant.id }}" {% unless variant == product.selected_or_first_available_variant %}hidden{% endunless %}>
+                <span class="promotion-offer__price">{{ discounted_price | money }}</span>
+                <s class="promotion-offer__was">{{ variant.price | money }}</s>
+              </span>
+            {%- endfor -%}
+          </variant-inventory>
+        {%- endif -%}
+
+        {%- if promotion.message.value != blank -%}
+          <p class="promotion-offer__note">{{ promotion.message.value | escape }}</p>
+        {%- endif -%}
+
+        {%- if promotion.code.value != blank -%}
+          <div class="promotion-offer__code">
+            <span class="promotion-offer__code-hint">{{ 'product.promotions.code_hint' | t }}</span>
+
+            <copy-code class="promotion-offer__coupon" code="{{ promotion.code.value | escape }}">
+              <button type="button" class="promotion-offer__coupon-button">
+                <span class="promotion-offer__coupon-code">{{ promotion.code.value | escape }}</span>
+                <span
+                  class="promotion-offer__coupon-action"
+                  data-copy-label
+                  data-copied-label="{{ 'product.promotions.copied' | t | escape }}"
+                  aria-live="polite"
+                >
+                  {{- 'product.promotions.copy' | t -}}
+                </span>
+              </button>
+            </copy-code>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endfor -%}
+  {%- endcapture -%}
+
+  {%- if promotions_markup != blank -%}
+    <script type="module" src="{{ 'custom-countdown.js' | asset_url }}"></script>
+    <script type="module" src="{{ 'custom-copy-code.js' | asset_url }}"></script>
+
+    <div class="promotion-offer-list" {{ block.shopify_attributes }}>
+      {{- promotions_markup -}}
+    </div>
+  {%- endif -%}
+{%- endif -%}

@@ -114,6 +114,14 @@
         "other": "{{ count }} couleurs"
       }
     },
+    "promotions": {
+      "unit_days": "j",
+      "unit_hours": "h",
+      "unit_minutes": "min",
+      "copy": "Copier",
+      "copied": "Copié",
+      "code_hint": "Code à saisir au panier"
+    },
     "waitlist": {
       "intro": "Rejoins la liste d'attente pour ne pas manquer la mise en vente.",
       "notify_button": "Me prévenir",

@@ -114,6 +114,14 @@
         "other": "{{ count }} colors available"
       }
     },
+    "promotions": {
+      "unit_days": "d",
+      "unit_hours": "h",
+      "unit_minutes": "min",
+      "copy": "Copy",
+      "copied": "Copied",
+      "code_hint": "Code to enter at checkout"
+    },
     "waitlist": {
       "intro": "Join the waitlist so you don't miss the release.",
       "notify_button": "Notify me",

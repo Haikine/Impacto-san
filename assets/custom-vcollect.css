@@ -971,3 +971,163 @@
     transition: none;
   }
 }
+
+/* ---------------------------------------------------------------------------
+ * Promotion panel on the product page
+ * ---------------------------------------------------------------------------
+ * Rendered by snippets/custom-promotions.liquid. A solid panel in the logo blue
+ * with white type: the offer is what the shopper must not miss in the column.
+ * It already sits inside the tinted custom_info_wrapper panel, so it carries
+ * only its fill, no border and no shadow, and one flat colour with no gradient.
+ * White on #0043b5 measures ~8.5:1, well past WCAG AA, and the muted whites
+ * used below stay above 4.5:1.
+ *
+ * The framed coupon at the bottom is the one element that is meant to be acted
+ * on rather than read, which is why it is the only centred block and the only
+ * one carrying an outline. Everything above it is type.
+ */
+.promotion-offer-list {
+  display: grid;
+  gap: var(--spacing-3);
+}
+
+.promotion-offer {
+  display: grid;
+  gap: var(--spacing-3);
+  padding: var(--spacing-5);
+  border-radius: var(--rounded-sm);
+  background: #0043b5;
+  color: #ffffff;
+}
+
+/* The deadline can pass while the shopper is on the page: custom-countdown.js
+   reflects [expired] on the timer, and the whole panel goes with it rather than
+   leaving an offer on screen that the cart would refuse. */
+.promotion-offer:has(countdown-timer[expired]) {
+  display: none;
+}
+
+.promotion-offer__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2) var(--spacing-4);
+}
+
+.promotion-offer__label {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.promotion-offer__countdown {
+  display: flex;
+  gap: var(--spacing-2);
+  padding: 3px var(--spacing-2);
+  border-radius: var(--rounded-button);
+  background: rgb(255 255 255 / 0.15);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+.promotion-offer__countdown b {
+  font-weight: 700;
+}
+
+.promotion-offer__prices > * {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--spacing-3);
+}
+
+/* The rule above would otherwise defeat the hidden attribute that the theme's
+   <variant-inventory> toggles when the shopper changes variant. */
+.promotion-offer__prices > [hidden] {
+  display: none;
+}
+
+.promotion-offer__price {
+  font-size: var(--text-h2);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.promotion-offer__was {
+  color: rgb(255 255 255 / 0.7);
+}
+
+.promotion-offer__note {
+  font-size: var(--text-sm);
+  color: rgb(255 255 255 / 0.85);
+}
+
+/* Centred, unlike the two rows above it: the offer and its price are read, the
+   coupon is acted on, and centring the block is what separates the two. */
+.promotion-offer__code {
+  display: grid;
+  gap: var(--spacing-2);
+  text-align: center;
+}
+
+.promotion-offer__coupon {
+  display: block;
+}
+
+/* Full width rather than sized to the code: the frame is what carries the
+   coupon now that the dashed outline is gone, and a box the width of the panel
+   reads as a field to act on instead of a label sitting in the corner. */
+.promotion-offer__coupon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-4);
+  width: 100%;
+  padding: var(--spacing-3) var(--spacing-4);
+  border: 1px solid rgb(255 255 255 / 0.55);
+  border-radius: var(--rounded-sm);
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.promotion-offer__coupon-button:hover {
+  border-color: #ffffff;
+  background: rgb(255 255 255 / 0.12);
+}
+
+.promotion-offer__coupon-button:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.promotion-offer__coupon-code {
+  font-size: var(--text-base);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.promotion-offer__coupon-action {
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.8);
+}
+
+.promotion-offer__coupon[copied] .promotion-offer__coupon-action {
+  color: #ffffff;
+}
+
+.promotion-offer__code-hint {
+  font-size: var(--text-sm);
+  color: rgb(255 255 255 / 0.85);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .promotion-offer__coupon-button {
+    transition: none;
+  }
+}
