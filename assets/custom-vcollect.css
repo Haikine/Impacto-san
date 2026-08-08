@@ -993,8 +993,8 @@
 
 .promotion-offer {
   display: grid;
-  gap: var(--spacing-3);
-  padding: var(--spacing-5);
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-4);
   border-radius: var(--rounded-sm);
   background: #0043b5;
   color: #ffffff;
@@ -1016,7 +1016,7 @@
 }
 
 .promotion-offer__label {
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1050,7 +1050,7 @@
 }
 
 .promotion-offer__price {
-  font-size: var(--text-h2);
+  font-size: var(--text-h4);
   font-weight: 700;
   line-height: 1;
 }
@@ -1085,7 +1085,7 @@
   justify-content: center;
   gap: var(--spacing-4);
   width: 100%;
-  padding: var(--spacing-3) var(--spacing-4);
+  padding: var(--spacing-2) var(--spacing-3);
   border: 1px solid rgb(255 255 255 / 0.55);
   border-radius: var(--rounded-sm);
   background: none;
@@ -1105,7 +1105,7 @@
 }
 
 .promotion-offer__coupon-code {
-  font-size: var(--text-base);
+  font-size: var(--text-sm);
   font-weight: 700;
   letter-spacing: 0.08em;
 }
@@ -1122,7 +1122,7 @@
 }
 
 .promotion-offer__code-hint {
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   color: rgb(255 255 255 / 0.85);
 }
 
