@@ -107,23 +107,32 @@ const formatMoney = (cents) =>
 
 /**
  * Sum the cart lines that count toward a gift, excluding the gift itself.
+ *
+ * Order-level discount codes are deliberately NOT deducted, because Shopify does
+ * not deduct them either when it decides how many gifts are owed. Measured twice
+ * on the live store on 10/08/2026, with VCOLLECT10 (-10 % on the order) applied:
+ *
+ * * 329,80 EUR of products, 296,82 EUR actually paid, 4 gifts given
+ * * 164,90 EUR of products, 148,41 EUR actually paid, 2 gifts given
+ *
+ * Both counts follow the price before the code, never the price paid. Shopify
+ * applies product discounts, which is what the gift is, before order discounts,
+ * so the threshold is read on the undiscounted lines.
+ *
+ * Impact's free shipping bar does subtract them, and this function copied it
+ * until today. That is what put two different rules on the same screen: the cart
+ * showed 4 gifts while the bar still asked for 103,18 EUR more.
+ *
  * @param {Object} cart - Cart payload from the Ajax API
  * @returns {number} Eligible subtotal in cents
  */
-const eligibleSubtotal = (cart) => {
-  const gross = cart.items
-    .filter((item) => item.variant_id !== config?.variantId)
-    .reduce((sum, item) => sum + item.final_line_price, 0);
-
-  /* Same reasoning as Impact's free shipping bar: a cart-level discount already
-     reduced what the customer pays, so it must not also count toward the goal */
-  const discount = (cart.cart_level_discount_applications || []).reduce(
-    (sum, application) => sum + application.total_allocated_amount,
-    0
+const eligibleSubtotal = (cart) =>
+  Math.max(
+    0,
+    cart.items
+      .filter((item) => item.variant_id !== config?.variantId)
+      .reduce((sum, item) => sum + item.final_line_price, 0)
   );
-
-  return Math.max(0, gross - discount);
-};
 
 /**
  * Split the gift units into those Shopify is giving away and those it is charging.

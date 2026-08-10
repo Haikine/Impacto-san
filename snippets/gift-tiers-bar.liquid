@@ -62,7 +62,10 @@ wording instead of asking for another 80 EUR that would earn nothing.
 
 {%- if gift_tiers_enabled -%}
   {%- liquid
-    # The gift must not count toward the goal that unlocks it
+    # The gift must not count toward the goal that unlocks it. Order-level discount
+    # codes are not deducted either: Shopify reads the threshold on the price before
+    # the code, so deducting it here would put two rules on the same screen. The
+    # measurement behind that sentence is in assets/custom-gift-tiers.js.
 
     assign eligible_subtotal = 0
 
@@ -71,18 +74,6 @@ wording instead of asking for another 80 EUR that would earn nothing.
         assign eligible_subtotal = eligible_subtotal | plus: line_item.final_line_price
       endunless
     endfor
-
-    assign cart_discount = 0
-
-    for discount_application in cart.cart_level_discount_applications
-      assign cart_discount = cart_discount | plus: discount_application.total_allocated_amount
-    endfor
-
-    assign eligible_subtotal = eligible_subtotal | minus: cart_discount
-
-    if eligible_subtotal < 0
-      assign eligible_subtotal = 0
-    endif
 
     # Gifts Shopify is actually giving away right now, so the first paint matches
     # the cart before any script runs
