@@ -55,7 +55,7 @@ const MAX_PROBES = 4;
  */
 const STALE_RENDER_WINDOW = 1400;
 
-/** @type {{variantId: number, step: number, reward: string}|null} */
+/** @type {{variantId: number, step: number|null, max: number|null, reward: string}|null} */
 let config = null;
 let reconciling = false;
 
@@ -74,6 +74,25 @@ let rerunNeeded = false;
  * probe when the shopper spent more than they had before.
  */
 let lastSubtotal = null;
+
+/**
+ * Read a whole positive number out of untrusted input.
+ *
+ * Nothing here is hand-typed: the numbers come from the configuration attribute
+ * and from cart payloads. But a shopper once read "Ajoutez NaN EUR" on the cart
+ * page, because a single missing or non-numeric value turns every later
+ * computation into NaN silently, and Math.max(0, NaN) is NaN rather than 0. So
+ * every number is now checked where it enters, and an unusable one becomes null
+ * instead of travelling to the screen.
+ *
+ * @param {*} value - Candidate read from an attribute or a cart payload
+ * @returns {number|null} The number, or null when it cannot be trusted
+ */
+const positiveNumber = (value) => {
+  const number = Number(value);
+
+  return Number.isFinite(number) && number > 0 ? number : null;
+};
 
 /**
  * Format an amount in cents using the active market's currency.
@@ -266,7 +285,13 @@ const reconcilePass = async (cart, force) => {
     /* Otherwise every probed unit came back free: loop and ask for more */
   }
 
-  lastSubtotal = eligibleSubtotal(current);
+  const settledSubtotal = eligibleSubtotal(current);
+
+  /* A subtotal that did not add up must never settle in: the guard above compares
+     against it, and NaN loses every comparison, so a single bad payload would
+     freeze the probe for the rest of the session. null means "not measured",
+     which makes the next change probe again. */
+  lastSubtotal = Number.isFinite(settledSubtotal) ? settledSubtotal : null;
 
   const giftsChanged = giftUnits(current).total !== giftsOnEntry;
 
@@ -299,7 +324,7 @@ const reconcilePass = async (cart, force) => {
 /**
  * Register the gift configuration. Called by every <gift-tiers-bar> instance but
  * only honoured once, since the drawer and the cart page both render the bar.
- * @param {{variantId: number, step: number, reward: string}} definition - Step in shop-currency cents
+ * @param {{variantId: number, step: number, max: number, reward: string}} definition - Step in shop-currency cents
  * @returns {void}
  */
 const registerConfig = (definition) => {
@@ -307,11 +332,32 @@ const registerConfig = (definition) => {
     return;
   }
 
+  const variantId = positiveNumber(definition?.variantId);
+
+  /* Without the variant there is no gift to add and nothing to promise. Staying
+     unregistered keeps the feature off rather than half on, and leaves the next
+     instance free to register a well-formed configuration. */
+  if (variantId === null) {
+    console.warn('[gift-tiers] unusable configuration, gift disabled:', definition);
+    return;
+  }
+
   /* The step is authored in the shop currency; other markets need converting,
      otherwise 80 EUR would silently become 80 CHF on the Swiss market */
-  const rate = parseFloat(window.Shopify?.currency?.rate) || 1;
+  const rate = positiveNumber(window.Shopify?.currency?.rate) || 1;
+  const step = positiveNumber(definition.step);
 
-  config = { ...definition, step: Math.round(definition.step * rate) };
+  config = {
+    variantId,
+    reward: typeof definition.reward === 'string' ? definition.reward : '',
+    /* Sentence only. null when the configuration cannot say how much a gift
+       costs: the bar then hides instead of quoting a made-up amount, and the
+       cart keeps handing out gifts all the same. */
+    step: step === null ? null : positiveNumber(Math.round(step * rate)),
+    /* Per-order limit of the discount, mirrored here for the sentence only.
+       null means "not configured", never "limit not reached". */
+    max: positiveNumber(definition.max),
+  };
 
   /* A returning shopper can land with a cart that already crossed a threshold */
   fetch(CART_URL)
@@ -339,6 +385,15 @@ class GiftTiersBar extends HTMLElement {
       registerConfig(JSON.parse(this.getAttribute('config')));
     } catch (error) {
       console.warn('[gift-tiers] invalid configuration:', error);
+      this.hidden = true;
+      return;
+    }
+
+    /* registerConfig turns down a definition it cannot use. Without one there is
+       no gift to track, so the bar stays off the page rather than listening for
+       changes it has no way to describe. */
+    if (!config) {
+      this.hidden = true;
       return;
     }
 
@@ -353,7 +408,16 @@ class GiftTiersBar extends HTMLElement {
   }
 
   _onCartChanged(event) {
-    this.render(eligibleSubtotal(event.detail.cart), giftUnits(event.detail.cart).free);
+    const cart = event.detail?.cart;
+
+    /* Any script on the page may dispatch cart:change, and the theme's own event
+       is not the only one we hear. Only something shaped like a cart can be
+       turned into a sentence. */
+    if (!cart || !Array.isArray(cart.items)) {
+      return;
+    }
+
+    this.render(eligibleSubtotal(cart), giftUnits(cart).free);
   }
 
   /**
@@ -369,11 +433,32 @@ class GiftTiersBar extends HTMLElement {
       return;
     }
 
-    /* The step only drives the sentence. When Shopify hands out fewer gifts than
-       the step suggests, its per-order cap has been reached, and promising another
-       one would be a lie, so the bar switches to its "all unlocked" wording. */
+    /* No usable step, no honest sentence: the bar takes itself off the page
+       instead of quoting an amount it cannot compute. The gift itself does not
+       depend on this, the reconciler keeps working. */
+    this.hidden = config.step === null;
+
+    if (this.hidden) {
+      return;
+    }
+
+    /* A cart that would not add up used to reach the shopper as "Ajoutez NaN EUR"
+       (seen on the cart page on 10/08/2026). Keeping the sentence already on
+       screen, which was computed from numbers that did add up, beats replacing it
+       with one that means nothing. */
+    if (!Number.isFinite(subtotal) || !Number.isFinite(earned)) {
+      console.warn('[gift-tiers] repaint skipped, unusable numbers:', { subtotal, earned });
+      return;
+    }
+
+    /* Two independent signals that there is nothing left to promise, and either
+       one is enough. Shopify handing out fewer gifts than the steps call for is
+       the live evidence that its per-order limit is reached; config.max is the
+       mirror of that limit, and it answers one step earlier, at the exact moment
+       the last gift is earned, where the live evidence still looks like a shopper
+       who is simply on their way to the next step. */
     const expected = Math.floor(subtotal / config.step);
-    const capped = earned > 0 && earned < expected;
+    const capped = (config.max !== null && earned >= config.max) || (earned > 0 && earned < expected);
     const towardNext = subtotal - earned * config.step;
 
     messageElement.innerHTML = capped

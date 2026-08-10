@@ -14,9 +14,10 @@ How the promise is actually kept
 ********************************************
 
 This snippet and its script only decide how many gift units sit in the cart. The price comes from the Shopify automatic
-discount "Cadeau palier - 1 Booster offert par tranche de 80 EUR (max 2)", which was verified on the live store:
+discount "Cadeau palier - 1 Booster offert par tranche de 80 EUR", which was verified on the live store:
 
-* it repeats once per completed 80 EUR step, capped at 2 per order
+* it repeats once per completed 80 EUR step, capped at 10 per order (measured on 10/08/2026: a 989,40 EUR cart, worth
+  12 steps, came back with 10 units at 0 EUR and the surplus charged)
 * any gift unit beyond the entitlement is charged at full price, so over-adding cannot be exploited
 
 A single gift product with a varying quantity is used rather than one product per tier, because two automatic discounts
@@ -41,8 +42,13 @@ Configuration
 How many gifts a shopper gets is NOT configured here. The automatic discount in the admin decides, and the script reads
 the answer back from the cart, so raising its per-order limit or moving its threshold needs no change to this file.
 
-gift_step only drives the sentence in the progress bar, "spend X more for a booster". Leave it equal to the discount's
-threshold to keep that sentence truthful. If it drifts, the wording is wrong but the cart and the checkout are not.
+gift_step and gift_max only drive the sentence in the progress bar, "spend X more for a booster". Leave them equal to
+the discount's threshold and per-order limit to keep that sentence truthful. If they drift, the wording is wrong but the
+cart and the checkout are not.
+
+gift_max exists because the sentence talks about a cart the shopper does not have yet, and Shopify can only price the
+cart as it is now. Once the limit is reached the bar has nothing left to promise, so it switches to its "all unlocked"
+wording instead of asking for another 80 EUR that would earn nothing.
 {%- endcomment -%}
 
 {%- liquid
@@ -51,6 +57,7 @@ threshold to keep that sentence truthful. If it drifts, the wording is wrong but
   assign gift_variant_id = 50520683020616
   assign gift_reward = 'Booster offert'
   assign gift_step = 8000
+  assign gift_max = 10
 -%}
 
 {%- if gift_tiers_enabled -%}
@@ -95,6 +102,8 @@ threshold to keep that sentence truthful. If it drifts, the wording is wrong but
       echo gift_reward | json
       echo ',"step":'
       echo gift_step
+      echo ',"max":'
+      echo gift_max
       echo '}'
     endcapture
   -%}
