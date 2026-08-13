@@ -141,15 +141,6 @@ Supported variables
       {%- render 'product-rating', product: product, class: rating_class, display_mode: settings.product_rating_mode -%}
     {%- endif -%}
 
-    {%- comment -%}
-    Custom vcollect: low stock notice, shown only once the best-stocked variant enters the red zone. The rule and its
-    threshold live in 'custom-card-stock' and the "Product card" theme settings, mirroring the product page inventory
-    bar so the tile and the page never disagree on what "almost gone" means.
-    {%- endcomment -%}
-    {%- if settings.show_card_stock -%}
-      {%- render 'custom-card-stock', product: product, text_alignment: text_alignment -%}
-    {%- endif -%}
-
     {%- if settings.product_color_display != 'hide' and show_swatches != false -%}
       {%- assign color_label_list = 'general.label.color' | t | replace: ', ', ',' | downcase | split: ',' -%}
 
@@ -232,6 +223,19 @@ Supported variables
     {%- assign is_coming_soon = is_coming_soon | strip -%}
     {%- capture is_pre_order -%}{%- render 'pre-order-check', product: product -%}{%- endcapture -%}
     {%- assign is_pre_order = is_pre_order | strip -%}
+
+    {%- comment -%}
+    Custom vcollect: low stock notice, shown only once the best-stocked variant enters the red zone. The rule and its
+    threshold live in 'custom-card-stock' and the "Product card" theme settings, mirroring the product page inventory
+    bar so the tile and the page never disagree on what "almost gone" means.
+
+    Rendered here, right before the quick buy, because both are pinned to the bottom of the card (see the CSS): tiles
+    of unequal content keep the notice and the button on a shared baseline, instead of the notice floating wherever
+    the price line happens to end.
+    {%- endcomment -%}
+    {%- if settings.show_card_stock -%}
+      {%- render 'custom-card-stock', product: product, text_alignment: text_alignment -%}
+    {%- endif -%}
 
     {%- assign allow_quick_buy = true -%}
     {%- if is_coming_soon == 'true' and is_pre_order != 'true' -%}

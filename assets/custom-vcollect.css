@@ -1174,12 +1174,25 @@
 /* ---------------------------------------------------------------------------
  * Product card: low stock notice
  * ---------------------------------------------------------------------------
- * Rendered by snippets/custom-card-stock.liquid under the price. The red is
- * the same #b40c1c as the "Very low stock" state of the inventory bar on the
- * product page (a block setting there), so the tile and the page tell the
- * same story. If that setting ever changes color, change it here too.
+ * Rendered by snippets/custom-card-stock.liquid just before the quick buy.
+ * The red is the same #b40c1c as the "Very low stock" state of the inventory
+ * bar on the product page (a block setting there), so the tile and the page
+ * tell the same story. If that setting ever changes color, change it here too.
+ *
+ * The auto margin pins the notice to the bottom of the card, on the shared
+ * baseline of the add-to-cart buttons, instead of letting it float wherever
+ * the price line ends (a sale price or a rating would push it out of line
+ * with its neighbours). The quick buy right after it normally carries that
+ * auto margin itself (see above); when a notice precedes it, the notice takes
+ * over the job and the button only keeps its breathing space.
  */
 .product-card__stock {
   color: #b40c1c;
   font-weight: 600;
+  margin-block-start: auto;
+  padding-block-start: var(--spacing-2);
+}
+
+.product-card__stock + .product-card__quick-buy {
+  margin-block-start: 0;
 }
