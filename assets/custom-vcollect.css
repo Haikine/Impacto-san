@@ -311,10 +311,9 @@
  * fitting the media inside letterboxes the odd formats instead of letting them
  * grow.
  *
- * Mobile caps to the viewport width; desktop caps to what actually fits under
- * the sticky header (the gallery pins at --sticky-area-height + 20px, see the
- * sticky rule above), so the whole image is visible without scrolling. The
- * plain height line is a fallback in case the theme variable ever goes away.
+ * Mobile caps to the viewport width; desktop caps to 70vh (Lucas, 13/08/2026),
+ * which leaves room for the sticky header so the whole image stays visible
+ * without scrolling.
  */
 .product-gallery__media img,
 .product-gallery__media video,
@@ -333,8 +332,7 @@
 
 @media screen and (min-width: 1000px) {
   .product-gallery__media {
-    height: 640px;
-    height: min(calc(100vh - var(--sticky-area-height) - 72px), 700px);
+    height: 70vh;
   }
 }
 
