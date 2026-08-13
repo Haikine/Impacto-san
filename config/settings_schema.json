@@ -648,6 +648,20 @@
       },
       {
         "type": "checkbox",
+        "id": "show_card_stock",
+        "label": "Show low stock notice (custom)",
+        "info": "Custom vcollect addition. Shows the remaining quantity on the card once the best-stocked variant falls to the threshold below.",
+        "default": true
+      },
+      {
+        "type": "number",
+        "id": "card_stock_threshold",
+        "label": "Low stock notice threshold (custom)",
+        "info": "Keep in sync with the \"Very low stock threshold\" of the inventory bar on the product page.",
+        "default": 20
+      },
+      {
+        "type": "checkbox",
         "id": "show_sold_out_badge",
         "label": "Show sold out badge",
         "default": true

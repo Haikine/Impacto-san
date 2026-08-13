@@ -112,6 +112,10 @@
       "available_colors_count": {
         "one": "{{ count }} color available",
         "other": "{{ count }} colors available"
+      },
+      "card_stock_notice": {
+        "one": "Only {{ count }} left in stock",
+        "other": "Only {{ count }} left in stock"
       }
     },
     "promotions": {

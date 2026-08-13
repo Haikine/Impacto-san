@@ -1,0 +1,74 @@
+{%- comment -%}
+----------------------------------------------------------------------------------------------------------------------
+CARD STOCK NOTICE (custom vcollect)
+----------------------------------------------------------------------------------------------------------------------
+
+Custom addition (not part of Impact core). Shows "Plus que X en stock" on a product card once the product enters the
+red zone, the same zone the inventory bar paints red on the product page. Everything renders server-side from data
+Liquid already has, so the card costs nothing extra to load.
+
+The quantity shown is the BEST-stocked variant (Lucas's rule): if even the fullest variant is in the red zone, the
+product as a whole really is scarce. Summing variants would mix units (a display and a single booster), and taking
+the default variant would cry scarcity while another variant still has plenty.
+
+A product with an untracked purchasable variant never shows the notice: untracked means unlimited for sale purposes,
+and its inventory_quantity of 0 must not be mistaken for scarcity (same rule as the product page inventory bar).
+
+The coming-soon/pre-order checks run last on purpose: they render two snippets, so only the rare red-zone card pays
+for them. An unreleased product without pre-order shows the waitlist button instead of a buy button, and a scarcity
+line next to "Me prévenir" would be noise; during an open pre-order the remaining allocation is real, so it shows.
+
+********************************************
+Supported variables
+********************************************
+
+* product: the product to render the notice for (required)
+* text_alignment: "center" centers the notice, anything else leaves it left-aligned (optional)
+{%- endcomment -%}
+
+{%- liquid
+  assign threshold = settings.card_stock_threshold | default: 0
+
+  assign best_quantity = 0
+  assign has_untracked_purchasable = false
+
+  for variant in product.variants
+    if variant.inventory_management == blank
+      if variant.available
+        assign has_untracked_purchasable = true
+        break
+      endif
+    elsif variant.inventory_quantity > best_quantity
+      assign best_quantity = variant.inventory_quantity
+    endif
+  endfor
+
+  assign show_notice = false
+  if has_untracked_purchasable == false and best_quantity > 0 and best_quantity <= threshold
+    assign show_notice = true
+  endif
+
+  if show_notice
+    capture is_coming_soon
+      render 'coming-soon-check', product: product
+    endcapture
+    assign is_coming_soon = is_coming_soon | strip
+
+    if is_coming_soon == 'true'
+      capture is_pre_order
+        render 'pre-order-check', product: product
+      endcapture
+      assign is_pre_order = is_pre_order | strip
+
+      if is_pre_order != 'true'
+        assign show_notice = false
+      endif
+    endif
+  endif
+-%}
+
+{%- if show_notice -%}
+  <p class="product-card__stock text-sm {% if text_alignment == 'center' %}text-center{% endif %}">
+    {{- 'product.general.card_stock_notice' | t: count: best_quantity -}}
+  </p>
+{%- endif -%}

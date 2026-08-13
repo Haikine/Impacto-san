@@ -1170,3 +1170,16 @@
     transition: none;
   }
 }
+
+/* ---------------------------------------------------------------------------
+ * Product card: low stock notice
+ * ---------------------------------------------------------------------------
+ * Rendered by snippets/custom-card-stock.liquid under the price. The red is
+ * the same #b40c1c as the "Very low stock" state of the inventory bar on the
+ * product page (a block setting there), so the tile and the page tell the
+ * same story. If that setting ever changes color, change it here too.
+ */
+.product-card__stock {
+  color: #b40c1c;
+  font-weight: 600;
+}
