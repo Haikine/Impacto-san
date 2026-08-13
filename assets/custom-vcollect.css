@@ -299,6 +299,35 @@
   }
 }
 
+/* ---------------------------------------------------------------------------
+ * Product page, mobile: one stable height for the gallery carousel
+ * ---------------------------------------------------------------------------
+ * The gallery is a <media-carousel adaptive-height>: it re-measures the active
+ * slide on every swipe and animates the list to that height. With media of
+ * mixed proportions on one product (a squarish range visual, tall box renders,
+ * a wide coin strip) the page jumped at every switch, and the tallest images
+ * ran past the screen. Giving every slide the same height keeps the measured
+ * value constant, so the carousel stops moving, and fitting the media inside
+ * letterboxes the odd formats instead of letting them grow.
+ *
+ * Only below 1000px: the desktop layouts already cap the gallery through the
+ * grid column and the sticky wrapper above.
+ */
+@media screen and (max-width: 999px) {
+  .product-gallery__media {
+    height: min(92vw, 480px);
+  }
+
+  .product-gallery__media img,
+  .product-gallery__media video,
+  .product-gallery__media iframe,
+  .product-gallery__media model-viewer {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
 
 /* ---------------------------------------------------------------------------
  * Home: tighter vertical rhythm between sections
