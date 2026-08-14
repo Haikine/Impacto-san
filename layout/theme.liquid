@@ -42,6 +42,20 @@ NOTE TO DEVELOPERS: welcome to Impact theme! We hope that you will enjoy editing
     {%- endif -%}
 
     {%- comment -%}
+      Custom vcollect (SEO audit 14/08/2026): tag-filtered collection URLs (/collections/handle/tag) are live,
+      self-canonical duplicates of their base collection: 52 collections x 69 product tags is a latent pool of
+      ~3,500 crawlable near-duplicates that robots.txt does not cover (a robots.txt.liquid override was tried on
+      31/07 and rolled back: it loses the agentic header and the Allow rules). Same treatment for /search result
+      pages, unbounded by nature. noindex,follow keeps the links crawlable so no equity is stranded, while the
+      pages themselves stay out of the index.
+    {%- endcomment -%}
+    {%- if request.page_type == 'collection' and current_tags != blank -%}
+      <meta name="robots" content="noindex, follow">
+    {%- elsif request.page_type == 'search' -%}
+      <meta name="robots" content="noindex, follow">
+    {%- endif -%}
+
+    {%- comment -%}
       Custom vcollect: give the homepage a title that contains what people search for.
 
       Shopify falls back to the shop name when the homepage title field in Online Store > Preferences is left empty,
