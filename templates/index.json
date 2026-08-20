@@ -763,6 +763,74 @@
         "button_background": "#002d78",
         "button_text_color": "#ffffff"
       }
+    },
+    "guides_protection": {
+      "type": "multi-column",
+      "blocks": {
+        "guide-sleeves": {
+          "type": "item",
+          "settings": {
+            "column_size": "4",
+            "title": "Sleeves",
+            "heading_tag": "h3",
+            "content": "<p>La protection de base, à mettre sur toute carte que l'on garde. Quelle taille, quelle matière et combien en prévoir.</p>",
+            "link_url": "/pages/sleeves-pokemon-guide",
+            "link_text": "Lire le guide des sleeves",
+            "link_style": "link"
+          }
+        },
+        "guide-toploader": {
+          "type": "item",
+          "settings": {
+            "column_size": "4",
+            "title": "Toploaders",
+            "heading_tag": "h3",
+            "content": "<p>L'étui rigide des cartes de valeur. Le format à choisir, et la règle à connaître avant de l'utiliser.</p>",
+            "link_url": "/pages/toploader-pokemon-guide",
+            "link_text": "Lire le guide du toploader",
+            "link_style": "link"
+          }
+        },
+        "guide-acrylique": {
+          "type": "item",
+          "settings": {
+            "column_size": "4",
+            "title": "Protections acryliques",
+            "heading_tag": "h3",
+            "content": "<p>Display, ETB ou coffret : les dimensions exactes pour exposer un scellé sans l'abîmer.</p>",
+            "link_url": "/pages/protection-acrylique-pokemon-guide",
+            "link_text": "Lire le guide des protections",
+            "link_style": "link"
+          }
+        },
+        "guide-classeurs": {
+          "type": "item",
+          "settings": {
+            "column_size": "4",
+            "title": "Classeurs",
+            "heading_tag": "h3",
+            "content": "<p>Version cartes ou version toploader : le seul choix à faire avant d'acheter.</p>",
+            "link_url": "/pages/classeur-pokemon-guide",
+            "link_text": "Lire le guide des classeurs",
+            "link_style": "link"
+          }
+        }
+      },
+      "block_order": [
+        "guide-sleeves",
+        "guide-toploader",
+        "guide-acrylique",
+        "guide-classeurs"
+      ],
+      "settings": {
+        "full_width": false,
+        "stack_on_mobile": true,
+        "gap": "medium",
+        "text_alignment": "start",
+        "subheading": "Guides d'achat",
+        "title": "Bien protéger sa collection",
+        "content": "<p>Quatre guides pour choisir la bonne protection, du protège-carte souple au boîtier acrylique.</p>"
+      }
     }
   },
   "order": [
@@ -777,6 +845,7 @@
     "video_presentation",
     "press",
     "impact-text",
+    "guides_protection",
     "faq",
     "collection_30_ans",
     "newsletter_drop"
