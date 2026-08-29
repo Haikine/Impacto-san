@@ -29,6 +29,7 @@
             "content": "<p>Le display japonais de l'extension Storm Emeralda : 30 boosters de 5 cartes, menés par Méga-Rayquaza ex.</p>",
             "button_text": "Voir le display M6",
             "button_url": "shopify://products/display-m6-storm-emeralda-japonais",
+            "promo_product": "display-m6-storm-emeralda-japonais",
             "mobile_text_position": "place-self-center text-center",
             "desktop_text_position": "sm:place-self-center-start sm:text-start",
             "background": "#0f2a24",

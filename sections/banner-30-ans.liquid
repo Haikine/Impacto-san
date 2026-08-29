@@ -404,6 +404,15 @@ date shows the slide immediately, for the same reason an unreadable deadline nev
                   <div>{{ block.settings.content }}</div>
                 {%- endif -%}
 
+                {%- comment -%}
+                  vcollect: the promotion chip is data, not copy. It renders only while a flagged promotion covering
+                  the chosen product is live (see snippets/custom-promotion-badge.liquid), so the banner starts and
+                  stops announcing the offer on its own, without anyone editing the slide.
+                {%- endcomment -%}
+                {%- if block.settings.promo_product != blank -%}
+                  <div>{%- render 'custom-promotion-badge', product: block.settings.promo_product, style: 'banner' -%}</div>
+                {%- endif -%}
+
                 {%- if block.settings.show_countdown -%}
                   <countdown-timer class="countdown" target="{{ block.settings.target_date | date: '%Y-%m-%dT%H:%M:%S%z' }}" {% if is_expired %}expired{% endif %}>
                     <span class="countdown__unit">
@@ -722,6 +731,12 @@ date shows the slide immediately, for the same reason an unreadable deadline nev
           "type": "url",
           "id": "button_url",
           "label": "Lien du bouton"
+        },
+        {
+          "type": "product",
+          "id": "promo_product",
+          "label": "Produit en promotion",
+          "info": "Si une réduction cochée « Afficher sur les fiches produits » couvre ce produit, une pastille annonce l'offre et son code sur la bannière, entre les dates de la promotion. Rien ne s'affiche en dehors."
         },
         {
           "type": "select",

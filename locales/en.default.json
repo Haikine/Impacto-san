@@ -124,7 +124,9 @@
       "unit_minutes": "min",
       "copy": "Copy",
       "copied": "Copied",
-      "code_hint": "Code to enter at checkout"
+      "code_hint": "Code to enter at checkout",
+      "badge_label": "-{{ value }} with a code",
+      "banner_code": "Code {{ code }}"
     },
     "waitlist": {
       "intro": "Join the waitlist so you don't miss the release.",

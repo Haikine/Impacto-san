@@ -1,0 +1,112 @@
+{%- comment -%}
+----------------------------------------------------------------------------------------------------------------------
+PROMOTION BADGE (custom vcollect)
+----------------------------------------------------------------------------------------------------------------------
+
+The compact face of the promotion relay: one line telling the shopper a live promotion covers this product, on the
+surfaces too small for the full panel of snippets/custom-promotions.liquid (product cards, the home page banner).
+
+Same data, same rules as the panel: Liquid cannot read Shopify discounts, so this reads the `vcollect_promotion`
+metaobject entries kept in step by migrations/sync-promotions.mjs, and compares the dates at render time. The badge
+therefore appears and drops off on its own when the promotion starts and ends, and comes back if it is re-enabled,
+with nothing to redeploy.
+
+********************************************
+Supported variables
+********************************************
+
+* product: the product whose eligibility is tested
+* style: 'card' (default) renders a theme badge pill for product cards; 'banner' renders the larger chip used by
+  the home page banner carousel, carrying the promotion title and its code.
+{%- endcomment -%}
+
+{%- comment -%}
+  Same rule as the product page panel: a sold-out product cannot be bought, so a discount on it is a tease.
+{%- endcomment -%}
+{%- if product.available -%}
+  {%- liquid
+    assign now_timestamp = 'now' | date: '%s' | plus: 0
+    assign live_promotion = nil
+
+    for promotion in metaobjects.vcollect_promotion.values
+      unless promotion.afficher_sur_fiche.value
+        continue
+      endunless
+
+      comment
+        A blank start means "already running", a blank end means "no end date": an empty field must never hide a
+        promotion the merchant deliberately flagged.
+      endcomment
+      assign starts_at = promotion.date_debut.value | date: '%s' | plus: 0
+      if starts_at > now_timestamp
+        continue
+      endif
+
+      assign ends_at = promotion.date_fin.value | date: '%s' | plus: 0
+      if ends_at > 0 and ends_at <= now_timestamp
+        continue
+      endif
+
+      assign is_eligible = false
+
+      case promotion.portee.value
+        when 'collections'
+          for promotion_collection in promotion.collections.value
+            for product_collection in product.collections
+              if product_collection.id == promotion_collection.id
+                assign is_eligible = true
+                break
+              endif
+            endfor
+
+            if is_eligible
+              break
+            endif
+          endfor
+        when 'produits'
+          for promotion_product in promotion.produits.value
+            if promotion_product.id == product.id
+              assign is_eligible = true
+              break
+            endif
+          endfor
+        else
+          assign is_eligible = true
+      endcase
+
+      comment
+        One badge only: a second promotion would halve the impact of both on a surface this small.
+      endcomment
+      if is_eligible
+        assign live_promotion = promotion
+        break
+      endif
+    endfor
+  -%}
+
+  {%- if live_promotion -%}
+    {%- liquid
+      comment
+        The saving as the shopper will read it: "10 %" for a percentage, "20 €" for a per-item amount, stored in
+        cents so the money filter formats it in the store currency.
+      endcomment
+      assign saving_label = ''
+      if live_promotion.pourcentage.value > 0
+        assign saving_label = live_promotion.pourcentage.value | append: ' %'
+      elsif live_promotion.montant.value > 0
+        assign saving_label = live_promotion.montant.value | money_without_trailing_zeros
+      endif
+    -%}
+
+    {%- if style == 'banner' -%}
+      <span class="custom-promo-chip">
+        <span>{{ live_promotion.titre.value | escape }}</span>
+        {%- if live_promotion.code.value != blank -%}
+          <b>{{ 'product.promotions.banner_code' | t: code: live_promotion.code.value }}</b>
+        {%- endif -%}
+      </span>
+    {%- elsif saving_label != blank -%}
+      <span class="badge custom-promo-badge">{{ 'product.promotions.badge_label' | t: value: saving_label }}</span>
+    {%- endif -%}
+  {%- endif -%}
+{%- endif -%}

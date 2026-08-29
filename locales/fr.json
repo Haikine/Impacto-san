@@ -124,7 +124,9 @@
       "unit_minutes": "min",
       "copy": "Copier",
       "copied": "Copié",
-      "code_hint": "Code à saisir au panier"
+      "code_hint": "Code à saisir au panier",
+      "badge_label": "-{{ value }} avec le code",
+      "banner_code": "Code {{ code }}"
     },
     "waitlist": {
       "intro": "Rejoins la liste d'attente pour ne pas manquer la mise en vente.",

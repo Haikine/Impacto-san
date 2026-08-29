@@ -38,8 +38,9 @@ not 0,10 €, and on 2,97 € it takes 0,29 € and not 0,30 €. Shopify trunca
 Liquid's integer `divided_by` truncates the same way, so `price | times: percent | divided_by: 100` reproduces
 Shopify's own arithmetic to the cent. Do not "fix" this into a rounding, it would overstate the discount.
 
-The price is only printed for a percentage with no minimum purchase (`prix_barre`, decided by the sync script): under a
-minimum, the price shown would be one the shopper may well not get.
+The price is only printed when the per-product cut is guaranteed (`prix_barre`, decided by the sync script): a
+percentage, or a fixed amount that applies to each item, both without minimum purchase. Under a minimum, the price
+shown would be one the shopper may well not get, and a fixed amount off the whole order is not a per-product cut.
 
 ********************************************
 Supported variables
@@ -116,9 +117,11 @@ Supported variables
           guarantees two discounts combine, so the second one would be a promise the cart does not keep.
         endcomment
         assign show_price = false
-        if promotion.prix_barre.value and promotion.pourcentage.value > 0 and price_already_shown == false
-          assign show_price = true
-          assign price_already_shown = true
+        if promotion.prix_barre.value and price_already_shown == false
+          if promotion.pourcentage.value > 0 or promotion.montant.value > 0
+            assign show_price = true
+            assign price_already_shown = true
+          endif
         endif
       -%}
 
@@ -158,8 +161,21 @@ Supported variables
               {%- endunless -%}
 
               {%- liquid
-                assign discount_amount = variant.price | times: promotion.pourcentage.value | divided_by: 100
+                if promotion.pourcentage.value > 0
+                  assign discount_amount = variant.price | times: promotion.pourcentage.value | divided_by: 100
+                else
+                  assign discount_amount = promotion.montant.value
+                endif
+
                 assign discounted_price = variant.price | minus: discount_amount
+
+                comment
+                  A fixed amount can exceed a cheap variant's price. Shopify would clamp the discount at the cart,
+                  but "0,00 €" here would promise a free product, so that variant shows no price at all.
+                endcomment
+                if discounted_price <= 0
+                  continue
+                endif
               -%}
 
               <span data-variant-id="{{ variant.id }}" {% unless variant == product.selected_or_first_available_variant %}hidden{% endunless %}>

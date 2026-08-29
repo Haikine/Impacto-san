@@ -10,13 +10,13 @@ Supported variables
 ********************************************
 
 * product: the product to render the badges
-* types: the types of badge to output. Can be "custom", "coming_soon", "sold_out" or "discount" (or a combination separated by comma). If nothing is set, all badges are outputted.
+* types: the types of badge to output. Can be "promotion", "custom", "coming_soon", "sold_out" or "discount" (or a combination separated by comma). If nothing is set, all badges are outputted.
 * form_id: an optional form ID to use to update the badges when a given variant changes
 * block: an optional block to output theme editor attributes
 * class: an extra class added on the container
 {%- endcomment -%}
 
-{%- assign badge_types = types | default: 'custom, coming_soon, new_release, sold_out, discount' | split: ',' -%}
+{%- assign badge_types = types | default: 'promotion, custom, coming_soon, new_release, sold_out, discount' | split: ',' -%}
 {%- assign variant = product.selected_or_first_available_variant -%}
 
 {%- comment -%}
@@ -47,6 +47,14 @@ and becomes "Nouveauté" on its release day, then stops being new once the windo
     {%- assign stripped_badge_type = badge_type | strip -%}
 
     {%- case stripped_badge_type -%}
+      {%- comment -%}
+      Custom vcollect: a live promotion (see snippets/custom-promotion-badge.liquid) flagged on the discount itself.
+      The product page passes explicit types and never asks for this one: it already shows the full promotion panel,
+      and a badge next to it would say the same thing twice.
+      {%- endcomment -%}
+      {%- when 'promotion' -%}
+        {%- render 'custom-promotion-badge', product: product -%}
+
       {%- when 'custom' -%}
         {%- assign custom_badges = product.metafields.custom.badges.value | sort -%}
 
