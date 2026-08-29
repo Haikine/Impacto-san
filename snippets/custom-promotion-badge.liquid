@@ -99,14 +99,23 @@ Supported variables
     -%}
 
     {%- if style == 'banner' -%}
-      <span class="custom-promo-chip">
-        <span>{{ live_promotion.titre.value | escape }}</span>
+      {%- comment -%}
+        A white block on slides that all run dark grounds: the inverse of everything around it, which is what
+        makes the offer the first thing read. The code sits in its own filled box because it is the one thing
+        the shopper must retain.
+      {%- endcomment -%}
+      <div class="custom-promo-flash">
+        <span class="custom-promo-flash__title">{{ live_promotion.titre.value | escape }}</span>
         {%- if live_promotion.code.value != blank -%}
-          <b>{{ 'product.promotions.banner_code' | t: code: live_promotion.code.value }}</b>
+          <span class="custom-promo-flash__code">{{ 'product.promotions.banner_code' | t: code: live_promotion.code.value }}</span>
         {%- endif -%}
-      </span>
+      </div>
     {%- elsif saving_label != blank -%}
-      <span class="badge custom-promo-badge">{{ 'product.promotions.badge_label' | t: value: saving_label }}</span>
+      {%- if live_promotion.code.value != blank -%}
+        <span class="badge custom-promo-badge">{{ 'product.promotions.badge_label_code' | t: value: saving_label, code: live_promotion.code.value }}</span>
+      {%- else -%}
+        <span class="badge custom-promo-badge">{{ 'product.promotions.badge_label' | t: value: saving_label }}</span>
+      {%- endif -%}
     {%- endif -%}
   {%- endif -%}
 {%- endif -%}

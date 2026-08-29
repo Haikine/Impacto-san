@@ -1172,38 +1172,81 @@
 }
 
 /* ---------------------------------------------------------------------------
- * Promotion badge and chip
+ * Promotion badge and flash block
  * ---------------------------------------------------------------------------
  * Rendered by snippets/custom-promotion-badge.liquid: the badge sits on the
- * product cards among the theme's own badges, the chip on the home banner
- * carousel. Both carry the same solid #0043b5 as the product page promotion
+ * product cards among the theme's own badges, the flash block on the home
+ * banner carousel. Both keep the promo blue #0043b5 of the product page
  * panel, so every surface announcing an offer wears the same colour.
  */
 .custom-promo-badge {
   --badge-background: 0 67 181;
   --badge-color: 255 255 255;
+  font-weight: 700;
 }
 
-/* The banner slides run on dark grounds with white type: the chip keeps the
-   promo blue as its fill and lets its own white text carry the contrast
-   (white on #0043b5 measures ~8.5:1). */
-.custom-promo-chip {
+/* The banner slides all run dark grounds with white type, and a blue chip on
+   them read as one more piece of furniture (merchant feedback: not visible
+   enough). A white block is the inverse of everything around it, which is
+   what makes the offer the first thing read on the slide. Blue #0043b5 on
+   white measures ~8.5:1, white on #0043b5 the same. */
+.custom-promo-flash {
   display: inline-flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: center;
-  gap: var(--spacing-1) var(--spacing-3);
-  padding: var(--spacing-2) var(--spacing-4);
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2);
+  position: relative;
+  overflow: hidden;
+  padding: var(--spacing-4) var(--spacing-6);
   border-radius: var(--rounded-sm);
+  background: #ffffff;
+  color: #0043b5;
+  box-shadow: 0 0.75rem 2.5rem rgb(0 0 0 / 0.45);
+}
+
+.custom-promo-flash__title {
+  font-size: clamp(1.1rem, 2.6vw, 1.65rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.custom-promo-flash__code {
+  display: inline-block;
+  padding: var(--spacing-1-5) var(--spacing-5);
+  border-radius: var(--rounded-button);
   background: #0043b5;
   color: #ffffff;
-  font-size: var(--text-sm);
+  font-size: clamp(0.95rem, 2vw, 1.2rem);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
-.custom-promo-chip b {
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+/* A light sweep every few seconds pulls the eye without moving any text.
+   Decorative only, so it is the first thing to go for motion-sensitive
+   visitors. */
+.custom-promo-flash::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(105deg, transparent 40%, rgb(61 133 255 / 0.3) 50%, transparent 60%);
+  animation: custom-promo-shine 3.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes custom-promo-shine {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .custom-promo-flash::after {
+    animation: none;
+  }
 }
 
 /* ---------------------------------------------------------------------------

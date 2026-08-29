@@ -126,6 +126,7 @@
       "copied": "Copied",
       "code_hint": "Code to enter at checkout",
       "badge_label": "-{{ value }} with a code",
+      "badge_label_code": "-{{ value }} · code {{ code }}",
       "banner_code": "Code {{ code }}"
     },
     "waitlist": {
