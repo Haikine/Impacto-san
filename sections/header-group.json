@@ -34,9 +34,16 @@
             "text": "GROS DROP DE SCELLÉ POKÉMON EN APPROCHE🔥",
             "url": "/collections/all"
           }
+        },
+        "promo_m6": {
+          "type": "promotion",
+          "settings": {
+            "promo_product": "display-m6-storm-emeralda-japonais"
+          }
         }
       },
       "block_order": [
+        "promo_m6",
         "message",
         "message_6FeqTp",
         "message_drop"

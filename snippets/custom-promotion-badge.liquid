@@ -17,7 +17,8 @@ Supported variables
 
 * product: the product whose eligibility is tested
 * style: 'card' (default) renders a theme badge pill for product cards; 'banner' renders the larger chip used by
-  the home page banner carousel, carrying the promotion title and its code.
+  the home page banner carousel, carrying the promotion title and its code; 'text' outputs the bare uppercase
+  one-liner (title and code, no markup) for surfaces that carry their own markup, like the announcement bar.
 {%- endcomment -%}
 
 {%- comment -%}
@@ -98,7 +99,14 @@ Supported variables
       endif
     -%}
 
-    {%- if style == 'banner' -%}
+    {%- if style == 'text' -%}
+      {%- assign promo_line = live_promotion.titre.value | upcase -%}
+      {%- if live_promotion.code.value != blank -%}
+        {%- capture code_part -%}{{ 'product.promotions.banner_code' | t: code: live_promotion.code.value }}{%- endcapture -%}
+        {%- assign promo_line = promo_line | append: ' · ' | append: code_part | upcase -%}
+      {%- endif -%}
+      {{- promo_line | escape -}}
+    {%- elsif style == 'banner' -%}
       {%- comment -%}
         A white block on slides that all run dark grounds: the inverse of everything around it, which is what
         makes the offer the first thing read. The code sits in its own filled box because it is the one thing
