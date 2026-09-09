@@ -168,10 +168,10 @@
         }
       },
       "block_order": [
+        "banner_30_ans",
         "banner_m6",
         "banner_op17",
         "banner_csv10c",
-        "banner_30_ans",
         "banner_promo_accessoires"
       ],
       "settings": {
@@ -837,6 +837,7 @@
   "order": [
     "banniere_drops",
     "image-link-blocks",
+    "collection_30_ans",
     "collection_japonais",
     "collection_chinois",
     "featured-collection",
@@ -848,7 +849,6 @@
     "impact-text",
     "guides_protection",
     "faq",
-    "collection_30_ans",
     "newsletter_drop"
   ]
 }
