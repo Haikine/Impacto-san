@@ -360,7 +360,12 @@
       "type": "featured-collection",
       "settings": {
         "collection": "pokemon-chinois",
-        "products": [],
+        "products": [
+          "display-30th-celebration-chinois",
+          "display-csv10c-chasing-glory-chinois",
+          "display-csv9-5c-terastal-gathering-chinois",
+          "tripack-csv10c-chasing-glory-chinois"
+        ],
         "full_width": false,
         "stack_products": false,
         "show_progress_bar": false,
