@@ -12,6 +12,38 @@
     "banniere_drops": {
       "type": "banner-30-ans",
       "blocks": {
+        "banner_30_ans": {
+          "type": "banner",
+          "settings": {
+            "image": "shopify://shop_images/banner-30-ans-desktop.png",
+            "mobile_image": "shopify://shop_images/banner-30-ans-mobile.png",
+            "product_image_size": 76,
+            "visible_from": "",
+            "show_countdown": true,
+            "target_date": "2026-09-16",
+            "hide_when_expired": false,
+            "expired_message": "Disponible dès maintenant",
+            "subheading": "SORTIE MONDIALE LE 16 SEPTEMBRE 2026",
+            "title": "30 ANS POKÉMON",
+            "heading_tag": "h0",
+            "content": "<p>Displays, coffrets dresseur d'élite, collections ultra premium. Inscrivez-vous sur la liste d'attente d'un produit et soyez prévenu dès sa mise en vente.</p>",
+            "button_text": "Découvrir la gamme 30 ans",
+            "button_url": "shopify://collections/30-ans-pokemon",
+            "promo_product": "",
+            "mobile_text_position": "place-self-center text-center",
+            "desktop_text_position": "sm:place-self-center sm:text-center",
+            "background": "#1a1a1a",
+            "background_gradient": "linear-gradient(140deg, rgba(26, 26, 26, 1), rgba(0, 58, 112, 1) 100%)",
+            "text_color": "#ffffff",
+            "overlay_color": "#000000",
+            "overlay_opacity": 15,
+            "countdown_background": "#000000",
+            "countdown_opacity": 30,
+            "countdown_text_color": "#ffffff",
+            "button_background": "#002d78",
+            "button_text_color": "#ffffff"
+          }
+        },
         "banner_m6": {
           "type": "banner",
           "settings": {
@@ -60,6 +92,7 @@
             "content": "<p>Le display japonais de l'extension des 4 ans du jeu, The World's Strongest Warriors : 24 boosters, Elbaf et les Quatre Empereurs. Sortie le 22 août, inscrivez-vous à la liste d'attente pour être prévenu de la mise en vente.</p>",
             "button_text": "Voir le display OP-17",
             "button_url": "shopify://products/display-one-piece-op17-japonais",
+            "promo_product": "",
             "mobile_text_position": "place-self-center text-center",
             "desktop_text_position": "sm:place-self-center-start sm:text-start",
             "background": "#1a1a1a",
@@ -91,6 +124,7 @@
             "content": "<p>Le display chinois de l'extension Chasing Glory Together : 15 boosters, avec le Mewtwo de la Team Rocket en carte phare.</p>",
             "button_text": "Voir le display CSV10C",
             "button_url": "shopify://products/display-csv10c-chasing-glory-chinois",
+            "promo_product": "",
             "mobile_text_position": "place-self-center text-center",
             "desktop_text_position": "sm:place-self-center-start sm:text-start",
             "background": "#5c1420",
@@ -100,37 +134,6 @@
             "overlay_opacity": 45,
             "countdown_background": "#ffffff",
             "countdown_opacity": 15,
-            "countdown_text_color": "#ffffff",
-            "button_background": "#002d78",
-            "button_text_color": "#ffffff"
-          }
-        },
-        "banner_30_ans": {
-          "type": "banner",
-          "settings": {
-            "image": "shopify://shop_images/banner-30-ans-desktop.png",
-            "mobile_image": "shopify://shop_images/banner-30-ans-mobile.png",
-            "product_image_size": 76,
-            "visible_from": "",
-            "show_countdown": true,
-            "target_date": "2026-09-16",
-            "hide_when_expired": false,
-            "expired_message": "Disponible dès maintenant",
-            "subheading": "SORTIE MONDIALE LE 16 SEPTEMBRE 2026",
-            "title": "30 ANS POKÉMON",
-            "heading_tag": "h0",
-            "content": "<p>Displays, coffrets dresseur d'élite, collections ultra premium. Inscrivez-vous sur la liste d'attente d'un produit et soyez prévenu dès sa mise en vente.</p>",
-            "button_text": "Découvrir la gamme 30 ans",
-            "button_url": "shopify://collections/30-ans-pokemon",
-            "mobile_text_position": "place-self-center text-center",
-            "desktop_text_position": "sm:place-self-center sm:text-center",
-            "background": "#1a1a1a",
-            "background_gradient": "linear-gradient(140deg, rgba(26, 26, 26, 1), rgba(0, 58, 112, 1) 100%)",
-            "text_color": "#ffffff",
-            "overlay_color": "#000000",
-            "overlay_opacity": 15,
-            "countdown_background": "#000000",
-            "countdown_opacity": 30,
             "countdown_text_color": "#ffffff",
             "button_background": "#002d78",
             "button_text_color": "#ffffff"
@@ -152,6 +155,7 @@
             "content": "<p>Utilisez le code <strong>VCOLLECT10</strong> au panier. Il se cumule avec le booster offert dès 80 € d'achat.</p>",
             "button_text": "Découvrir la boutique",
             "button_url": "/collections/all",
+            "promo_product": "",
             "mobile_text_position": "place-self-center text-center",
             "desktop_text_position": "sm:place-self-center-start sm:text-start",
             "background": "#1a1a1a",
@@ -296,6 +300,35 @@
         "heading_gradient": ""
       }
     },
+    "collection_30_ans": {
+      "type": "featured-collection",
+      "settings": {
+        "collection": "30-ans-pokemon",
+        "products": [],
+        "full_width": false,
+        "stack_products": false,
+        "show_progress_bar": false,
+        "prioritize_in_stock": false,
+        "products_count": 8,
+        "products_per_row_mobile": "2",
+        "products_per_row_desktop": 5,
+        "subheading": "",
+        "title": "LE DROP 30 ANS",
+        "content": "",
+        "link_url": "shopify://collections/30-ans-pokemon",
+        "link_text": "Voir les 25 produits",
+        "background_image": "shopify://shop_images/banner-30-ans-desktop.png",
+        "mobile_background_image": "shopify://shop_images/banner-30-ans-mobile.png",
+        "background_image_overlay": 40,
+        "background": "#1a1a1a",
+        "background_gradient": "",
+        "text_color": "#ffffff",
+        "heading_color": "#5a8de2",
+        "heading_gradient": "",
+        "product_card_background": "#ffffff",
+        "product_card_text_color": "#1a1a1a"
+      }
+    },
     "collection_japonais": {
       "type": "featured-collection",
       "settings": {
@@ -354,7 +387,16 @@
       "type": "featured-collection",
       "settings": {
         "collection": "accessoires",
-        "products": [],
+        "products": [
+          "protection-acrylique-etb-elite-trainer-box",
+          "protection-acrylique-display-japonaise",
+          "paquet-de-100-sleeves-classique",
+          "protection-ultra-premium-dracaufeu",
+          "protection-acrylique-display",
+          "classeur-360-toploader-zip-premium",
+          "classeur-480-cartes-zip-premium",
+          "classeur-480-toploader-zip-premium"
+        ],
         "full_width": false,
         "stack_products": false,
         "show_progress_bar": false,
@@ -637,6 +679,77 @@
         "button_text_color": ""
       }
     },
+    "guides_protection": {
+      "type": "multi-column",
+      "blocks": {
+        "guide-sleeves": {
+          "type": "item",
+          "settings": {
+            "column_size": "4",
+            "title": "Sleeves",
+            "heading_tag": "h3",
+            "content": "<p>La protection de base, à mettre sur toute carte que l'on garde. Quelle taille, quelle matière et combien en prévoir.</p>",
+            "link_url": "/pages/sleeves-pokemon-guide",
+            "link_text": "Lire le guide des sleeves",
+            "link_style": "link"
+          }
+        },
+        "guide-toploader": {
+          "type": "item",
+          "settings": {
+            "column_size": "4",
+            "title": "Toploaders",
+            "heading_tag": "h3",
+            "content": "<p>L'étui rigide des cartes de valeur. Le format à choisir, et la règle à connaître avant de l'utiliser.</p>",
+            "link_url": "/pages/toploader-pokemon-guide",
+            "link_text": "Lire le guide du toploader",
+            "link_style": "link"
+          }
+        },
+        "guide-acrylique": {
+          "type": "item",
+          "settings": {
+            "column_size": "4",
+            "title": "Protections acryliques",
+            "heading_tag": "h3",
+            "content": "<p>Display, ETB ou coffret : les dimensions exactes pour exposer un scellé sans l'abîmer.</p>",
+            "link_url": "/pages/protection-acrylique-pokemon-guide",
+            "link_text": "Lire le guide des protections",
+            "link_style": "link"
+          }
+        },
+        "guide-classeurs": {
+          "type": "item",
+          "settings": {
+            "column_size": "4",
+            "title": "Classeurs",
+            "heading_tag": "h3",
+            "content": "<p>Version cartes ou version toploader : le seul choix à faire avant d'acheter.</p>",
+            "link_url": "/pages/classeur-pokemon-guide",
+            "link_text": "Lire le guide des classeurs",
+            "link_style": "link"
+          }
+        }
+      },
+      "block_order": [
+        "guide-sleeves",
+        "guide-toploader",
+        "guide-acrylique",
+        "guide-classeurs"
+      ],
+      "settings": {
+        "full_width": false,
+        "stack_on_mobile": true,
+        "gap": "medium",
+        "text_alignment": "start",
+        "subheading": "Guides d'achat",
+        "title": "Bien protéger sa collection",
+        "content": "<p>Quatre guides pour choisir la bonne protection, du protège-carte souple au boîtier acrylique.</p>",
+        "background": "",
+        "background_gradient": "",
+        "text_color": ""
+      }
+    },
     "faq": {
       "type": "faq",
       "blocks": {
@@ -716,35 +829,6 @@
         "accordion_text_color": ""
       }
     },
-    "collection_30_ans": {
-      "type": "featured-collection",
-      "settings": {
-        "collection": "30-ans-pokemon",
-        "products": [],
-        "full_width": false,
-        "stack_products": false,
-        "show_progress_bar": false,
-        "prioritize_in_stock": false,
-        "products_count": 8,
-        "products_per_row_mobile": "2",
-        "products_per_row_desktop": 5,
-        "subheading": "",
-        "title": "LE DROP 30 ANS",
-        "content": "",
-        "link_url": "shopify://collections/30-ans-pokemon",
-        "link_text": "Voir les 25 produits",
-        "background_image": "shopify://shop_images/banner-30-ans-desktop.png",
-        "mobile_background_image": "shopify://shop_images/banner-30-ans-mobile.png",
-        "background_image_overlay": 40,
-        "background": "#1a1a1a",
-        "background_gradient": "",
-        "text_color": "#ffffff",
-        "heading_color": "#5a8de2",
-        "heading_gradient": "",
-        "product_card_background": "#ffffff",
-        "product_card_text_color": "#1a1a1a"
-      }
-    },
     "newsletter_drop": {
       "type": "newsletter",
       "custom_css": [
@@ -763,74 +847,6 @@
         "text_color": "#f7f9f9",
         "button_background": "#002d78",
         "button_text_color": "#ffffff"
-      }
-    },
-    "guides_protection": {
-      "type": "multi-column",
-      "blocks": {
-        "guide-sleeves": {
-          "type": "item",
-          "settings": {
-            "column_size": "4",
-            "title": "Sleeves",
-            "heading_tag": "h3",
-            "content": "<p>La protection de base, à mettre sur toute carte que l'on garde. Quelle taille, quelle matière et combien en prévoir.</p>",
-            "link_url": "/pages/sleeves-pokemon-guide",
-            "link_text": "Lire le guide des sleeves",
-            "link_style": "link"
-          }
-        },
-        "guide-toploader": {
-          "type": "item",
-          "settings": {
-            "column_size": "4",
-            "title": "Toploaders",
-            "heading_tag": "h3",
-            "content": "<p>L'étui rigide des cartes de valeur. Le format à choisir, et la règle à connaître avant de l'utiliser.</p>",
-            "link_url": "/pages/toploader-pokemon-guide",
-            "link_text": "Lire le guide du toploader",
-            "link_style": "link"
-          }
-        },
-        "guide-acrylique": {
-          "type": "item",
-          "settings": {
-            "column_size": "4",
-            "title": "Protections acryliques",
-            "heading_tag": "h3",
-            "content": "<p>Display, ETB ou coffret : les dimensions exactes pour exposer un scellé sans l'abîmer.</p>",
-            "link_url": "/pages/protection-acrylique-pokemon-guide",
-            "link_text": "Lire le guide des protections",
-            "link_style": "link"
-          }
-        },
-        "guide-classeurs": {
-          "type": "item",
-          "settings": {
-            "column_size": "4",
-            "title": "Classeurs",
-            "heading_tag": "h3",
-            "content": "<p>Version cartes ou version toploader : le seul choix à faire avant d'acheter.</p>",
-            "link_url": "/pages/classeur-pokemon-guide",
-            "link_text": "Lire le guide des classeurs",
-            "link_style": "link"
-          }
-        }
-      },
-      "block_order": [
-        "guide-sleeves",
-        "guide-toploader",
-        "guide-acrylique",
-        "guide-classeurs"
-      ],
-      "settings": {
-        "full_width": false,
-        "stack_on_mobile": true,
-        "gap": "medium",
-        "text_alignment": "start",
-        "subheading": "Guides d'achat",
-        "title": "Bien protéger sa collection",
-        "content": "<p>Quatre guides pour choisir la bonne protection, du protège-carte souple au boîtier acrylique.</p>"
       }
     }
   },
