@@ -9,6 +9,27 @@
  */
 {
   "sections": {
+    "main": {
+      "type": "main-collection",
+      "custom_css": [
+        "/* Option de filtre sélectionnée - case à cocher */.active-facets__button,.facets__label input:checked + .facets__checkbox,.facet-checkbox input:checked ~ label,.facets__item input:checked + label {background-color: #e63946; color: #ffffff; border-color: #e63946;}",
+        " /* Bouton de filtre actif */.active-facets__button-inner {background-color: #e63946; color: #ffffff;}",
+        " /* Badge/tag des filtres actifs */.active-facets .active-facets__button {background-color: #e63946; color: #ffffff; border-radius: 4px; padding: 4px 8px;}"
+      ],
+      "settings": {
+        "products_per_page": 24,
+        "products_per_row_mobile": "2",
+        "products_per_row_desktop": 3,
+        "filter_layout": "sidebar",
+        "show_sort_by": true,
+        "show_filters": true,
+        "show_filter_group_name": false,
+        "show_color_swatch": true,
+        "show_empty_filter_values": false,
+        "show_filter_values_count": true,
+        "open_first_filter_group": false
+      }
+    },
     "banner": {
       "type": "collection-banner",
       "settings": {
@@ -28,31 +49,10 @@
         "overlay_color": "#000000",
         "overlay_opacity": 30
       }
-    },
-    "main": {
-      "type": "main-collection",
-      "custom_css": [
-        "/* Option de filtre sélectionnée - case à cocher */.active-facets__button,.facets__label input:checked + .facets__checkbox,.facet-checkbox input:checked ~ label,.facets__item input:checked + label {background-color: #e63946; color: #ffffff; border-color: #e63946;}",
-        "/* Bouton de filtre actif */.active-facets__button-inner {background-color: #e63946; color: #ffffff;}",
-        "/* Badge/tag des filtres actifs */.active-facets .active-facets__button {background-color: #e63946; color: #ffffff; border-radius: 4px; padding: 4px 8px;}"
-      ],
-      "settings": {
-        "products_per_page": 24,
-        "products_per_row_mobile": "2",
-        "products_per_row_desktop": 3,
-        "filter_layout": "sidebar",
-        "show_sort_by": true,
-        "show_filters": true,
-        "show_filter_group_name": false,
-        "show_color_swatch": true,
-        "show_empty_filter_values": false,
-        "show_filter_values_count": true,
-        "open_first_filter_group": false
-      }
     }
   },
   "order": [
-    "banner",
-    "main"
+    "main",
+    "banner"
   ]
 }
