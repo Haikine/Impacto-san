@@ -35,6 +35,12 @@
         {%- if settings.cart_show_free_shipping_threshold -%}
           {%- render 'free-shipping-bar' -%}
         {%- endif -%}
+
+        {%- comment -%}
+          Custom (not Impact): gift tiers bar replacing the Monster Cart Upsell app.
+          The snippet gates itself, so this render call is inert until the discounts are live.
+        {%- endcomment -%}
+        {%- render 'gift-tiers-bar' -%}
       </div>
 
       <div class="v-stack gap-6 sm:gap-8">
@@ -85,6 +91,12 @@
     </div>
 
     <div class="v-stack gap-4 sm:gap-6" slot="footer">
+      {%- comment -%}
+        Custom (not Impact): discount code field, applied from the drawer via /cart/update.js.
+        See snippets/custom-cart-discount.liquid.
+      {%- endcomment -%}
+      {%- render 'custom-cart-discount' -%}
+
       <div class="v-stack gap-1">
         {% for discount_application in cart.cart_level_discount_applications %}
           <div class="h-stack gap-4 justify-between">
@@ -155,7 +167,19 @@
         {%- endif -%}
 
         {%- if section.settings.show_checkout_button -%}
-          {%- render 'button', type: 'submit', content: checkout_label, icon: 'picto-lock', name: 'checkout', size: 'xl' -%}
+          {%- comment -%}
+            Custom (not Impact): a gift line Shopify is charging for must never reach the checkout. assets/custom-gift-tiers.js
+            removes it and re-renders this drawer, but until it has, the button is rendered disabled so that a click landing
+            before the script cannot sell a gift. See documents/diagnostic-boosters-factures-21-09-2026.md.
+          {%- endcomment -%}
+          {%- assign gift_line_priced = false -%}
+          {%- for line_item in cart.items -%}
+            {%- if line_item.product.tags contains 'cadeau-offert' and line_item.final_line_price > 0 -%}
+              {%- assign gift_line_priced = true -%}
+            {%- endif -%}
+          {%- endfor -%}
+
+          {%- render 'button', type: 'submit', content: checkout_label, icon: 'picto-lock', name: 'checkout', size: 'xl', disabled: gift_line_priced -%}
         {%- endif -%}
       </form>
     </div>

@@ -11,41 +11,62 @@
  * after the gift products had been archived, with nothing added to the cart.
  *
  * ********************************************
- * Shopify owns the rule, this file owns nothing
+ * Shopify owns the price, this file only a ceiling
  * ********************************************
  *
- * The automatic discount configured in the admin is the only definition of who
- * earns how many gifts. This script never recomputes it. An earlier version did,
- * by mirroring the threshold and the per-order cap here, and the two drifted the
- * first time the cap was raised in the admin: the discount allowed ten, the theme
- * still added two, and nothing in the storefront explained why.
+ * The automatic discount configured in the admin decides which gift units are
+ * free. The very first version mirrored the threshold and the per-order cap here
+ * and trusted its own count, and the two drifted the first time the cap was
+ * raised in the admin: the discount allowed ten, the theme still added two, and
+ * nothing in the storefront explained why. The mirror is back, but only as an
+ * upper bound on what gets added. Shopify still has the last word: a unit it
+ * charges for is removed, whatever this file expected.
  *
- * Instead we ask. Shopify answers precisely: put more gift units in the cart than
- * are owed and it discounts exactly the number earned while charging the rest, on
- * its own separate line. So the reconciler over-shoots by a few units, reads back
- * how many Shopify actually gave away, and trims to that number. Whatever the
- * admin says today, the cart follows, including a rule this file has never heard
- * of. Raising the cap or moving the threshold needs no deploy.
+ * ********************************************
+ * A gift must never be sold (21/09/2026)
+ * ********************************************
  *
- * The intermediate over-shoot never reaches the screen: the drawer is only asked
- * to re-render once the trimming is done.
+ * The version before this one asked Shopify by over-shooting: it put three extra
+ * units in the cart, read how many came back free, then trimmed. Those three
+ * units were real, priced lines for the time of a round trip (0,4 s measured),
+ * on every add to cart and on every page load with a cart. Nothing held the
+ * checkout button meanwhile, and seven orders left with exactly three paid
+ * "free" boosters (#11921: a 69,90 EUR cart, no gift owed, 11,97 EUR charged).
  *
- * Pricing stays authoritative on Shopify's side throughout. If this script fails,
- * or a shopper hand-edits the cart, checkout still charges correctly.
+ * So the cart is no longer used as a probe:
+ *
+ * * The step and the cap from the snippet are a ceiling. The script adds at most
+ *   what they allow, so in the normal case no priced gift unit ever exists. If
+ *   they drift from the admin, the worst outcome is a missing gift, which is a
+ *   wording problem, never a charged one.
+ * * When Shopify charges a unit anyway (a product discount code won the
+ *   best-discount contest), the unit is removed and that cart state is
+ *   remembered, so it is not tried again on every page.
+ * * Every click on the checkout button is held for the time of one cart read,
+ *   and replayed only onto a cart where no gift unit is priced. A priced unit
+ *   found there is removed first, wherever it came from.
+ * * Until this script has loaded, the server renders the checkout button
+ *   disabled whenever a gift line is priced (see sections/main-cart.liquid and
+ *   sections/cart-drawer.liquid).
+ *
+ * What this file cannot cover is the checkout page, where it does not run. A
+ * product code typed there can still turn a settled gift into a paid line. That
+ * is closed on the discount's side, see documents/diagnostic-boosters-factures-21-09-2026.md.
  */
 
 const CART_UPDATE_URL = `${window.Shopify.routes.root}cart/update.js`;
 const CART_URL = `${window.Shopify.routes.root}cart.js`;
 
-/**
- * How many extra units to put in the cart when asking Shopify how many it owes.
- * Big enough to clear several thresholds at once so a large cart settles in one
- * round trip, small enough that the surplus is trivial if a request is lost.
- */
-const PROBE_HEADROOM = 3;
+/** Pauses before retrying a refused cart write. A paid gift unit left behind is
+    the one failure this file exists to prevent, so a write is not given up on
+    after a single bad answer. */
+const RETRY_DELAYS = [400, 1200];
 
-/** Stops a misbehaving discount from looping the probe forever. */
-const MAX_PROBES = 4;
+/** A cart request that never answers must not hold the checkout button forever. */
+const REQUEST_TIMEOUT = 8000;
+
+/** sessionStorage key for the cart state at which Shopify last refused a gift. */
+const REFUSED_KEY = 'gift-tiers:refused';
 
 /**
  * Impact rewrites the drawer's line items 1250 ms after a cart:change, reusing the
@@ -61,19 +82,55 @@ let reconciling = false;
 
 /**
  * A cart:change landed while a reconciliation was in flight. Dropping it
- * corrupts the gift durably: the missed change can move the entitlement, and
- * the lastSubtotal guard then blocks every later probe because the subtotal no
- * longer grows. Reproduced with two quantity edits 150 ms apart: 174 EUR in the
- * cart, zero gift, forever. So the drop is remembered and the reconciler runs
- * again on a freshly fetched cart once the current pass settles.
+ * corrupts the gift durably: the missed change can move the entitlement and
+ * nothing would look at the cart again. Reproduced with two quantity edits
+ * 150 ms apart: 174 EUR in the cart, zero gift, forever. So the drop is
+ * remembered and the reconciler runs again on a freshly fetched cart once the
+ * current pass settles.
  */
 let rerunNeeded = false;
 
 /**
- * Eligible subtotal at the last completed reconciliation, so we only pay for a
- * probe when the shopper spent more than they had before.
+ * Checkout submission held back until the cart has been checked.
+ * @type {{form: HTMLFormElement, submitter: HTMLElement|null}|null}
  */
-let lastSubtotal = null;
+let heldCheckout = null;
+
+/** The reconciliation in progress, so that late callers can wait for it. */
+let running = Promise.resolve();
+
+/** The gate is already looking at the cart for the held checkout. */
+let gating = false;
+
+/**
+ * Cart writes issued by this page and not answered yet, the theme's included.
+ * The theme sends them with fetch (see assets/theme.js.liquid), and offers no
+ * event before the answer, so fetch itself is the only place to count them.
+ * Everything else goes straight through, untouched.
+ */
+let pendingCartWrites = 0;
+
+const nativeFetch = window.fetch.bind(window);
+
+window.fetch = (input, init) => {
+  const url = typeof input === 'string' ? input : input?.url || String(input);
+
+  if (!/\/cart\/(add|change|update|clear)(\.js)?(\?|$)/.test(url)) {
+    return nativeFetch(input, init);
+  }
+
+  pendingCartWrites += 1;
+
+  return nativeFetch(input, init).finally(() => {
+    pendingCartWrites -= 1;
+  });
+};
+
+/** The submit event in progress is our own replay and must go through. */
+let replaying = false;
+
+/** How many times the gate may find a priced gift and clean up before giving up. */
+const GATE_ROUNDS = 3;
 
 /**
  * Read a whole positive number out of untrusted input.
@@ -174,79 +231,309 @@ const setGiftQuantity = async (cart, quantity, sections) => {
     });
   }
 
-  const response = await fetch(CART_UPDATE_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ updates, sections }),
-  });
+  for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt += 1) {
+    if (attempt > 0) {
+      await new Promise((resolve) => setTimeout(resolve, RETRY_DELAYS[attempt - 1]));
+    }
 
-  if (!response.ok) {
-    /* A 404 "Cannot find variant" means the gift is unpublished or archived, which
-       is precisely how the previous app failed. Say so rather than pretend. */
-    console.warn('[gift-tiers] cart update refused:', response.status, await response.text());
-    return null;
+    try {
+      const response = await fetch(CART_UPDATE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ updates, sections }),
+        signal: timeoutSignal(),
+      });
+
+      if (response.ok) {
+        return response.json();
+      }
+
+      console.warn('[gift-tiers] cart update refused:', response.status, await response.text());
+
+      /* A 404 "Cannot find variant" means the gift is unpublished or archived, which
+         is precisely how the previous app failed. Asking again changes nothing. */
+      if (response.status === 404) {
+        return null;
+      }
+    } catch (error) {
+      console.warn('[gift-tiers] cart update failed:', error);
+    }
   }
 
-  return response.json();
+  return null;
 };
 
 /**
- * Bring the gift quantity to whatever Shopify is willing to give away.
+ * Abort signal for one cart request.
+ * @returns {AbortSignal} Signal that fires after REQUEST_TIMEOUT
+ */
+const timeoutSignal = () => {
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+
+  return controller.signal;
+};
+
+/**
+ * Most gift units the snippet's step and cap allow for this cart. A ceiling on
+ * what gets added, never a promise: Shopify prices the units afterwards.
+ * @param {Object} cart - Cart payload from the Ajax API
+ * @returns {number} Upper bound, 0 when the configuration cannot tell
+ */
+const giftCeiling = (cart) => {
+  const subtotal = eligibleSubtotal(cart);
+
+  if (config.step === null || !Number.isFinite(subtotal)) {
+    return 0;
+  }
+
+  const steps = Math.floor(subtotal / config.step);
+
+  return config.max === null ? steps : Math.min(steps, config.max);
+};
+
+/**
+ * Identify a cart state as far as the gift is concerned: what the shopper is
+ * spending and which codes compete with the gift.
+ * @param {Object} cart - Cart payload from the Ajax API
+ * @returns {string} Signature of the state
+ */
+const cartSignature = (cart) => {
+  const codes = (cart.discount_codes || [])
+    .filter((entry) => entry.applicable)
+    .map((entry) => entry.code.toUpperCase())
+    .sort();
+
+  return `${eligibleSubtotal(cart)}|${codes.join(',')}`;
+};
+
+/**
+ * Cart state at which Shopify last charged a unit this script had added. Kept
+ * for the browsing session, so a cart carrying a winning product code does not
+ * get a priced unit added and removed again on every page.
+ * @returns {string|null} Stored signature
+ */
+const readRefused = () => {
+  try {
+    return window.sessionStorage.getItem(REFUSED_KEY);
+  } catch (error) {
+    return null;
+  }
+};
+
+/**
+ * @param {string} signature - Cart state Shopify refused a gift for
+ * @returns {void}
+ */
+const writeRefused = (signature) => {
+  try {
+    window.sessionStorage.setItem(REFUSED_KEY, signature);
+  } catch (error) {
+    /* Private window or blocked storage: the refusal is simply learnt again */
+  }
+};
+
+/**
+ * Bring the gift quantity to what Shopify gives away, then let a held checkout go.
  * @param {Object} cart - Cart payload from the Ajax API
  * @returns {Promise<void>}
  */
-const reconcile = async (cart) => {
+const reconcile = (cart) => {
   if (!config) {
-    return;
+    return Promise.resolve();
   }
 
+  /* A caller that arrives mid-run waits for the same run: it is re-run on a
+     fresh cart before it resolves */
   if (reconciling) {
     rerunNeeded = true;
-    return;
+    return running;
   }
 
   reconciling = true;
+  setBusy(true);
 
-  try {
-    /* After a dropped change the settled snapshot is stale, so the pass must not
-       trust its lastSubtotal guard */
-    let force = false;
+  running = (async () => {
+    try {
+      do {
+        rerunNeeded = false;
+        await reconcilePass(cart);
 
-    do {
+        if (rerunNeeded) {
+          cart = await fetchCart();
+        }
+      } while (rerunNeeded);
+    } catch (error) {
+      console.warn('[gift-tiers] reconciliation failed:', error);
+    } finally {
+      reconciling = false;
       rerunNeeded = false;
-      await reconcilePass(cart, force);
+      setBusy(false);
+    }
 
-      if (rerunNeeded) {
-        cart = await (await fetch(CART_URL)).json();
-        force = true;
-      }
-    } while (rerunNeeded);
-  } catch (error) {
-    console.warn('[gift-tiers] reconciliation failed:', error);
-  } finally {
-    reconciling = false;
-    rerunNeeded = false;
+    if (heldCheckout) {
+      gateCheckout();
+    }
+  })();
+
+  return running;
+};
+
+/**
+ * Read the cart as Shopify holds it right now.
+ * @returns {Promise<Object>} Cart payload from the Ajax API
+ */
+const fetchCart = async () => (await nativeFetch(CART_URL, { signal: timeoutSignal() })).json();
+
+/**
+ * Resolve once no cart write issued by this page is still on its way to Shopify.
+ *
+ * Seen in a real browser on 21/09/2026: the shopper lowers a quantity in the
+ * drawer and clicks the checkout button 120 ms later. The theme's /cart/change.js
+ * has not reached Shopify yet, so a cart read at that instant still shows every
+ * gift free, the click goes through, and the change lands behind it: the
+ * checkout opens with a gift at 3,99 EUR. Reading the cart only means something
+ * once the writes ahead of it have been answered.
+ * @returns {Promise<void>}
+ */
+const cartWritesSettled = async () => {
+  const deadline = performance.now() + REQUEST_TIMEOUT;
+
+  while (pendingCartWrites > 0 && performance.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, 25));
   }
 };
 
 /**
- * One reconciliation round: decide, probe, trim, then tell the theme.
- * @param {Object} cart - Cart payload from the Ajax API
- * @param {boolean} force - Probe even when the guards see nothing new
+ * Take the express checkout buttons (Shop Pay, PayPal) out of reach while the
+ * gift line is being adjusted. They live in frames the submit listener below
+ * never hears from, so they cannot be held and replayed like the main button.
+ * @param {boolean} busy - Whether a reconciliation is in flight
+ * @returns {void}
+ */
+const setBusy = (busy) => {
+  if (busy && !document.getElementById('gift-tiers-busy-style')) {
+    const style = document.createElement('style');
+    style.id = 'gift-tiers-busy-style';
+    style.textContent =
+      '.gift-tiers-busy .additional-checkout-buttons{visibility:hidden;pointer-events:none}';
+    document.head.append(style);
+  }
+
+  document.documentElement.classList.toggle('gift-tiers-busy', busy);
+};
+
+/**
+ * Last look at the cart before the shopper leaves for the checkout.
+ *
+ * Every checkout click goes through here, not only those that land during a
+ * reconciliation. The cart Shopify holds can carry a priced gift unit this page
+ * never heard about: the theme's own quantity request still in flight, another
+ * tab, a page rendered before the last change. So the cart is read fresh at the
+ * moment of leaving, which costs one request, and the click is replayed only
+ * onto a cart where every gift unit is free.
  * @returns {Promise<void>}
  */
-const reconcilePass = async (cart, force) => {
-  const subtotal = eligibleSubtotal(cart);
-  const { total, free } = giftUnits(cart);
-
-  /* Shopify has already priced this cart. If it is charging for gift units, that
-     is the answer, no probe needed. If everything is free and the shopper has not
-     spent more than last time, there is nothing new to earn either. */
-  const needsTrim = total > free;
-  const mightEarnMore = lastSubtotal === null || subtotal > lastSubtotal;
-
-  if (!needsTrim && !mightEarnMore && !force) {
+const gateCheckout = async () => {
+  if (gating) {
     return;
+  }
+
+  gating = true;
+
+  try {
+    for (let round = 0; round < GATE_ROUNDS; round += 1) {
+      await cartWritesSettled();
+
+      /* Reconcile before looking: besides removing a priced unit, this adds the
+         gift a shopper is owed when they click before it has been added */
+      await reconcile(await fetchCart());
+      await cartWritesSettled();
+
+      const { total, free } = giftUnits(await fetchCart());
+
+      if (total === free && pendingCartWrites === 0) {
+        replayCheckout();
+        return;
+      }
+    }
+  } catch (error) {
+    console.warn('[gift-tiers] checkout gate failed:', error);
+  } finally {
+    gating = false;
+  }
+
+  /* The cart could not be brought to a state where every gift is free. Sending
+     the shopper on would sell a gift, and a dead button would lose the order:
+     the cart page re-renders from the server and this script starts over there. */
+  if (heldCheckout) {
+    heldCheckout = null;
+    console.warn('[gift-tiers] checkout held back, cart not settled');
+    window.location.assign(`${window.Shopify.routes.root}cart`);
+  }
+};
+
+/**
+ * Submit the held checkout form for real.
+ * @returns {void}
+ */
+const replayCheckout = () => {
+  const held = heldCheckout;
+  heldCheckout = null;
+
+  if (!held) {
+    return;
+  }
+
+  replaying = true;
+
+  let { form } = held;
+  let submitter = held.submitter;
+
+  /* The drawer is re-rendered after every cart change, often while the click is
+     being held: the form that was clicked is then out of the document, and a
+     detached form submits nothing (seen in a real browser on 21/09/2026). A
+     bare form does the same job, the cart page's note and quantities only live
+     in a form that is never re-rendered. */
+  if (!form.isConnected) {
+    form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `${window.Shopify.routes.root}cart`;
+    form.hidden = true;
+    document.body.append(form);
+    submitter = null;
+  }
+
+  if (submitter && typeof form.requestSubmit === 'function') {
+    form.requestSubmit(submitter);
+  } else {
+    /* form.submit() would drop the button's name, and /cart only redirects to
+       the checkout when it receives it */
+    const field = document.createElement('input');
+    field.type = 'hidden';
+    field.name = 'checkout';
+    form.append(field);
+    form.submit();
+  }
+
+  replaying = false;
+};
+
+/**
+ * One reconciliation round: remove what Shopify charges, add what the ceiling
+ * still allows, then tell the theme.
+ * @param {Object} cart - Cart payload from the Ajax API
+ * @returns {Promise<Object|null>} Cart after the round, null when a write was lost
+ */
+const reconcilePass = async (cart) => {
+  const { total, free } = giftUnits(cart);
+  const signature = cartSignature(cart);
+
+  const needsTrim = total > free;
+  const mayAdd = !needsTrim && free < giftCeiling(cart) && readRefused() !== signature;
+
+  if (!needsTrim && !mayAdd) {
+    return cart;
   }
 
   /* The theme's delayed write is scheduled from the event we are reacting to, not
@@ -262,56 +549,38 @@ const reconcilePass = async (cart, force) => {
   );
 
   let current = cart;
-  let settled = false;
 
-  for (let probe = 0; probe < MAX_PROBES && !settled; probe += 1) {
-    const units = giftUnits(current);
-
-    if (units.total > units.free) {
-      /* Shopify is charging for the surplus: keep exactly what it gave away */
-      if (units.total !== units.free) {
-        const trimmed = await setGiftQuantity(current, units.free, sections);
-        if (!trimmed) return;
-        current = trimmed;
-      }
-      settled = true;
-      break;
-    }
-
-    /* Everything in the cart is free, so ask whether more would be */
-    const asked = await setGiftQuantity(current, units.total + PROBE_HEADROOM, sections);
-    if (!asked) return;
-    current = asked;
-
-    const answer = giftUnits(current);
-
-    if (answer.free < answer.total) {
-      const trimmed = await setGiftQuantity(current, answer.free, sections);
-      if (!trimmed) return;
-      current = trimmed;
-      settled = true;
-    }
-    /* Otherwise every probed unit came back free: loop and ask for more */
+  if (mayAdd) {
+    const added = await setGiftQuantity(current, giftCeiling(current), sections);
+    if (!added) return null;
+    current = added;
   }
 
-  const settledSubtotal = eligibleSubtotal(current);
+  const answer = giftUnits(current);
 
-  /* A subtotal that did not add up must never settle in: the guard above compares
-     against it, and NaN loses every comparison, so a single bad payload would
-     freeze the probe for the rest of the session. null means "not measured",
-     which makes the next change probe again. */
-  lastSubtotal = Number.isFinite(settledSubtotal) ? settledSubtotal : null;
+  if (answer.total > answer.free) {
+    /* Shopify is charging for units: keep exactly what it gave away. When they
+       are units this pass just added, remember the state so the next page does
+       not put a priced unit back in the cart to learn the same thing. */
+    if (mayAdd) {
+      writeRefused(signature);
+    }
+
+    const trimmed = await setGiftQuantity(current, answer.free, sections);
+    if (!trimmed) return null;
+    current = trimmed;
+  }
 
   const giftsChanged = giftUnits(current).total !== giftsOnEntry;
 
   /* The cart page changes a quantity by navigating to /cart/change, so it renders
      before we have touched the gift and then has no way to update itself: it does
      not listen for cart:refresh, only the drawer does. Reloading is the honest
-     fix there. Guarded on an actual change so the probe's own round trip, which
-     ends where it started, cannot loop the page. */
-  if (giftsChanged && window.themeVariables?.settings?.pageType === 'cart') {
+     fix there, guarded on an actual change so it cannot loop the page. A held
+     checkout makes the reload pointless, the shopper is leaving. */
+  if (giftsChanged && !heldCheckout && window.themeVariables?.settings?.pageType === 'cart') {
     window.location.reload();
-    return;
+    return current;
   }
 
   document.documentElement.dispatchEvent(
@@ -321,13 +590,14 @@ const reconcilePass = async (cart, force) => {
     })
   );
 
-  /* Have the drawer re-fetch itself once the theme's delayed write has passed.
-     This is also what keeps the probe's over-shoot off the screen. */
+  /* Have the drawer re-fetch itself once the theme's delayed write has passed */
   const remaining = Math.max(0, STALE_RENDER_WINDOW - (performance.now() - windowOpenedAt));
 
   setTimeout(() => {
     document.documentElement.dispatchEvent(new CustomEvent('cart:refresh', { bubbles: true }));
   }, remaining);
+
+  return current;
 };
 
 /**
@@ -359,17 +629,18 @@ const registerConfig = (definition) => {
   config = {
     variantId,
     reward: typeof definition.reward === 'string' ? definition.reward : '',
-    /* Sentence only. null when the configuration cannot say how much a gift
-       costs: the bar then hides instead of quoting a made-up amount, and the
-       cart keeps handing out gifts all the same. */
+    /* Drives the sentence and the ceiling on added units. null when the
+       configuration cannot say how much a gift costs: the bar then hides instead
+       of quoting a made-up amount, and no gift is added, since the only other way
+       to find out how many are owed is to put priced units in the cart. */
     step: step === null ? null : positiveNumber(Math.round(step * rate)),
-    /* Per-order limit of the discount, mirrored here for the sentence only.
-       null means "not configured", never "limit not reached". */
+    /* Per-order limit of the discount, mirrored here for the sentence and the
+       ceiling. null means "not configured", never "limit not reached". */
     max: positiveNumber(definition.max),
   };
 
   /* A returning shopper can land with a cart that already crossed a threshold */
-  fetch(CART_URL)
+  fetch(CART_URL, { signal: timeoutSignal() })
     .then((response) => response.json())
     .then(reconcile)
     .catch((error) => console.warn('[gift-tiers] initial sync failed:', error));
@@ -383,6 +654,40 @@ document.addEventListener('cart:change', (event) => {
 
   reconcile(event.detail.cart);
 });
+
+/* The checkout buttons of the drawer and of the cart page are plain form submits,
+   so nothing used to stop a shopper from leaving while the gift line was being
+   adjusted. Captured on the document because the drawer's form is re-rendered
+   after every cart change. The click is held, not dropped: gateCheckout replays
+   it once it has seen a cart with no priced gift unit. */
+document.addEventListener(
+  'submit',
+  (event) => {
+    const form = event.target;
+
+    /* No configuration means no gift on this page, nothing to protect */
+    if (replaying || !config || !(form instanceof HTMLFormElement)) {
+      return;
+    }
+
+    const submitter = event.submitter || form.querySelector('[name="checkout"]');
+
+    if (!submitter || submitter.getAttribute('name') !== 'checkout') {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    submitter.setAttribute('aria-busy', 'true');
+    heldCheckout = { form, submitter };
+
+    /* A running reconciliation opens the gate itself when it ends */
+    if (!reconciling) {
+      gateCheckout();
+    }
+  },
+  true
+);
 
 /**
  * Progress bar toward the next gift. Display only: it never writes to the cart,
@@ -443,8 +748,7 @@ class GiftTiersBar extends HTMLElement {
     }
 
     /* No usable step, no honest sentence: the bar takes itself off the page
-       instead of quoting an amount it cannot compute. The gift itself does not
-       depend on this, the reconciler keeps working. */
+       instead of quoting an amount it cannot compute */
     this.hidden = config.step === null;
 
     if (this.hidden) {

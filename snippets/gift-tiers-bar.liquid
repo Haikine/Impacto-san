@@ -39,12 +39,14 @@ Configuration
   variant" and no gift is ever added. That is exactly how the previous app broke.
 * gift_step is in cents of the shop currency (EUR). Other markets are converted at runtime.
 
-How many gifts a shopper gets is NOT configured here. The automatic discount in the admin decides, and the script reads
-the answer back from the cart, so raising its per-order limit or moving its threshold needs no change to this file.
+Which gift units are free is NOT decided here. The automatic discount in the admin decides, and the script removes any
+unit Shopify charges for.
 
-gift_step and gift_max only drive the sentence in the progress bar, "spend X more for a booster". Leave them equal to
-the discount's threshold and per-order limit to keep that sentence truthful. If they drift, the wording is wrong but the
-cart and the checkout are not.
+gift_step and gift_max drive the sentence in the progress bar, "spend X more for a booster", and since 21/09/2026 they
+are also the ceiling on how many units the script adds: it used to find the count out by putting surplus units in the
+cart, and orders left with those units charged. KEEP THEM EQUAL to the discount's threshold and per-order limit. If the
+admin becomes more generous than this file, shoppers get fewer gifts than they are owed until it is updated; they are
+never charged for one.
 
 gift_max exists because the sentence talks about a cart the shopper does not have yet, and Shopify can only price the
 cart as it is now. Once the limit is reached the bar has nothing left to promise, so it switches to its "all unlocked"

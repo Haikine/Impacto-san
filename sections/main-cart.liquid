@@ -98,6 +98,12 @@
 
           <safe-sticky class="cart-order__recap v-stack gap-6">
             <form action="{{ routes.cart_url }}" method="POST" class="cart-form rounded">
+              {%- comment -%}
+                Custom (not Impact): discount code field, applied from the cart via /cart/update.js.
+                See snippets/custom-cart-discount.liquid. Its input is nameless so this form never submits it.
+              {%- endcomment -%}
+              {%- render 'custom-cart-discount' -%}
+
               {%- for block in section.blocks -%}
                 {%- case block.type -%}
                   {%- when '@app' -%}
@@ -173,7 +179,18 @@
                     {%- endif -%}
 
                   {%- when 'accelerated_buttons' -%}
-                    {% if additional_checkout_buttons %}
+                    {%- comment -%}
+                      Custom (not Impact): see gift_line_priced below. The express buttons cannot be disabled, so they are
+                      left out until the priced gift line is gone and the page has reloaded.
+                    {%- endcomment -%}
+                    {%- assign gift_line_priced = false -%}
+                    {%- for line_item in cart.items -%}
+                      {%- if line_item.product.tags contains 'cadeau-offert' and line_item.final_line_price > 0 -%}
+                        {%- assign gift_line_priced = true -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+
+                    {% if additional_checkout_buttons and gift_line_priced == false %}
                       <div class="additional-checkout-buttons additional-checkout-buttons--vertical" {{ block.shopify_attributes }}>
                         {{- content_for_additional_checkout_buttons -}}
                       </div>
@@ -181,7 +198,21 @@
 
                   {%- when 'checkout_button' -%}
                     {%- assign checkout_button = 'cart.general.checkout' | t -%}
-                    {%- render 'button', type: 'submit', icon: 'picto-lock', content: checkout_button, size: 'xl', name: 'checkout', stretch: true, block: block -%}
+
+                    {%- comment -%}
+                      Custom (not Impact): a gift line Shopify is charging for must never reach the checkout.
+                      assets/custom-gift-tiers.js removes it and reloads this page, but until it has, the button is rendered
+                      disabled so that a click landing before the script cannot sell a gift.
+                      See documents/diagnostic-boosters-factures-21-09-2026.md.
+                    {%- endcomment -%}
+                    {%- assign gift_line_priced = false -%}
+                    {%- for line_item in cart.items -%}
+                      {%- if line_item.product.tags contains 'cadeau-offert' and line_item.final_line_price > 0 -%}
+                        {%- assign gift_line_priced = true -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+
+                    {%- render 'button', type: 'submit', icon: 'picto-lock', content: checkout_button, size: 'xl', name: 'checkout', stretch: true, block: block, disabled: gift_line_priced -%}
                 {%- endcase -%}
               {%- endfor -%}
             </form>
