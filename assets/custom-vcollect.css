@@ -1274,3 +1274,47 @@
 .product-card__stock + .product-card__quick-buy {
   margin-block-start: 0;
 }
+
+/* ---------------------------------------------------------------------------
+ * Buy buttons: "Buy it now" as tall as "Add to cart"
+ * ---------------------------------------------------------------------------
+ * Since September 2024 Shopify renders the dynamic checkout button through
+ * its accelerated checkout web components, and its stylesheet
+ * (accelerated-checkout-backwards-compat.css) pins .shopify-payment-button__button
+ * to `height: clamp(25px, --shopify-accelerated-checkout-button-block-size, 55px)`,
+ * 44px by default. Impact 4.3.4 predates that change (Maestrooo updated the
+ * theme in 6.2.0, support article 814), so next to the 60px add-to-cart
+ * button the "Buy it now" sat 16px shorter (measured 08/10/2026: 60 vs 44 on
+ * desktop, 54 vs 44 on mobile, 46 vs 44 in the quick buy drawer).
+ *
+ * First block: Maestrooo's own recipe for older themes, kept verbatim. It
+ * drives the wallet buttons (Shop Pay, PayPal...) if they are ever enabled:
+ * same radius, no shadow, and the theme's button heights. Shopify caps the
+ * variable at 55px, so on its own it leaves the desktop button 5px short.
+ *
+ * Second block: the plain "Buy it now" is an ordinary <button> the theme
+ * already pads exactly like the add-to-cart one (see theme.css,
+ * .shopify-payment-button__button--unbranded). Releasing Shopify's fixed
+ * height lets that padding set the height, so both buttons always match,
+ * whatever size the theme picks for the breakpoint or the drawer.
+ */
+shopify-accelerated-checkout, shopify-accelerated-checkout-cart {
+  --shopify-accelerated-checkout-button-block-size: 54px;
+  --shopify-accelerated-checkout-button-border-radius: var(--rounded-button);
+  --shopify-accelerated-checkout-button-box-shadow: none;
+}
+
+@media screen and (min-width: 700px) {
+  shopify-accelerated-checkout, shopify-accelerated-checkout-cart {
+    --shopify-accelerated-checkout-button-block-size: 60px;
+  }
+
+  .quick-buy-drawer shopify-accelerated-checkout, .quick-buy-drawer shopify-accelerated-checkout-cart {
+    --shopify-accelerated-checkout-button-block-size: 46px;
+  }
+}
+
+.shopify-payment-button__button--unbranded {
+  height: auto !important;
+  min-height: 0 !important;
+}
